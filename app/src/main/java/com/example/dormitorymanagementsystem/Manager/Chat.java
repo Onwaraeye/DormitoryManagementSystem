@@ -58,6 +58,7 @@ public class Chat extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private boolean loadingFirstTime = true;
     private String getType = Login.getGbTypeUser();
+    private int readCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class Chat extends AppCompatActivity {
                         Log.e("getID", getID);
                     } else {
                         chatKey = getUserID;
+
                     }
                 }
 
@@ -153,14 +155,31 @@ public class Chat extends AppCompatActivity {
                 String getTxtMessage = messageEditTxt.getText().toString();
                 String currentTimestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
 
-                //MemoryData.saveLastMsgTST(currentTimestamp, chatKey, Chat.this);
-                myRef.child("Chats").child(chatKey).child("user_1").setValue(getUserID);
-                myRef.child("Chats").child(chatKey).child("user_2").setValue(getID);
-                myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("msg").setValue(getTxtMessage);
-                myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("userID").setValue(getUserID);
-
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Log.e("11",snapshot.child("Chats").child(chatKey).child("sendMsg").getValue(Long.class)+"");
+                        Long read = snapshot.child("Chats").child(chatKey).child("sendMsg").getValue(Long.class);
+                        if (read.intValue() == 0){
+                            readCount = 1;
+                            myRef.child("Chats").child(chatKey).child("user_1").setValue(getUserID);
+                            myRef.child("Chats").child(chatKey).child("user_2").setValue(getID);
+                            myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("msg").setValue(getTxtMessage);
+                            myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("userID").setValue(getUserID);
+                            myRef.child("Chats").child(chatKey).child("sendMsg").setValue(readCount);
+                        }else {
+                            myRef.child("Chats").child(chatKey).child("user_1").setValue(getUserID);
+                            myRef.child("Chats").child(chatKey).child("user_2").setValue(getID);
+                            myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("msg").setValue(getTxtMessage);
+                            myRef.child("Chats").child(chatKey).child("messages").child(currentTimestamp).child("userID").setValue(getUserID);
+                            myRef.child("Chats").child(chatKey).child("sendMsg").setValue(readCount);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
                 messageEditTxt.setText("");
-
             }
         });
 

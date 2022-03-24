@@ -43,6 +43,7 @@ public class ChatManager extends AppCompatActivity {
     private String chatKey = "";
     private String lastMessege = "";
     private int unseenMessages = 0;
+    private int readCount;
 
 
     @Override
@@ -59,18 +60,17 @@ public class ChatManager extends AppCompatActivity {
         messageAdapter = new MessageAdapter(ChatManager.this, messagesList);
         messagesRecycleView.setAdapter(messageAdapter);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 messagesList.clear();
                 unseenMessages = 0;
                 lastMessege = "";
                 chatKey = userID;
+                //for (DataSnapshot dataSnapshot : snapshot.child("Users").getChildren()) {
                 for (DataSnapshot dataSnapshot : snapshot.child("Users").getChildren()) {
-
                     String getUserID = dataSnapshot.getKey();
                     //dataSet = false;
-
                     if (!getUserID.equals(userID)) {
 
                         myRef.child("Chats").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,8 +91,10 @@ public class ChatManager extends AppCompatActivity {
                                             String getUserOne = dataSnapshot1.child("user_1").getValue(String.class);
                                             String getUserTwo = dataSnapshot1.child("user_2").getValue(String.class);
 
-                                            if ((getUserOne.equals(getUserID) && getUserTwo.equals(userID)) || (getUserTwo.equals(userID) && getUserTwo.equals(getUserID))) {
 
+                                            if ((getUserOne.equals(getUserID) && getUserTwo.equals(userID)) || (getUserOne.equals(userID) && getUserTwo.equals(getUserID))) {
+
+                                                Log.e("readCount", readCount + "");
                                                 for (DataSnapshot chatDataSnapshop : dataSnapshot1.child("messages").getChildren()) {
 
                                                     long getMessageKey = Long.parseLong(chatDataSnapshop.getKey());
@@ -108,7 +110,7 @@ public class ChatManager extends AppCompatActivity {
                                 }
                                 //if (!dataSet){
                                 //dataSet = true;
-                                Messages messages = new Messages(getUserID, lastMessege, unseenMessages, chatKey);
+                                Messages messages = new Messages(getUserID, lastMessege,chatKey, unseenMessages);
                                 messagesList.add(messages);
                                 messageAdapter.updateData(messagesList);
 

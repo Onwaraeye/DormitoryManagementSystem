@@ -26,6 +26,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private Context mContext;
     private List<Messages> userMessagesList;
 
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference();
+
 
     public MessageAdapter(Context mContext, List<Messages> userMessagesList) {
         this.mContext = mContext;
@@ -58,7 +61,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, Chat.class);
-
                 intent.putExtra("userID",list.getUserID());
                 intent.putExtra("chat_key",list.getUserID());
                 mContext.startActivity(intent);

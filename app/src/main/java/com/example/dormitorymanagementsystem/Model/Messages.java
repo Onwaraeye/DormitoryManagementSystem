@@ -5,11 +5,11 @@ public class Messages {
     private String userID, lastMessage, chatKey;
     private int unseenMessages;
 
-    public Messages(String userID, String lastMessage, int unseenMessages, String chatKey) {
+    public Messages(String userID, String lastMessage, String chatKey, int unseenMessages) {
         this.userID = userID;
         this.lastMessage = lastMessage;
-        this.unseenMessages = unseenMessages;
         this.chatKey = chatKey;
+        this.unseenMessages = unseenMessages;
     }
 
     public String getUserID() {

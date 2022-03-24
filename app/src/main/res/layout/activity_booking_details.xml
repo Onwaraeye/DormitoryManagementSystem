@@ -45,6 +45,12 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,7 +64,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="พื้นที่ออกกำลังกาย" />
+            android:text="central" />
 
         <TextView
             android:id="@+id/txDate"
@@ -66,7 +72,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="20sp"
-            android:text="วันที่ 13 พ.ย. 2564"
+            android:text="date"
             android:textStyle="bold"
             android:textSize="24sp" />
 
@@ -75,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="10.00-11.00 น."
+            android:text="time"
             android:layout_marginBottom="10dp"
             android:textStyle="bold"
             android:textSize="24sp" />
@@ -87,7 +93,7 @@
             android:layout_marginTop="20sp"
             android:gravity="center"
             android:textSize="24sp"
-            android:text="ชื่อ นามสกุล" />
+            android:text="name" />
 
         <TextView
             android:id="@+id/txNumroom"
@@ -95,7 +101,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="24sp"
-            android:text="ห้อง 609" />
+            android:text="room" />
 
         <TextView
             android:id="@+id/txPhone"
@@ -103,7 +109,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="24sp"
-            android:text="0811235875" />
+            android:text="phone" />
 
         <Button
             android:id="@+id/btCancle"

@@ -98,7 +98,6 @@ public class AdapterManagerPhone extends RecyclerView.Adapter<AdapterManagerPhon
 
         public AdapterManagerPhoneHolder(@NonNull View itemView) {
             super(itemView);
-
             txName = itemView.findViewById(R.id.txName);
             txPhone = itemView.findViewById(R.id.txPhone);
             linearLayout = itemView.findViewById(R.id.linearLayout);

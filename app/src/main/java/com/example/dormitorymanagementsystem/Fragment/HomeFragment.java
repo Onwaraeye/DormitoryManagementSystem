@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.dormitorymanagementsystem.Central;
 import com.example.dormitorymanagementsystem.Login;
@@ -39,11 +40,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class HomeFragment extends Fragment {
 
+
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
+    private DatabaseReference myRefContact = database.getReference("Contact");
 
     private LinearLayout menu_bill,menu_parcel,menu_central,menu_my_room,menu_phone,menu_info,menu_repair,menu_chat;
-    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_post,menu_view_repair;
+    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_post,menu_view_repair,menu_edit_info;
     private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4;
     private View view;
     private final String getType = Login.getGbTypeUser();
@@ -62,6 +66,21 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        TextView txNameDormitory = view.findViewById(R.id.txNameDormitory);
+        myRefContact.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String nameDor = snapshot.child("nameDormitory").getValue(String.class);
+                if (nameDor != null){
+                    txNameDormitory.setText(nameDor);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
 
         String userID = Login.getGbIdUser();
         ImageView imUser = view.findViewById(R.id.imUser);
@@ -212,12 +231,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        menu_edit_info = view.findViewById(R.id.menu_edit_info);
+        menu_edit_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Info.class);
+                getActivity().startActivity(intent);
+            }
+        });
 
         if (Login.getGbTypeUser().equals("User")){
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
             admin2 = view.findViewById(R.id.admin2);
-            admin2.setVisibility(View.GONE);
+            admin2.setVisibility(View.VISIBLE);
             admin3 = view.findViewById(R.id.admin3);
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);

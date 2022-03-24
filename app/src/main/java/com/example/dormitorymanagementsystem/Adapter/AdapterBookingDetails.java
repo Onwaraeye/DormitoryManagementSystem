@@ -45,16 +45,24 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
             holder.txName.setText(list.get(position).getName());
             holder.txDate.setText(list.get(position).getDate());
             holder.txTime.setText(list.get(position).getTime());
-            if (list.get(position).getCentral().equals("Fitness")){
-                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/fitness.jpg?alt=media&token=65a9ae5b-209d-421a-b3f7-99ed0ce886d9").fit().centerCrop().into(holder.imageView);
+            String imageFitness = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/fitness.jpg?alt=media&token=65a9ae5b-209d-421a-b3f7-99ed0ce886d9";
+            String imageTutoringRoom = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/tutoringroom.jpg?alt=media&token=3213b984-1fc9-4d08-8140-3a8682c14529";
+            if (list.get(position).getCentral().equals("พื้นที่ออกกำลังกาย")){
+                Picasso.get().load(imageFitness).fit().centerCrop().into(holder.imageView);
             }else {
-                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/tutoringroom.jpg?alt=media&token=3213b984-1fc9-4d08-8140-3a8682c14529").fit().centerCrop().into(holder.imageView);
+                Picasso.get().load(imageTutoringRoom).fit().centerCrop().into(holder.imageView);
             }
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, BookingDetails.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("central",list.get(position).getCentral());
+                    if (list.get(position).getCentral().equals("พื้นที่ออกกำลังกาย")){
+                        intent.putExtra("image",imageFitness);
+                    }else {
+                        intent.putExtra("image",imageTutoringRoom);
+                    }
                     mContext.startActivity(intent);
                 }
             });

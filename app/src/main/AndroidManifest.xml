@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DormitoryManagementSystem">
-        <activity android:name=".ParcelDetail"></activity>
+        <activity android:name=".Manager.InfoEditContact"></activity>
+        <activity android:name=".Manager.InfoEditBank" />
+        <activity android:name=".Manager.SelectBank" />
+        <activity android:name=".ParcelDetail" />
         <activity android:name=".Manager.ViewRepair" />
         <activity android:name=".Manager.Post" />
         <activity android:name=".Manager.ChatManager" />

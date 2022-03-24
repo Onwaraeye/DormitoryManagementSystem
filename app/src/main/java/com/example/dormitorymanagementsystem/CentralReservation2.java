@@ -105,6 +105,7 @@ public class CentralReservation2 extends AppCompatActivity {
                         myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("timeShow").setValue(time);
 
                         Intent intent = new Intent(getApplicationContext(),Central.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     }

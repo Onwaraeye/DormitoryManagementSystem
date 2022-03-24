@@ -25,17 +25,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="20dp"
+                    android:layout_marginHorizontal="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/name_dormitory"
-                        android:layout_width="0dp"
+                        android:id="@+id/txNameDormitory"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="40dp"
-                        android:layout_marginVertical="20dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="หอเดอะพีค"
+                        android:text="ชื่อหอ"
                         android:textColor="@color/black"
                         android:textSize="38sp" />
 
@@ -44,7 +44,6 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="40sp"
                         app:srcCompat="@drawable/ic_bx_bxs_user_circle"
                         app:shapeAppearanceOverlay="@style/Circular"/>
 
@@ -465,7 +464,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:visibility="invisible"
+                        android:id="@+id/menu_edit_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -477,13 +476,13 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_bi_chat_dots" />
+                            android:src="@drawable/ic_gis_poi_home_o" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="ติดต่อนิติบุคคล"
+                            android:text="แก้ไขข้อมูลหอพัก"
                             android:textColor="@color/black" />
                     </LinearLayout>
                 </LinearLayout>

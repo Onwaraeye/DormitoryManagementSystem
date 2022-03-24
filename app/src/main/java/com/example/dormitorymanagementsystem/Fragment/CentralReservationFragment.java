@@ -88,7 +88,7 @@ public class CentralReservationFragment extends Fragment {
                             if (snapshot.child("fitness").child(year).child(month).child(day).hasChild(userID)) {
                                 List<String> timefitness = snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("time").getValue(genericTypeIndicator);
                                 for (int i = 0; i < timefitness.size(); i++) {
-                                    CentralModel centralModel = new CentralModel("Fitness", name, date, convertTime(timefitness.get(i)));
+                                    CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)));
                                     listCentral.add(centralModel);
                                 }
                             }
@@ -101,7 +101,7 @@ public class CentralReservationFragment extends Fragment {
                             if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)) {
                                 List<String> timetutoringRoom = snapshot.child("tutoringRoom").child(year).child(month).child(day).child(userID).child("time").getValue(genericTypeIndicator);
                                 for (int i = 0; i < timetutoringRoom.size(); i++) {
-                                    CentralModel centralModel = new CentralModel("Tutoring Room", name, date, convertTime(timetutoringRoom.get(i)));
+                                    CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)));
                                     listCentral.add(centralModel);
                                 }
                             }

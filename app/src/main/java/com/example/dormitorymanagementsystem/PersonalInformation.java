@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,9 +47,7 @@ import java.net.URL;
 
 public class PersonalInformation extends AppCompatActivity {
 
-    ActivityMainBinding binding;
     StorageReference databassStorage;
-    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Room");
     DatabaseReference myRefUser = database.getReference("Users");
@@ -89,7 +88,8 @@ public class PersonalInformation extends AppCompatActivity {
                         int id = getResources().getIdentifier("@drawable/ic_bx_bxs_user_circle", "drawable", getPackageName());
                         imUser.setImageResource(id);
                     }else {
-                        Picasso.get().load(imageURL).fit().centerCrop().into(imUser);
+                        Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imUser);
+                        //Picasso.get().load(imageURL).fit().centerCrop().into(imUser);
                     }
 
 

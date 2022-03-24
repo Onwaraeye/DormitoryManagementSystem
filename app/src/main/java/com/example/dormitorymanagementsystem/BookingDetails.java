@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Manager.Post;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
 import com.google.firebase.database.DataSnapshot;
@@ -36,11 +37,11 @@ public class BookingDetails extends AppCompatActivity {
     DatabaseReference myRefCentral = database.getReference("Central");
 
     private String monthThai = "";
-    private String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"";
-    private String month = Calendar.getInstance().get(Calendar.MONTH)+"";
-    private String year = Calendar.getInstance().get(Calendar.YEAR)+"";
-    private int yearThai = Integer.parseInt(year)+543;
-    private String date = day+" "+getMonth(Integer.parseInt(month))+" "+yearThai;
+    private String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
+    private String month = Calendar.getInstance().get(Calendar.MONTH) + "";
+    private String year = Calendar.getInstance().get(Calendar.YEAR) + "";
+    private int yearThai = Integer.parseInt(year) + 543;
+    private String date = day + " " + getMonth(Integer.parseInt(month)) + " " + yearThai;
     private String userID = Login.getGbIdUser();
 
     @Override
@@ -52,47 +53,53 @@ public class BookingDetails extends AppCompatActivity {
 
         String userFName = Login.getGbFNameUser();
         String userLName = Login.getGbLNameUser();
-        String name = userFName+" "+userLName;
+        String name = userFName + " " + userLName;
         String numroom = Login.getGbNumroom();
 
+        String central = getIntent().getStringExtra("central");
+        String image = getIntent().getStringExtra("image");
 
 
         TextView txCentral = findViewById(R.id.txCentral);
         TextView txDate = findViewById(R.id.txDate);
         TextView txName = findViewById(R.id.txName);
         TextView txNumroom = findViewById(R.id.txNumroom);
+        TextView txTime = findViewById(R.id.txTime);
+        TextView txPhone = findViewById(R.id.txPhone);
 
-
-        txCentral.setText("พื้นที่ออกกำลังกาย");
+        txCentral.setText(central);
         txDate.setText(date);
         txName.setText(name);
         txNumroom.setText(numroom);
+        ImageView imageView = findViewById(R.id.imageView);
+        Glide.with(mContext).load(image).fitCenter().centerCrop().into(imageView);
 
-        myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
+        String nameCentral;
+        if (central.equals("พื้นที่ออกกำลังกาย")){
+            nameCentral = "fitness";
+        }else {
+            nameCentral = "tutoringRoom";
+        }
+
+        myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.hasChild(userID)){
-                    String time = snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("timeShow").getValue(String.class);
-                    TextView txTime = findViewById(R.id.txTime);
-                    txTime.setText(time);
-                    txCentral.setText("พื้นที่ออกกำลังกาย");
-                    txDate.setText(date);
-                    txName.setText(name);
-                    txNumroom.setText(numroom);
-                    myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String phone = snapshot.child(userID).child("phone").getValue(String.class);
-                            TextView txPhone = findViewById(R.id.txPhone);
-                            txPhone.setText("เบอร์โทร "+phone);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                String time = snapshot.child(nameCentral).child(year).child(month).child(day).child(userID).child("timeShow").getValue(String.class);
+                txTime.setText(time);;
+                myRefUser.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String phone = snapshot.child(userID).child("phone").getValue(String.class);
+                        txPhone.setText("เบอร์โทร " + phone);
+                    }
 
-                        }
-                    });
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -114,8 +121,9 @@ public class BookingDetails extends AppCompatActivity {
             }
         });
     }
-    public String getMonth(int month){
-        switch(month) {
+
+    public String getMonth(int month) {
+        switch (month) {
             case 0:
                 monthThai = "มกราคม";
                 break;
@@ -156,7 +164,7 @@ public class BookingDetails extends AppCompatActivity {
         return monthThai;
     }
 
-    private void showDialogDelete(){
+    private void showDialogDelete() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(BookingDetails.this);
         dialog.setTitle("ลบ");
         dialog.setMessage("คุณแน่ใจที่จะลบหรือไม่");
@@ -166,18 +174,19 @@ public class BookingDetails extends AppCompatActivity {
                 myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child("fitness").child(year).child(month).child(day).hasChild(userID)){
+                        if (snapshot.child("fitness").child(year).child(month).child(day).hasChild(userID)) {
                             myRefCentral.child("fitness").child(year).child(month).child(day).child(userID).getRef().removeValue();
                             Intent intent = new Intent(mContext, Central.class);
                             startActivity(intent);
                             finish();
-                        }else if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)){
+                        } else if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)) {
                             myRefCentral.child("tutoringRoom").child(year).child(month).child(day).child(userID).getRef().removeValue();
                             Intent intent = new Intent(mContext, Central.class);
                             startActivity(intent);
                             finish();
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
