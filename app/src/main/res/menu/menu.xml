@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_bytesize_home"
+        android:title="หน้าหลัก" />
+    <item
+        android:id="@+id/announce"
+        android:icon="@drawable/ic_fluent_note_24_regular"
+        android:title="ประกาศ" />
+    <item
+        android:id="@+id/setting"
+        android:icon="@drawable/ic_carbon_settings"
+        android:title="ตั้งค่า" />
+</menu>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="7dp">
+
+            <TextView
+                android:id="@+id/txName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="30sp"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="นิติบุลคล" />
+
+            <TextView
+                android:id="@+id/txPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="30sp"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="0812345678" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:gravity="center"
+            android:fontFamily="@font/fc_minimal_regular"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:text="แก้ไข" />
+
+        <TextView
+            android:id="@+id/bt_del"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="@font/fc_minimal_regular"
+            android:textSize="20sp"
+            android:textColor="@color/red"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:text="ลบ" />
+    </LinearLayout>
+
+</LinearLayout>
