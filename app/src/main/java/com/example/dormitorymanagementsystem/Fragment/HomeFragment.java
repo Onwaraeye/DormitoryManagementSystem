@@ -178,7 +178,6 @@ public class HomeFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
-
         menu_edit_phone = view.findViewById(R.id.menu_edit_phone);
         menu_edit_phone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,7 +243,7 @@ public class HomeFragment extends Fragment {
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
             admin2 = view.findViewById(R.id.admin2);
-            admin2.setVisibility(View.VISIBLE);
+            admin2.setVisibility(View.GONE);
             admin3 = view.findViewById(R.id.admin3);
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);

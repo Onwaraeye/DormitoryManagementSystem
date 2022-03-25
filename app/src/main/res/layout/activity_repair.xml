@@ -136,16 +136,20 @@
             android:id="@+id/btConfirm"
             android:layout_marginTop="20sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/darkgray"
+            android:layout_height="40dp"
+            android:backgroundTint="#323E4D"
+            android:background="@drawable/bg_menu"
+            android:textColor="@color/white"
             android:text="ยืนยัน" />
 
         <Button
             android:id="@+id/btAdminConfirm"
             android:layout_marginTop="20sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
+            android:layout_height="40dp"
+            android:backgroundTint="#F7DB5D"
+            android:background="@drawable/bg_menu"
+            android:textColor="@color/black"
             android:text="ซ่อมสำเร็จ" />
     </LinearLayout>
 

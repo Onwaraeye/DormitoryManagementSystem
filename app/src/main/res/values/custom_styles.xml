@@ -7,4 +7,9 @@
     <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
         <item name="cornerSize">10%</item>
     </style>
+    <style name="CustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/fc_minimal_regular</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

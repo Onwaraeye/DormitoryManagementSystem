@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".CentralReservation">
 
@@ -14,10 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/ic_arrow_back"
@@ -48,12 +45,26 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btNext"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:text="เลือกวันที่" />
+
+        <TextView
+            android:id="@+id/txCentral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="TextView" />
 
         <CalendarView
             android:id="@+id/calendarView"
@@ -62,122 +73,17 @@
             android:layout_marginBottom="20dp"
             android:background="@color/white" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/time8am_9am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:text="08:00-09:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time9am_10am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="09:00-10:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time10am_11am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="10:00-11:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time11am_12am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="11:00-12:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time12am_13am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="12:00-13:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time13am_14am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="13:00-14:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time14am_15am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="14:00-15:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time15am_16am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="15:00-16:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time16am_17am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="16:00-17:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time17am_18am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="17:00-18:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time18am_19am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="18:00-19:00 น." />
-
-                <CheckBox
-                    android:id="@+id/time19am_20am"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginTop="5dp"
-                    android:text="19:00 - 20:00 น." />
-            </LinearLayout>
-        </ScrollView>
-
     </LinearLayout>
 
     <Button
         android:id="@+id/btNext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/darkgray"
         android:layout_margin="10dp"
+        android:background="@drawable/bg_menu"
+        android:backgroundTint="#323E4D"
         android:text="ต่อไป"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:textColor="@color/white" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray"
     tools:context=".CentralReservation2">
 
     <LinearLayout
@@ -47,8 +48,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="20sp"
+        android:background="@drawable/bg_menu"
+        android:padding="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -56,7 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="วันที่ 13 พ.ย. 2564"
+            android:text="date"
+            android:textStyle="bold"
             android:textSize="24sp" />
 
         <TextView
@@ -64,15 +68,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="10.00-11.00 น."
-            android:layout_marginBottom="10dp"
+            android:text="time"
             android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/txCentral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="TextView" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="ห้อง" />
+
 
         <EditText
             android:id="@+id/etNumroom"
@@ -83,6 +94,9 @@
             android:background="@drawable/bg_menu"
             android:backgroundTint="@color/mediumgray"
             android:paddingHorizontal="10dp"
+            android:enabled="false"
+            android:textColor="@color/black"
+            android:text="xxxx"
             android:layout_marginTop="5dp" />
 
         <TextView
@@ -106,9 +120,11 @@
         <Button
             android:id="@+id/btConfirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:backgroundTint="@color/darkgray"
+            android:layout_height="40dp"
+            android:backgroundTint="#323E4D"
+            android:background="@drawable/bg_menu"
+            android:textColor="@color/white"
             android:text="ยืนยัน" />
     </LinearLayout>
 

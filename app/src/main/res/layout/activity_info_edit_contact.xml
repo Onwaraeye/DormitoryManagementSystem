@@ -156,10 +156,12 @@
         <Button
             android:id="@+id/btConfirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:backgroundTint="#323E4D"
+            android:background="@drawable/bg_menu"
+            android:textColor="@color/white"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
-            android:backgroundTint="@color/darkgray"
             android:text="ยืนยัน" />
     </LinearLayout>
 

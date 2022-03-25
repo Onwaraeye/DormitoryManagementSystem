@@ -45,6 +45,7 @@
         android:id="@+id/tabCentral"
         android:background="@color/white"
         android:layout_width="match_parent"
+        app:tabTextAppearance="@style/CustomTabText"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabItem

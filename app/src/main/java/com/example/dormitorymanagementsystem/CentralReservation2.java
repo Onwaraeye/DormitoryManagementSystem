@@ -32,14 +32,15 @@ import java.util.Set;
 
 public class CentralReservation2 extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("Room");
-    DatabaseReference myRefUser = database.getReference("Users");
-    DatabaseReference myRefCentral = database.getReference("Central");
-    String userID,title;
-    List<String> listBooking = new ArrayList<>();
-    List<String> listCentral = new ArrayList<>();
-    List<List<String>> myList = new ArrayList<>();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference("Room");
+    private DatabaseReference myRefUser = database.getReference("Users");
+    private DatabaseReference myRefCentral = database.getReference("Central");
+    private String userID,title;
+    private List<String> listBooking = new ArrayList<>();
+    private List<String> listCentral = new ArrayList<>();
+    private List<List<String>> myList = new ArrayList<>();
+    private String monthThai;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class CentralReservation2 extends AppCompatActivity {
         String day = intent.getStringExtra("day");
         String month = intent.getStringExtra("month");
         String year = intent.getStringExtra("year");
+        int yearTh = Integer.parseInt(year)+543;
         String value = intent.getStringExtra("value");
         String time = intent.getStringExtra("time");
 
@@ -64,9 +66,17 @@ public class CentralReservation2 extends AppCompatActivity {
         list.addAll(set);
 
         TextView txDate = findViewById(R.id.txDate);
-        txDate.setText(day+"/"+month+"/"+year);
+        txDate.setText("วันที่ "+day+" "+getMonth(Integer.parseInt(month))+" "+yearTh);
         TextView txTime = findViewById(R.id.txTime);
         txTime.setText(time);
+        TextView txCentral = findViewById(R.id.txCentral);
+        String central = "";
+        if (title.equals("fitness")){
+            central = "พื้นที่ออกกำลังกาย";
+        }else {
+            central = "ห้องติวหนังสือ";
+        }
+        txCentral.setText(central);
 
         EditText etNumroom = findViewById(R.id.etNumroom);
         EditText etPhone = findViewById(R.id.etPhone);
@@ -124,5 +134,47 @@ public class CentralReservation2 extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public String getMonth(int month){
+        switch(month) {
+            case 0:
+                monthThai = "มกราคม";
+                break;
+            case 1:
+                monthThai = "กุมภาพันธ์";
+                break;
+            case 2:
+                monthThai = "มีนาคม";
+                break;
+            case 3:
+                monthThai = "เมษายน";
+                break;
+            case 4:
+                monthThai = "พฤษภาคม";
+                break;
+            case 5:
+                monthThai = "มิถุนายน";
+                break;
+            case 6:
+                monthThai = "กรกฎาคม";
+                break;
+            case 7:
+                monthThai = "สิงหาคม";
+                break;
+            case 8:
+                monthThai = "กันยายน";
+                break;
+            case 9:
+                monthThai = "ตุลาคม";
+                break;
+            case 10:
+                monthThai = "พฤศจิกายน";
+                break;
+            case 11:
+                monthThai = "ธันวาคม";
+                break;
+        }
+        return monthThai;
     }
 }
