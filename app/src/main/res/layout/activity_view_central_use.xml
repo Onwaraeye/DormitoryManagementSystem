@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/mediumgray"
     tools:context=".Manager.ViewCentralUse">
 
     <LinearLayout
@@ -32,54 +33,51 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/menu_add"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingHorizontal="5dp"
-            android:text="+"
-            android:textSize="24sp" />
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
 
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/selectDate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:paddingStart="10dp"
-        android:text="เลือกวันที่" />
-
-    <CalendarView
-        android:id="@+id/calendarView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="ดู" />
+        android:background="@drawable/bg_menu"
+        android:backgroundTint="@color/white"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
+            android:text="เลือกวันที่" />
+        <CalendarView
+            android:id="@+id/calendarView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20sp" />
-        </LinearLayout>
-    </ScrollView>
+        <Button
+            android:id="@+id/btConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_menu"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"
+            android:text="ยืนยัน" />
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -89,7 +89,6 @@ public class PersonalInformation extends AppCompatActivity {
                         imUser.setImageResource(id);
                     }else {
                         Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imUser);
-                        //Picasso.get().load(imageURL).fit().centerCrop().into(imUser);
                     }
 
 
@@ -181,14 +180,9 @@ public class PersonalInformation extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             imageURL = databassStorage.getDownloadUrl().toString();
                             url = uri.toString();
-                            //Log.e("url",url);
                             pd.dismiss();
-                            Picasso.get().load(url).fit().centerCrop().into(imUser);
-                            //Picasso.get().load(imageURL).fit().centerCrop().into(imUser);
-                            Log.e("imageURLLL",imageURL);
-                            //imUser.setImageURI(imUrl);
+                            Glide.with(getApplicationContext()).load(url).fitCenter().centerCrop().into(imUser);
                             Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
-                            //myRefUser.child(userID).child("pictureUserUrl").setValue(userID+"."+getFileExtension(imUrl));
                             myRefUser.child(userID).child("pictureUserUrl").setValue(url);
 
                         }

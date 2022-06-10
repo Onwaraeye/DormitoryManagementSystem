@@ -12,11 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.BookingDetails;
 import com.example.dormitorymanagementsystem.Central;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
 import com.example.dormitorymanagementsystem.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,9 +48,9 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
             String imageFitness = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/fitness.jpg?alt=media&token=65a9ae5b-209d-421a-b3f7-99ed0ce886d9";
             String imageTutoringRoom = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/tutoringroom.jpg?alt=media&token=3213b984-1fc9-4d08-8140-3a8682c14529";
             if (list.get(position).getCentral().equals("พื้นที่ออกกำลังกาย")){
-                Picasso.get().load(imageFitness).fit().centerCrop().into(holder.imageView);
+                Glide.with(mContext).load(imageFitness).fitCenter().centerCrop().into(holder.imageView);
             }else {
-                Picasso.get().load(imageTutoringRoom).fit().centerCrop().into(holder.imageView);
+                Glide.with(mContext).load(imageTutoringRoom).fitCenter().centerCrop().into(holder.imageView);
             }
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

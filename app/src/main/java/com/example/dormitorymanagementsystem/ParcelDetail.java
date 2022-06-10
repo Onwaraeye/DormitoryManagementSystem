@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Model.NewParcelModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,7 +59,7 @@ public class ParcelDetail extends AppCompatActivity {
             txName.setText(name);
             txTime.setText(date);
             txNameImporter.setText(newParcelModel.getNameImporter());
-            Picasso.get().load(newParcelModel.getImageUrl()).fit().centerCrop().into(imageView);
+            Glide.with(getApplicationContext()).load(newParcelModel.getImageUrl()).fitCenter().centerCrop().into(imageView);
 
             btConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,7 +97,7 @@ public class ParcelDetail extends AppCompatActivity {
             txName.setText(name);
             txTime.setText(date);
             txNameImporter.setText(newParcelModel.getNameImporter());
-            Picasso.get().load(newParcelModel.getImageUrl()).fit().centerCrop().into(imageView);
+            Glide.with(getApplicationContext()).load(newParcelModel.getImageUrl()).fitCenter().centerCrop().into(imageView);
 
             receiver.setVisibility(View.VISIBLE);
             txTimeReceiver.setText(dateReceiver);

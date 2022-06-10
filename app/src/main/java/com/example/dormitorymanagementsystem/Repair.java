@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -31,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -146,7 +146,7 @@ public class Repair extends AppCompatActivity {
             etPhone.setText(getPhone);
             etPhone.setEnabled(false);
 
-            Picasso.get().load(getImage).fit().centerCrop().into(imageView);
+            Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
             btAdminConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -193,7 +193,7 @@ public class Repair extends AppCompatActivity {
 
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
             imUri = data.getData();
-            Picasso.get().load(imUri).fit().centerCrop().into(imageView);
+            Glide.with(getApplication()).load(imUri).fitCenter().centerCrop().into(imageView);
         }
     }
 
@@ -219,7 +219,7 @@ public class Repair extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
                             Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
-                            myRefUser.child("imageUrl").setValue(imageURL);
+                            myRefRepair.child("imageUrl").setValue(imageURL);
                         }
                     });
                 }

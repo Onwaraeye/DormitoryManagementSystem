@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Manager.Post;
 import com.example.dormitorymanagementsystem.Model.PostModel;
@@ -23,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +66,7 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
             holder.txTitle.setText(title);
             holder.txTime.setText(date);
             holder.txDetail.setText(detail);
-            Picasso.get().load(imageUrl).fit().centerCrop().into(holder.imageView);
+            Glide.with(mContext).load(imageUrl).fitCenter().centerCrop().into(holder.imageView);
 
             if (Login.getGbTypeUser().equals("User")){
                 holder.btEdit.setVisibility(View.GONE);

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -71,7 +72,7 @@ public class Post extends AppCompatActivity {
 
         etTitle.setText(getTitle);
         etDetail.setText(getDetail);
-        Picasso.get().load(getImage).fit().centerCrop().into(imageView);
+        Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
         if (getStatus.equals("1")){
             btConfirm.setVisibility(View.GONE);
@@ -146,7 +147,7 @@ public class Post extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
             imUri = data.getData();
-            Picasso.get().load(imUri).fit().centerCrop().into(imageView);
+            Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
         }
 
     }

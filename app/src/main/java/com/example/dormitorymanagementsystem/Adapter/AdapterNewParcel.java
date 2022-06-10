@@ -12,12 +12,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Model.NewParcelModel;
 import com.example.dormitorymanagementsystem.ParcelDetail;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,7 +61,7 @@ public class AdapterNewParcel extends RecyclerView.Adapter<AdapterNewParcel.MyVi
                 holder.txName.setText(name);
                 holder.txRoom.setText("ห้อง " + room);
                 holder.txTime.setText(date);
-                Picasso.get().load(imageUrl).fit().centerCrop().into(holder.imageView);
+                Glide.with(mContext).load(imageUrl).fitCenter().centerCrop().into(holder.imageView);
 
                 holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -93,7 +93,7 @@ public class AdapterNewParcel extends RecyclerView.Adapter<AdapterNewParcel.MyVi
                 holder.txReceiver.setVisibility(View.VISIBLE);
                 holder.txRoom.setText("ห้อง " + room);
                 holder.txTime.setText(dateReceiver);
-                Picasso.get().load(imageUrl).fit().centerCrop().into(holder.imageView);
+                Glide.with(mContext).load(imageUrl).fitCenter().centerCrop().into(holder.imageView);
 
                 holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override

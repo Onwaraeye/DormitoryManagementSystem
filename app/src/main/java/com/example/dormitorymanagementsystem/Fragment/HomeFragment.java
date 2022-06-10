@@ -13,11 +13,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Central;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Manager.Chat;
 import com.example.dormitorymanagementsystem.Info;
 import com.example.dormitorymanagementsystem.Manager.ChatManager;
+import com.example.dormitorymanagementsystem.Manager.ViewBills;
 import com.example.dormitorymanagementsystem.Manager.ViewRoom;
 import com.example.dormitorymanagementsystem.Manager.ManagerPhone;
 import com.example.dormitorymanagementsystem.Manager.Post;
@@ -47,8 +49,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference myRefContact = database.getReference("Contact");
 
     private LinearLayout menu_bill,menu_parcel,menu_central,menu_my_room,menu_phone,menu_info,menu_repair,menu_chat;
-    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_post,menu_view_repair,menu_edit_info;
-    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4;
+    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_post,menu_view_repair,menu_edit_info,menu_view_bill;
+    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4,admin5;
     private View view;
     private final String getType = Login.getGbTypeUser();
 
@@ -92,7 +94,7 @@ public class HomeFragment extends Fragment {
                     int id = getResources().getIdentifier("@drawable/ic_bx_bxs_user_circle", "drawable", getActivity().getPackageName());
                     imUser.setImageResource(id);
                 }else {
-                    Picasso.get().load(imageURL).fit().centerCrop().into(imUser);
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imUser);
                 }
 
             }
@@ -239,6 +241,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        menu_view_bill = view.findViewById(R.id.menu_view_bill);
+        menu_view_bill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewBills.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
         if (Login.getGbTypeUser().equals("User")){
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
@@ -248,6 +259,8 @@ public class HomeFragment extends Fragment {
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
             admin4.setVisibility(View.GONE);
+            admin5 = view.findViewById(R.id.admin5);
+            admin5.setVisibility(View.GONE);
         }else {
             user1 = view.findViewById(R.id.user1);
             user1.setVisibility(View.GONE);

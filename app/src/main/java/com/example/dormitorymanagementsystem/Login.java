@@ -100,10 +100,10 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRefadd = database.getReference("Users/Mng01");
+                DatabaseReference myRefadd = database.getReference("Users/Mng02");
 
-                myRefadd.setValue(new User("Mng01","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ ","ตอง","none",
-                        "1234567891234","0812345678","Admin"));*/
+                myRefadd.setValue(new User("Mng02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","ตก","คลองเห่า","none",
+                        "1234567891234","Admin","0812345678",""));*/
                 //uploadList();
                 //uploadBill();
             }

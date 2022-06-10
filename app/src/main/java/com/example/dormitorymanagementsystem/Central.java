@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayout;
 
 public class Central extends AppCompatActivity {
 
-    private ImageView arrow_back;
     private Context mContext;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -31,7 +30,7 @@ public class Central extends AppCompatActivity {
 
         mContext = getApplication();
 
-        arrow_back = findViewById(R.id.ic_arrow_back);
+        ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

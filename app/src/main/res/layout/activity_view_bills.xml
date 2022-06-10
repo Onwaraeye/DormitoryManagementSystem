@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/gray"
-    tools:context=".Central">
+    tools:context=".Manager.ViewBills">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +30,7 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="24sp"
-            android:text="จองส่วนกลาง" />
+            android:text="บิลรายเดือน" />
 
         <ImageView
             android:id="@+id/imageView4"
@@ -41,29 +40,8 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
     </LinearLayout>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabCentral"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        app:tabTextAppearance="@style/CustomTabText"
-        app:tabIndicatorColor="@color/blue"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/central"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ส่วนกลาง" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/central2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="การจอง" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vpCentral"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

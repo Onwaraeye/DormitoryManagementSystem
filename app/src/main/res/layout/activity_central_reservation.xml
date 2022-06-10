@@ -71,7 +71,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:background="@color/white" />
+
+            android:focusedMonthDateColor="#7E3B3B"
+            android:selectedDateVerticalBar="@color/blue"
+            android:selectedWeekBackgroundColor="@color/blue" />
 
     </LinearLayout>
 

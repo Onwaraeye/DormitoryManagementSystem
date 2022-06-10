@@ -2,7 +2,6 @@ package com.example.dormitorymanagementsystem.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,44 +14,43 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dormitorymanagementsystem.AttachPayment;
 import com.example.dormitorymanagementsystem.Model.BillModel;
-import com.example.dormitorymanagementsystem.Model.RepairModel;
-import com.example.dormitorymanagementsystem.MonthlyBill;
 import com.example.dormitorymanagementsystem.R;
-import com.example.dormitorymanagementsystem.Repair;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class AdapteBill extends RecyclerView.Adapter<AdapteBill.MyViewHolder> {
+public class AdapteViewBill extends RecyclerView.Adapter<AdapteViewBill.MyViewHolder> {
 
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
     private Context mContext;
     private List<BillModel> list;
-    private List<String> date;
+    private List<String> room;
+    private String date;
 
-    public AdapteBill(Context mContext, List<BillModel> list,List<String> date) {
+    public AdapteViewBill(Context mContext, List<BillModel> list, List<String> room, String date) {
         this.mContext = mContext;
         this.list = list;
+        this.room = room;
         this.date = date;
     }
 
     @NonNull
     @Override
-    public AdapteBill.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_bill, parent, false);
+    public AdapteViewBill.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_room_bill, parent, false);
 
-        return new AdapteBill.MyViewHolder(view);
+        return new AdapteViewBill.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapteBill.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapteViewBill.MyViewHolder holder, int position) {
         try {
-            String datebill = date.get(position);
+            String datebill = room.get(position);
             String status = list.get(position).getStatus();
 
-            holder.txBill.setText(datebill);
+            holder.txRoom.setText(datebill);
             if (status.equals("0")){
                 holder.txstatus.setText("ยังไม่ได้ชำระ");
                 holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.red));
@@ -72,7 +70,8 @@ public class AdapteBill extends RecyclerView.Adapter<AdapteBill.MyViewHolder> {
                     billModel = list.get(position);
                     Intent intent = new Intent(mContext, AttachPayment.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("date", datebill);
+                    intent.putExtra("room", datebill);
+                    intent.putExtra("date", date);
                     intent.putExtra("bill",(BillModel) billModel);
                     mContext.startActivity(intent);
                 }
@@ -88,13 +87,13 @@ public class AdapteBill extends RecyclerView.Adapter<AdapteBill.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txBill, txstatus;
+        TextView txRoom, txstatus;
         LinearLayout linearLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txBill = itemView.findViewById(R.id.txBill);
+            txRoom = itemView.findViewById(R.id.txRoom);
             txstatus = itemView.findViewById(R.id.txstatus);
             linearLayout = itemView.findViewById(R.id.linearLayout);
         }

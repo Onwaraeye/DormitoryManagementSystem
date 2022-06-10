@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +43,7 @@ public class InfoEditBank extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.imageView);
 
         txBank.setText(bank);
-        Picasso.get().load(icon).into(imageView);
+        Glide.with(getApplicationContext()).load(icon).fitCenter().centerCrop().into(imageView);
 
         btConfirm.setOnClickListener(new View.OnClickListener() {
             @Override

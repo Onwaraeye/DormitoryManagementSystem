@@ -89,11 +89,13 @@
 
             <RadioButton
                 android:id="@+id/radMale"
+                android:buttonTint="@color/blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ผู้ชาย" />
             <RadioButton
                 android:id="@+id/radFemale"
+                android:buttonTint="@color/blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ผู้หญิง" />

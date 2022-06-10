@@ -1,4 +1,4 @@
-package com.example.dormitorymanagementsystem;
+package com.example.dormitorymanagementsystem.Manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,17 +6,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapteBill;
-import com.example.dormitorymanagementsystem.Adapter.AdapterManagerPhone;
+import com.example.dormitorymanagementsystem.Adapter.AdapteViewBill;
+import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.BillModel;
-import com.example.dormitorymanagementsystem.Model.ManagerModel;
+import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,57 +27,52 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonthlyBill extends AppCompatActivity {
+public class ViewBills extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Bills");
     private List<BillModel> list = new ArrayList<>();
     private RecyclerView recyclerView;
-    private AdapteBill adapter;
+    private AdapteViewBill adapter;
 
     private Context mContext;
-    //private String TAG = "x";
     private String monthThai = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_monthly_bill);
+        setContentView(R.layout.activity_view_bills);
 
         mContext = getApplication();
-        String room = Login.getGbNumroom();
 
         recyclerView = findViewById(R.id.list_item);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-
-
-        List<String> listYear = new ArrayList<>();
+        List<String> listRoom = new ArrayList<>();
         List<String> listDate = new ArrayList<>();
+
+        String year = "2022";
+        String month = "0";
+        String date = getMonth(Integer.parseInt(month))+"/"+year;
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                listYear.clear();
                 list.clear();
-                listDate.clear();
-                for (DataSnapshot ds : snapshot.getChildren()){
-                    listYear.add(ds.getKey());
+                listRoom.clear();
+                for (DataSnapshot dataSnapshot : snapshot.child(year).child(month).getChildren()) {
+                    BillModel billModel = new BillModel();
+                    billModel = dataSnapshot.getValue(BillModel.class);
+                    list.add(billModel);
+                    String room = dataSnapshot.getKey();
+                    listRoom.add(room);
                 }
-                for (String y : listYear){
-                    for (DataSnapshot dataSnapshot : snapshot.child(y).getChildren()){
-                        BillModel billModel = new BillModel();
-                        billModel = dataSnapshot.child(room).getValue(BillModel.class);
-                        list.add(0,billModel);
-                        String date = getMonth(Integer.parseInt(dataSnapshot.getKey()))+"/"+y;
-                        listDate.add(0,date);
-                    }
-                }
-                adapter = new AdapteBill(mContext,list,listDate);
+                adapter = new AdapteViewBill(mContext, list, listRoom,date);
                 //adapter.notifyItemChanged();
                 recyclerView.setAdapter(adapter);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
@@ -94,8 +88,8 @@ public class MonthlyBill extends AppCompatActivity {
         });
     }
 
-    public String getMonth(int month){
-        switch(month) {
+    public String getMonth(int month) {
+        switch (month) {
             case 0:
                 monthThai = "มกราคม";
                 break;

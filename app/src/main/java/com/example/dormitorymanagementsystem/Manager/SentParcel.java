@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.R;
@@ -164,7 +165,7 @@ public class SentParcel extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
             imUri = data.getData();
-            Picasso.get().load(imUri).fit().centerCrop().into(imageParcel);
+            Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageParcel);
 
         }
 

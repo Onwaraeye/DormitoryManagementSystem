@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mediumgray"
     android:orientation="vertical"
-    android:background="@color/gray"
-    tools:context=".Central">
+    tools:context=".Manager.ViewCentralUse2">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/ic_arrow_back"
@@ -26,20 +26,28 @@
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textStyle="bold"
+            android:text="การใช้งานส่วนกลาง"
             android:textSize="24sp"
-            android:text="จองส่วนกลาง" />
+            android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:visibility="invisible"
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
+
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabCentral"
@@ -47,24 +55,27 @@
         android:layout_width="match_parent"
         app:tabTextAppearance="@style/CustomTabText"
         app:tabIndicatorColor="@color/blue"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/central"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ส่วนกลาง" />
+            android:text="ที่ออกกำลังกาย" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/central2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="การจอง" />
+            android:text="ห้องติว" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpCentral"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+    </androidx.viewpager.widget.ViewPager>
+
 
 </LinearLayout>

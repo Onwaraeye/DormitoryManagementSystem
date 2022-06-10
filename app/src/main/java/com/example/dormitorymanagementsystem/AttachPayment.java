@@ -16,9 +16,12 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.dormitorymanagementsystem.Model.BillModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +46,7 @@ public class AttachPayment extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST = 1;
     private Uri imUri;
-    private ImageView imageView;
+    private ImageView imageView,imageViewZoom;
 
     private String year = "";
     private String room = "";
@@ -61,13 +63,18 @@ public class AttachPayment extends AppCompatActivity {
         BillModel billModel = (BillModel) getIntent().getSerializableExtra("bill");
         String date = getIntent().getStringExtra("date");
         String status = billModel.getStatus();
+        String typeUser = Login.getGbTypeUser();
+        String roombills = getIntent().getStringExtra("room");
 
         String[] dateBill = date.split("/");
         year = dateBill[1];
         monthThai = dateBill[0];
-        Log.e("m",getMonth(monthThai));
-        Log.e("mm",monthThai);
-        room = Login.getGbNumroom();
+        if (typeUser.equals("User")){
+            room = Login.getGbNumroom();
+        }else {
+            room = roombills;
+        }
+
 
         TextView txRoom = findViewById(R.id.txRoom);
         TextView txDate = findViewById(R.id.txDate);
@@ -78,11 +85,14 @@ public class AttachPayment extends AppCompatActivity {
         TextView txDiscount = findViewById(R.id.txDiscount);
         TextView txSum = findViewById(R.id.txSum);
         imageView = findViewById(R.id.imageView);
+        imageViewZoom = findViewById(R.id.imageViewZoom);
+        LinearLayout linearLayout3 = findViewById(R.id.linearLayout3);
         Button btConfirm = findViewById(R.id.btConfirm);
 
         txRoom.setText(room);
         txDate.setText(date);
         if (status.equals("0")){
+            btConfirm.setVisibility(View.VISIBLE);
             txStatus.setText("ยังไม่ได้ชำระ");
             txStatus.setTextColor(ContextCompat.getColor(mContext,R.color.red));
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +111,39 @@ public class AttachPayment extends AppCompatActivity {
             });
 
         }else if (status.equals("1")){
+            LinearLayout buttonAdmin = findViewById(R.id.buttonAdmin);
+            Button btCorrect = findViewById(R.id.btCorrect);
+            Button btCancel = findViewById(R.id.btCancel);
+            if (typeUser.equals("Admin")){
+                buttonAdmin.setVisibility(View.VISIBLE);
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        btCorrect.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myRef.child(year).child(getMonth(monthThai)).child(room).child("status").setValue("2");
+                                finish();
+                            }
+                        });
+                        btCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                myRef.child(year).child(getMonth(monthThai)).child(room).child("status").setValue("0");
+                                finish();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+
+            }else {
+                buttonAdmin.setVisibility(View.GONE);
+            }
             txStatus.setText("รอการตรวจสอบ");
             txStatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -111,7 +154,23 @@ public class AttachPayment extends AppCompatActivity {
                         int id = getResources().getIdentifier("@drawable/ic_baseline_image_24", "drawable", getPackageName());
                         imageView.setImageResource(id);
                     }else {
-                        Picasso.get().load(imageURL).fit().centerCrop().into(imageView);
+                        Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imageView);
+                        btConfirm.setVisibility(View.GONE);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                linearLayout3.setVisibility(View.GONE);
+                                imageViewZoom.setVisibility(View.VISIBLE);
+                                Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().centerCrop().into(imageViewZoom);
+                                imageViewZoom.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        imageViewZoom.setVisibility(View.GONE);
+                                        linearLayout3.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
                 @Override
@@ -197,7 +256,7 @@ public class AttachPayment extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
             imUri = data.getData();
-            Picasso.get().load(imUri).fit().centerCrop().into(imageView);
+            Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
 
         }
 

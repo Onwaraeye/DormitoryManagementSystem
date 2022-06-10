@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Manager.InfoEditBank;
 import com.example.dormitorymanagementsystem.Manager.Post;
@@ -22,7 +23,6 @@ import com.example.dormitorymanagementsystem.Model.PostModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,7 +55,7 @@ public class AdapterBank extends RecyclerView.Adapter<AdapterBank.MyViewHolder> 
             int icon = list.get(position).getIcon();
 
             holder.txTitle.setText(title);
-            Picasso.get().load(icon).into(holder.imageView);
+            Glide.with(mContext).load(icon).fitCenter().centerCrop().into(holder.imageView);
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

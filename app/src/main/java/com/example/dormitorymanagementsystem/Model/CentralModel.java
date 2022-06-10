@@ -1,10 +1,17 @@
 package com.example.dormitorymanagementsystem.Model;
 
-public class CentralModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
+public class CentralModel implements Parcelable {
     private String central;
     private String name;
     private String date;
     private String time;
+
+    public CentralModel() {
+    }
 
     public CentralModel(String central, String name, String date, String time) {
         this.central = central;
@@ -43,5 +50,37 @@ public class CentralModel {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    protected CentralModel(Parcel in) {
+        central = in.readString();
+        name = in.readString();
+        date = in.readString();
+        time = in.readString();
+    }
+
+    public static final Creator<CentralModel> CREATOR = new Creator<CentralModel>() {
+        @Override
+        public CentralModel createFromParcel(Parcel in) {
+            return new CentralModel(in);
+        }
+
+        @Override
+        public CentralModel[] newArray(int size) {
+            return new CentralModel[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(central);
+        dest.writeString(name);
+        dest.writeString(date);
+        dest.writeString(time);
     }
 }

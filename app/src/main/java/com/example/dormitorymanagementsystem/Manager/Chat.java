@@ -65,8 +65,6 @@ public class Chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        //userID = Login.getGbIdUser();
-
         TextView txUserID = findViewById(R.id.txUserID);
         EditText messageEditTxt = findViewById(R.id.messageEditTxt);
         ImageView sendBtn = findViewById(R.id.sendBtn);
@@ -121,8 +119,8 @@ public class Chat extends AppCompatActivity {
 
                                 Timestamp timestamp = new Timestamp(Long.parseLong(messageTimestamps));
                                 Date date = new Date(timestamp.getTime());
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
+                                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
                                 ChatList chatList = new ChatList(getID, getMsg, simpleDateFormat.format(date), simpleTimeFormat.format(date));
                                 chatLists.add(chatList);
@@ -153,7 +151,8 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String getTxtMessage = messageEditTxt.getText().toString();
-                String currentTimestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+                String currentTimestamp = String.valueOf(System.currentTimeMillis());
+                //String currentTimestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
 
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
