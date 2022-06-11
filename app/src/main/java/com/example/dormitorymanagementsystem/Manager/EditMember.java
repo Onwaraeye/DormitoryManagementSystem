@@ -54,7 +54,7 @@ public class EditMember extends AppCompatActivity {
         txRoom.setText(getRoom);
         TextView txMember = findViewById(R.id.txMember);
 
-        if (list.isEmpty()){
+        if (list.get(0).equals("0")){
             txMember.setText("จำนวนสมาชิก 0 คน");
         }else {
             txMember.setText("จำนวนสมาชิก "+list.size()+" คน");
@@ -71,6 +71,8 @@ public class EditMember extends AppCompatActivity {
                         final String name = fName+" "+lName;
                         EditMemberModel editMemberModel = new EditMemberModel(userID,name,getRoom);
                         listNameMember.add(editMemberModel);
+                    }else {
+
                     }
                 }
                 adapter = new AdapterEditMember(EditMember.this,listNameMember);

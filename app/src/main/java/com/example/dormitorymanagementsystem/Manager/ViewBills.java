@@ -69,7 +69,6 @@ public class ViewBills extends AppCompatActivity {
                     listRoom.add(room);
                 }
                 adapter = new AdapteViewBill(mContext, list, listRoom,date);
-                //adapter.notifyItemChanged();
                 recyclerView.setAdapter(adapter);
             }
 

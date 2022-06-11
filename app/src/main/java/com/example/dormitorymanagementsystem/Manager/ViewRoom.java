@@ -47,17 +47,24 @@ public class ViewRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                list.clear();
                 for (DataSnapshot ds : snapshot.getChildren()){
                     if (snapshot.hasChild(ds.getKey())){
-                        GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
-                        final List<String> listMember = snapshot.child(ds.getKey()).getValue(genericTypeIndicator);
-                        RoomModel roomModel = new RoomModel(ds.getKey(),listMember);
-                        list.add(roomModel);
-                        Log.e("list",ds.getKey());
-                        Log.e("listmb",listMember.get(0));
+                        if(snapshot.child(ds.getKey()).getChildrenCount()==0){
+                            List<String> listnull = new ArrayList<>();
+                            listnull.add("0");
+                            RoomModel roomModel = new RoomModel(ds.getKey(),listnull);
+                            list.add(roomModel);
+                        }else{
+                            GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
+                            final List<String> listMember = snapshot.child(ds.getKey()).getValue(genericTypeIndicator);
+                            RoomModel roomModel = new RoomModel(ds.getKey(),listMember);
+                            list.add(roomModel);
+                        }
+
                     }
                 }
                 adapter = new AdapterRoom(mContext,list);

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dormitorymanagementsystem.BookingDetails;
@@ -39,6 +40,9 @@ public class AdapterRoom extends RecyclerView.Adapter<AdapterRoom.AdapterRoomHol
     @Override
     public void onBindViewHolder(@NonNull AdapterRoom.AdapterRoomHolder holder, int position) {
         try {
+            if (list.get(position).getListMember().get(0).equals("0")){
+                holder.txRoom.setTextColor(ContextCompat.getColor(mContext,R.color.red));
+            }
 
             holder.txRoom.setText("ห้อง "+list.get(position).getNumroom());
             holder.menu_edit.setOnClickListener(new View.OnClickListener() {
