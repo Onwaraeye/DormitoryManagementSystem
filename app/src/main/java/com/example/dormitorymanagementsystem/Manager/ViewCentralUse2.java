@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
 import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
@@ -63,7 +65,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 myRefUser.addValueEventListener(new ValueEventListener() {
@@ -80,9 +82,13 @@ public class ViewCentralUse2 extends AppCompatActivity {
                                         String lname = snapshotUser.child(ds.getKey()).child("lastname").getValue(String.class);
                                         String name = fname + " " + lname;
                                         List<String> timefitness = snapshot.child("fitness").child(year).child(month).child(day).child(ds.getKey()).child("time").getValue(genericTypeIndicator);
-                                        for (int i = 0; i < timefitness.size(); i++) {
-                                            CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)));
-                                            listCentral.add(centralModel);
+                                        if (snapshot.child("fitness").child(year).child(month).child(day).child(ds.getKey()).child("time").getChildrenCount() ==0){
+
+                                        }else {
+                                            for (int i = 0; i < timefitness.size(); i++) {
+                                                CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),ds.getKey());
+                                                listCentral.add(centralModel);
+                                            }
                                         }
                                     }
                                 }
@@ -91,14 +97,18 @@ public class ViewCentralUse2 extends AppCompatActivity {
                         if (snapshot.child("tutoringRoom").hasChild(year)) {
                             if (snapshot.child("tutoringRoom").child(year).hasChild(month)) {
                                 if (snapshot.child("tutoringRoom").child(year).child(month).hasChild(day)) {
-                                    for (DataSnapshot ds : snapshot.child("fitness").child(year).child(month).child(day).getChildren()) {
+                                    for (DataSnapshot ds : snapshot.child("tutoringRoom").child(year).child(month).child(day).getChildren()) {
                                         String fname = snapshotUser.child(ds.getKey()).child("firstname").getValue(String.class);
                                         String lname = snapshotUser.child(ds.getKey()).child("firstname").getValue(String.class);
                                         String name = fname + " " + lname;
-                                        List<String> timetutoringRoom = snapshot.child("fitness").child(year).child(month).child(day).child(ds.getKey()).child("time").getValue(genericTypeIndicator);
-                                        for (int i = 0; i < timetutoringRoom.size(); i++) {
-                                            CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)));
-                                            listCentral.add(centralModel);
+                                        List<String> timetutoringRoom = snapshot.child("tutoringRoom").child(year).child(month).child(day).child(ds.getKey()).child("time").getValue(genericTypeIndicator);
+                                        if (snapshot.child("tutoringRoom").child(year).child(month).child(day).child(ds.getKey()).child("time").getChildrenCount() == 0){
+
+                                        }else {
+                                            for (int i = 0; i < timetutoringRoom.size(); i++) {
+                                                CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),ds.getKey());
+                                                listCentral.add(centralModel);
+                                            }
                                         }
                                     }
                                 }
@@ -112,11 +122,18 @@ public class ViewCentralUse2 extends AppCompatActivity {
 
                     }
                 });
-                adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
-                recyclerView.setAdapter(adapterBookingDetails);
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        ImageView arrow_back = findViewById(R.id.ic_arrow_back);
+        arrow_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }

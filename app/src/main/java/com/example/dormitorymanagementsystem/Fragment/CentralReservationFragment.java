@@ -44,6 +44,7 @@ public class CentralReservationFragment extends Fragment {
     AdapterBookingDetails adapterBookingDetails;
 
     String monthThai = "";
+    String userID = "";
 
     public CentralReservationFragment() {
 
@@ -60,7 +61,7 @@ public class CentralReservationFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_central_reservation, container, false);
 
-        String userID = Login.getGbIdUser();
+        userID = Login.getGbIdUser();
         String userFName = Login.getGbFNameUser();
         String userLName = Login.getGbLNameUser();
         String name = userFName + " " + userLName;
@@ -75,7 +76,7 @@ public class CentralReservationFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -87,9 +88,13 @@ public class CentralReservationFragment extends Fragment {
                         if (snapshot.child("fitness").child(year).child(month).hasChild(day)) {
                             if (snapshot.child("fitness").child(year).child(month).child(day).hasChild(userID)) {
                                 List<String> timefitness = snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("time").getValue(genericTypeIndicator);
-                                for (int i = 0; i < timefitness.size(); i++) {
-                                    CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)));
-                                    listCentral.add(centralModel);
+                                if (snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("time").getChildrenCount() == 0){
+
+                                }else {
+                                    for (int i = 0; i < timefitness.size(); i++) {
+                                        CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),userID);
+                                        listCentral.add(centralModel);
+                                    }
                                 }
                             }
                         }
@@ -100,10 +105,15 @@ public class CentralReservationFragment extends Fragment {
                         if (snapshot.child("tutoringRoom").child(year).child(month).hasChild(day)) {
                             if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)) {
                                 List<String> timetutoringRoom = snapshot.child("tutoringRoom").child(year).child(month).child(day).child(userID).child("time").getValue(genericTypeIndicator);
-                                for (int i = 0; i < timetutoringRoom.size(); i++) {
-                                    CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)));
-                                    listCentral.add(centralModel);
+                                if (snapshot.child("tutoringRoom").child(year).child(month).child(day).child(userID).child("time").getChildrenCount() == 0){
+
+                                }else {
+                                    for (int i = 0; i < timetutoringRoom.size(); i++) {
+                                        CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),userID);
+                                        listCentral.add(centralModel);
+                                    }
                                 }
+
                             }
                         }
                     }

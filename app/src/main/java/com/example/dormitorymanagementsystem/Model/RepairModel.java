@@ -9,11 +9,10 @@ public class RepairModel {
     private String userID;
     private String status;
     private String timestamp;
+    private String cost;
+    private String timestampComplete;
 
-    public RepairModel() {
-    }
-
-    public RepairModel(String numroom, String titleRepair, String detail, String imageUrl, String phone, String userID, String status, String timestamp) {
+    public RepairModel(String numroom, String titleRepair, String detail, String imageUrl, String phone, String userID, String status, String timestamp, String cost) {
         this.numroom = numroom;
         this.titleRepair = titleRepair;
         this.detail = detail;
@@ -22,6 +21,26 @@ public class RepairModel {
         this.userID = userID;
         this.status = status;
         this.timestamp = timestamp;
+        this.cost = cost;
+    }
+
+    public String getTimestampComplete() {
+        return timestampComplete;
+    }
+
+    public void setTimestampComplete(String timestampComplete) {
+        this.timestampComplete = timestampComplete;
+    }
+
+    public RepairModel() {
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
     }
 
     public String getNumroom() {

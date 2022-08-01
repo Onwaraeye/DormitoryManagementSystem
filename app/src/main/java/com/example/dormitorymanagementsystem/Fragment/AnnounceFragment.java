@@ -1,6 +1,7 @@
 package com.example.dormitorymanagementsystem.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterPost;
+import com.example.dormitorymanagementsystem.Login;
+import com.example.dormitorymanagementsystem.Manager.Post;
 import com.example.dormitorymanagementsystem.Model.PostModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
@@ -56,12 +60,28 @@ public class AnnounceFragment extends Fragment {
 
         mContext = getActivity().getApplication();
 
-
         recyclerView = view.findViewById(R.id.list_item);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
         postModel = new PostModel();
+
+        String typeUser = Login.getGbTypeUser();
+
+
+        ImageView addPost = view.findViewById(R.id.addPost);
+        addPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Post.class);
+                intent.putExtra("status","0");
+                getActivity().startActivity(intent);
+            }
+        });
+
+        if (typeUser.equals("User")){
+            addPost.setVisibility(View.INVISIBLE);
+        }
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

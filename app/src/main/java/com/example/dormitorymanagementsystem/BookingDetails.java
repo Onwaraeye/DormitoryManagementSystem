@@ -42,7 +42,8 @@ public class BookingDetails extends AppCompatActivity {
     private String year = Calendar.getInstance().get(Calendar.YEAR) + "";
     private int yearThai = Integer.parseInt(year) + 543;
     private String date = day + " " + getMonth(Integer.parseInt(month)) + " " + yearThai;
-    private String userID = Login.getGbIdUser();
+    private String userID = "";
+    private String nameCentral;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +52,14 @@ public class BookingDetails extends AppCompatActivity {
 
         mContext = getApplicationContext();
 
-        String userFName = Login.getGbFNameUser();
-        String userLName = Login.getGbLNameUser();
-        String name = userFName + " " + userLName;
-        String numroom = Login.getGbNumroom();
+        String userType = Login.getGbTypeUser();
+        userID = getIntent().getStringExtra("userID");
 
         String central = getIntent().getStringExtra("central");
         String image = getIntent().getStringExtra("image");
+        String name = getIntent().getStringExtra("name");
+        String date = getIntent().getStringExtra("date");
+        String time = getIntent().getStringExtra("time");
 
 
         TextView txCentral = findViewById(R.id.txCentral);
@@ -67,14 +69,11 @@ public class BookingDetails extends AppCompatActivity {
         TextView txTime = findViewById(R.id.txTime);
         TextView txPhone = findViewById(R.id.txPhone);
 
-        txCentral.setText(central);
-        txDate.setText(date);
-        txName.setText(name);
-        txNumroom.setText(numroom);
+
         ImageView imageView = findViewById(R.id.imageView);
         Glide.with(mContext).load(image).fitCenter().centerCrop().into(imageView);
 
-        String nameCentral;
+
         if (central.equals("พื้นที่ออกกำลังกาย")){
             nameCentral = "fitness";
         }else {
@@ -84,13 +83,19 @@ public class BookingDetails extends AppCompatActivity {
         myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String time = snapshot.child(nameCentral).child(year).child(month).child(day).child(userID).child("timeShow").getValue(String.class);
-                txTime.setText(time);;
+                //String time = snapshot.child(nameCentral).child(year).child(month).child(day).child(userID).child("timeShow").getValue(String.class);
+
                 myRefUser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         String phone = snapshot.child(userID).child("phone").getValue(String.class);
+                        String numroom = snapshot.child(userID).child("numroom").getValue(String.class);
                         txPhone.setText("เบอร์โทร " + phone);
+                        txCentral.setText(central);
+                        txDate.setText(date);
+                        txName.setText(name);
+                        txNumroom.setText(numroom);
+                        txTime.setText(time);
                     }
 
                     @Override
@@ -174,15 +179,10 @@ public class BookingDetails extends AppCompatActivity {
                 myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child("fitness").child(year).child(month).child(day).hasChild(userID)) {
-                            myRefCentral.child("fitness").child(year).child(month).child(day).child(userID).getRef().removeValue();
-                            Intent intent = new Intent(mContext, Central.class);
-                            startActivity(intent);
-                            finish();
-                        } else if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)) {
-                            myRefCentral.child("tutoringRoom").child(year).child(month).child(day).child(userID).getRef().removeValue();
-                            Intent intent = new Intent(mContext, Central.class);
-                            startActivity(intent);
+                        if (snapshot.child(nameCentral).child(year).child(month).child(day).hasChild(userID)) {
+                            myRefCentral.child(nameCentral).child(year).child(month).child(day).child(userID).getRef().removeValue();
+                            /*Intent intent = new Intent(mContext, Central.class);
+                            startActivity(intent);*/
                             finish();
                         }
                     }

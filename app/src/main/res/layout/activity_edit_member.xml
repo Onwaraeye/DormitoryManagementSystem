@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="สมาชิก 2 คน" />
+            android:text="สมาชิก 0 คน" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/userList"

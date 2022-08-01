@@ -47,10 +47,13 @@ public class ViewRoom extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
 
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 list.clear();
+
                 for (DataSnapshot ds : snapshot.getChildren()){
                     if (snapshot.hasChild(ds.getKey())){
                         if(snapshot.child(ds.getKey()).getChildrenCount()==0){
@@ -59,10 +62,22 @@ public class ViewRoom extends AppCompatActivity {
                             RoomModel roomModel = new RoomModel(ds.getKey(),listnull);
                             list.add(roomModel);
                         }else{
-                            GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
-                            final List<String> listMember = snapshot.child(ds.getKey()).getValue(genericTypeIndicator);
+                            List<String> listMember = new ArrayList<>();
+                            listMember.clear();
+                            for (int i=0 ; i<=3 ; i++){
+                                String member = snapshot.child(ds.getKey()).child(String.valueOf(i)).getValue(String.class);
+                                if (member == null){
+
+                                }else {
+                                    listMember.add(member);
+                                }
+                            }
+                            //GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
+                            //final List<String> listMember = snapshot.child(ds.getKey()).getValue(genericTypeIndicator);
                             RoomModel roomModel = new RoomModel(ds.getKey(),listMember);
                             list.add(roomModel);
+                            Log.e("listmember",listMember+"");
+                            Log.e("listroom",ds.getKey());
                         }
 
                     }

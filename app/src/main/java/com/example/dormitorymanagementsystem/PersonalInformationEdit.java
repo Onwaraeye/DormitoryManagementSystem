@@ -59,7 +59,7 @@ public class PersonalInformationEdit extends AppCompatActivity {
                     String fName = snapshot.child(userID).child("firstname").getValue(String.class);
                     String lName = snapshot.child(userID).child("lastname").getValue(String.class);
                     String birthday = snapshot.child(userID).child("birthday").getValue(String.class);
-                    String gender = snapshot.child(userID).child("gender").getValue(String.class);
+                    String gender = snapshot.child(userID).child("gender").child("gender").getValue(String.class);
                     int valueGender = 0;
                     if (gender.equals("ผู้ชาย")){
                         valueGender = 0;
@@ -101,7 +101,7 @@ public class PersonalInformationEdit extends AppCompatActivity {
                 int selectedID = radioGroup.getCheckedRadioButtonId();
                 inputradioButton = findViewById(selectedID);
                 String gender = inputradioButton.getText().toString();
-                myRefUser.child(userID).child("gender").setValue(gender);/*.addOnSuccessListener(new OnSuccessListener<Void>() {
+                myRefUser.child(userID).child("gender").child("gender").setValue(gender);/*.addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Intent intent = new Intent(getApplicationContext(),PersonalInformation.class);

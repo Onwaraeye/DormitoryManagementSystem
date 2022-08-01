@@ -39,7 +39,7 @@ public class ManagerPhone extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterManagerPhone adapter;
 
-    private TextView menu_add;
+    private ImageView menu_add;
     private Context mContext;
 
     @Override
@@ -70,7 +70,6 @@ public class ManagerPhone extends AppCompatActivity {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
-
 
         menu_add = findViewById(R.id.menu_add);
         if (Login.getGbTypeUser().equals("User")){

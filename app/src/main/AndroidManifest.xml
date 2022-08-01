@@ -13,8 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DormitoryManagementSystem">
-        <activity android:name=".Manager.ViewCentralUse2"></activity>
+        <activity android:name=".Manager.ViewCentralUse2" />
         <activity android:name=".Manager.ViewBills" />
+        <activity android:name=".Manager.ViewBillsSelectDate" />
         <activity android:name=".CentralReservation1" />
         <activity android:name=".Manager.InfoEditContact" />
         <activity android:name=".Manager.InfoEditBank" />

@@ -41,9 +41,8 @@ public class EditMember extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_member);
 
-        Intent intent = getIntent();
-        list = intent.getStringArrayListExtra("listMember");
-        String getRoom = intent.getStringExtra("room");
+        list = getIntent().getStringArrayListExtra("listMember");
+        String getRoom = getIntent().getStringExtra("room");
 
         Context mContext = getApplication();
         recyclerView = findViewById(R.id.userList);
@@ -54,25 +53,30 @@ public class EditMember extends AppCompatActivity {
         txRoom.setText(getRoom);
         TextView txMember = findViewById(R.id.txMember);
 
-        if (list.get(0).equals("0")){
+        /*if (list.get(0).equals("0")){
             txMember.setText("จำนวนสมาชิก 0 คน");
         }else {
             txMember.setText("จำนวนสมาชิก "+list.size()+" คน");
-        }
+        }*/
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 listNameMember.clear();
                 for (String userID : list){
-                    if (snapshot.hasChild(userID)){
-                        final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
-                        final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
-                        final String name = fName+" "+lName;
-                        EditMemberModel editMemberModel = new EditMemberModel(userID,name,getRoom);
-                        listNameMember.add(editMemberModel);
-                    }else {
+                    if (userID.equals("")){
 
+                    }else {
+                        if (snapshot.hasChild(userID)){
+                            final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
+                            final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
+                            final String name = fName+" "+lName;
+                            EditMemberModel editMemberModel = new EditMemberModel(userID,name,getRoom);
+                            listNameMember.add(editMemberModel);
+                            txMember.setText("จำนวนสมาชิก "+list.size()+" คน");
+                        }else {
+
+                        }
                     }
                 }
                 adapter = new AdapterEditMember(EditMember.this,listNameMember);
@@ -90,6 +94,16 @@ public class EditMember extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        TextView menu_add = findViewById(R.id.menu_add);
+        menu_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),EditAddMember.class);
+                intent.putExtra("room", getRoom);
+                startActivity(intent);
             }
         });
 

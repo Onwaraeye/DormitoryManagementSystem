@@ -17,34 +17,23 @@ import com.google.android.material.tabs.TabLayout;
 
 public class Parcel extends AppCompatActivity {
 
-    private ImageView arrow_back;
-    private Context mContext;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parcel);
 
-        mContext = getApplication();
+        //Context mContext = getApplication();
 
-        arrow_back = findViewById(R.id.ic_arrow_back);
+        ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( getFragmentManager().getBackStackEntryCount() > 0)
-                {
-                    getFragmentManager().popBackStack();
-                    return;
-                }
-                onBackPressed();
+                finish();
             }
         });
 
-        tabLayout = findViewById(R.id.tabParcel);
-        viewPager = findViewById(R.id.vpParcel);
-
+        TabLayout tabLayout = findViewById(R.id.tabParcel);
+        ViewPager viewPager = findViewById(R.id.vpParcel);
         tabLayout.setupWithViewPager(viewPager);
 
         AdapterParcel adapterParcel = new AdapterParcel(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

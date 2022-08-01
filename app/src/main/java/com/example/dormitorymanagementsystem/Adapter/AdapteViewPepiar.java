@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class AdapteViewPepiar extends RecyclerView.Adapter<AdapteViewPepiar.MyViewHolder> {
@@ -55,36 +57,51 @@ public class AdapteViewPepiar extends RecyclerView.Adapter<AdapteViewPepiar.MyVi
     public void onBindViewHolder(@NonNull AdapteViewPepiar.MyViewHolder holder, int position) {
         try {
             String status = list.get(position).getStatus();
-            if (status.equals("0")){
-                String title = list.get(position).getTitleRepair();
-                String time = list.get(position).getTimestamp();
-                String detail = list.get(position).getDetail();
-                String room = list.get(position).getNumroom();
-                String image = list.get(position).getImageUrl();
-                String phone = list.get(position).getPhone();
 
-                holder.txTitle.setText(title);
-                holder.txTime.setText(time);
-                holder.txDetail.setText(detail);
-                holder.txRoom.setText(room);
+            String title = list.get(position).getTitleRepair();
+            String time = list.get(position).getTimestamp();
+            String detail = list.get(position).getDetail();
+            String room = list.get(position).getNumroom();
+            String image = list.get(position).getImageUrl();
+            String phone = list.get(position).getPhone();
+            String cost = list.get(position).getCost();
 
-                holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(mContext, Repair.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("title", title);
-                        intent.putExtra("time", time);
-                        intent.putExtra("detail", detail);
-                        intent.putExtra("room", room);
-                        intent.putExtra("image", image);
-                        intent.putExtra("phone", phone);
-                        mContext.startActivity(intent);
-                    }
-                });
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy" + " / " + "HH:mm");
+            String date = formatter.format(new Date(Long.parseLong(time)));
+
+            if (status.equals("1")){
+                String timestampComplete = list.get(position).getTimestampComplete();
+                if (timestampComplete == null){
+
+                }else {
+                    String dateRepair = formatter.format(new Date(Long.parseLong(timestampComplete)));
+                    holder.txTime.setText(dateRepair);
+                }
             }else {
-
+                holder.txTime.setText(date);
             }
+
+            holder.txTitle.setText(title);
+            holder.txDetail.setText(detail);
+            holder.txRoom.setText(room);
+
+            holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, Repair.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("title", title);
+                    intent.putExtra("time", time);
+                    intent.putExtra("detail", detail);
+                    intent.putExtra("room", room);
+                    intent.putExtra("image", image);
+                    intent.putExtra("phone", phone);
+                    intent.putExtra("status", status);
+                    intent.putExtra("cost", cost);
+                    mContext.startActivity(intent);
+                }
+            });
 
         } catch (NullPointerException e) {
         }

@@ -40,6 +40,15 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:text="TextView" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_item"
         android:layout_width="match_parent"

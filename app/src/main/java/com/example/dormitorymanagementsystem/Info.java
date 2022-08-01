@@ -3,6 +3,7 @@ package com.example.dormitorymanagementsystem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,7 +68,7 @@ public class Info extends AppCompatActivity {
                 if (icon == null){
                     Glide.with(mContext).load(R.drawable.ic_bank).fitCenter().centerCrop().into(imageBank);
                 }else {
-                    Glide.with(mContext).load(Integer.parseInt(icon)).fitCenter().centerCrop().into(imageBank);
+                    imageBank.setImageResource(Integer.parseInt(icon));
                     txBank.setText(snapshot.child("contactBank").child("bank").getValue(String.class));
                     txAccName.setText(snapshot.child("contactBank").child("name").getValue(String.class));
                     txAccNo.setText(snapshot.child("contactBank").child("accNo").getValue(String.class));

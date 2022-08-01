@@ -21,7 +21,7 @@ import com.example.dormitorymanagementsystem.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterRoom extends RecyclerView.Adapter<AdapterRoom.AdapterRoomHolder>{
+public class AdapterRoom extends RecyclerView.Adapter<AdapterRoom.AdapterRoomHolder> {
     private Context mContext;
     List<RoomModel> list;
 
@@ -33,30 +33,35 @@ public class AdapterRoom extends RecyclerView.Adapter<AdapterRoom.AdapterRoomHol
     @NonNull
     @Override
     public AdapterRoom.AdapterRoomHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_room,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_room, parent, false);
         return new AdapterRoom.AdapterRoomHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterRoom.AdapterRoomHolder holder, int position) {
         try {
-            if (list.get(position).getListMember().get(0).equals("0")){
-                holder.txRoom.setTextColor(ContextCompat.getColor(mContext,R.color.red));
+            int count = list.get(position).getListMember().size();
+            if (count < 1) {
+                holder.txRoom.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+            }else {
+
             }
 
-            holder.txRoom.setText("ห้อง "+list.get(position).getNumroom());
+
+            holder.txRoom.setText("ห้อง " + list.get(position).getNumroom());
             holder.menu_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, EditMember.class);
-                    intent.putStringArrayListExtra("listMember",(ArrayList<String>)list.get(position).getListMember());
-                    intent.putExtra("room",list.get(position).getNumroom());
+                    intent.putStringArrayListExtra("listMember", (ArrayList<String>) list.get(position).getListMember());
+                    intent.putExtra("room", list.get(position).getNumroom());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
             });
 
-        }catch (NullPointerException e){ }
+        } catch (NullPointerException e) {
+        }
     }
 
     @Override

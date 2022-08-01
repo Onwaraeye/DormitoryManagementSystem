@@ -2,8 +2,10 @@ package com.example.dormitorymanagementsystem.Manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,9 +14,15 @@ import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapteViewPepiar;
 import com.example.dormitorymanagementsystem.Adapter.AdapterManagerPhone;
+import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
+import com.example.dormitorymanagementsystem.Fragment.HistoryPacelFragment;
+import com.example.dormitorymanagementsystem.Fragment.HistoryRepairFragment;
+import com.example.dormitorymanagementsystem.Fragment.NewParcelFragment;
+import com.example.dormitorymanagementsystem.Fragment.NewRepairFragment;
 import com.example.dormitorymanagementsystem.Model.ManagerModel;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,13 +37,6 @@ import java.util.List;
 
 public class ViewRepair extends AppCompatActivity {
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference("Repair");
-    private List<RepairModel> list = new ArrayList<>();
-    private RepairModel repairModel;
-    private RecyclerView recyclerView;
-    private AdapteViewPepiar adapter;
-
     private Context mContext;
 
     @Override
@@ -45,36 +46,14 @@ public class ViewRepair extends AppCompatActivity {
 
         mContext = getApplication();
 
-        recyclerView = findViewById(R.id.list_item);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        TabLayout tabLayout = findViewById(R.id.tabRepair);
+        ViewPager viewPager = findViewById(R.id.vpRepair);
+        tabLayout.setupWithViewPager(viewPager);
 
-        repairModel = new RepairModel();
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Query query = myRef.orderByChild("status").equalTo("0");
-                query.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        list.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            repairModel = ds.getValue(RepairModel.class);
-                            list.add(repairModel);
-                        }
-                        adapter = new AdapteViewPepiar(ViewRepair.this, list);
-                        recyclerView.setAdapter(adapter);
-                    }
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                    }
-                });
-            }
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+        AdapterParcel adapterParcel = new AdapterParcel(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapterParcel.addFragment(new NewRepairFragment(),"รายการใหม่");
+        adapterParcel.addFragment(new HistoryRepairFragment(),"ประวัติการซ่อม");
+        viewPager.setAdapter(adapterParcel);
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {

@@ -1,23 +1,8 @@
 package com.example.dormitorymanagementsystem.Manager;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -25,68 +10,42 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
-import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
-import com.example.dormitorymanagementsystem.Fragment.CentralFragment;
-import com.example.dormitorymanagementsystem.Fragment.CentralReservationFragment;
-import com.example.dormitorymanagementsystem.Fragment.ViewFitnessFragment;
-import com.example.dormitorymanagementsystem.Fragment.ViewTutoringFragment;
-import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Model.CentralManagerModel;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
-import com.example.dormitorymanagementsystem.Model.ManagerModel;
-import com.example.dormitorymanagementsystem.Model.ViewCentralModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-public class ViewCentralUse extends AppCompatActivity {
+public class ViewBillsSelectDate extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRefCentral = database.getReference("Central");
 
-    private DatabaseReference myRefUser = database.getReference("Users");
-    private List<CentralModel> listCentral = new ArrayList<>();
-    private Context mContext;
-    private AdapterBookingDetails adapterBookingDetails;
-    private RecyclerView recyclerView;
     private String monthThai = "";
-    private List<CentralModel> viewCentralModelListTutoringRoom = new ArrayList<CentralModel>();
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private CalendarView calendarView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_central_use);
+        setContentView(R.layout.activity_view_bills_select_date);
 
         String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
         String month = Calendar.getInstance().get(Calendar.MONTH) + "";
         String year = Calendar.getInstance().get(Calendar.YEAR) + "";
         String date = day + " " + getMonth(Integer.parseInt(month)) + " " + year;
-        mContext = getApplication();
 
-        tabLayout = findViewById(R.id.tabCentral);
-        viewPager = findViewById(R.id.vpCentral);
         calendarView = findViewById(R.id.calendarView1);
-        LinearLayout selectDate = findViewById(R.id.selectDate);
-        TextView arrow = findViewById(R.id.arrow);
-
-        //openViewCentral(year, month, day, date);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -100,7 +59,7 @@ public class ViewCentralUse extends AppCompatActivity {
                 btConfirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(),ViewCentralUse2.class);
+                        Intent intent = new Intent(getApplicationContext(),ViewBills.class);
                         intent.putExtra("day",dayDate);
                         intent.putExtra("month",monthDate);
                         intent.putExtra("year",yearDate);
@@ -115,7 +74,7 @@ public class ViewCentralUse extends AppCompatActivity {
         btConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),ViewCentralUse2.class);
+                Intent intent = new Intent(getApplicationContext(),ViewBills.class);
                 intent.putExtra("day",day);
                 intent.putExtra("month",month);
                 intent.putExtra("year",year);
@@ -131,11 +90,6 @@ public class ViewCentralUse extends AppCompatActivity {
                 finish();
             }
         });
-
-        /*AdapterParcel adapterParcel = new AdapterParcel(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapterParcel.addFragment(new ViewFitnessFragment(), "ที่ออกกำลังกาย");
-        adapterParcel.addFragment(new ViewTutoringFragment(), "ห้องติว");
-        viewPager.setAdapter(adapterParcel);*/
 
     }
 

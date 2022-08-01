@@ -24,6 +24,9 @@
                 android:id="@+id/txTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:text="หัวข้อการแจ้งซ่อม" />
 
@@ -32,6 +35,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/darkergray"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textSize="20sp"
+
                 android:text="รายละเอียด" />
 
         </LinearLayout>
@@ -47,6 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                 android:gravity="end"
                 android:text="ห้อง"
                 android:textStyle="bold" />
@@ -55,6 +64,9 @@
                 android:id="@+id/txTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                 android:text="เวลา" />
         </LinearLayout>
 

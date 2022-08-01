@@ -58,6 +58,10 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
                     Intent intent = new Intent(mContext, BookingDetails.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("central",list.get(position).getCentral());
+                    intent.putExtra("name", list.get(position).getName());
+                    intent.putExtra("date", list.get(position).getDate());
+                    intent.putExtra("time", list.get(position).getTime());
+                    intent.putExtra("userID", list.get(position).getUserID());
                     if (list.get(position).getCentral().equals("พื้นที่ออกกำลังกาย")){
                         intent.putExtra("image",imageFitness);
                     }else {

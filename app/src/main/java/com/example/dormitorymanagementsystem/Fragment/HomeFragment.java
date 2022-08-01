@@ -20,6 +20,7 @@ import com.example.dormitorymanagementsystem.Manager.Chat;
 import com.example.dormitorymanagementsystem.Info;
 import com.example.dormitorymanagementsystem.Manager.ChatManager;
 import com.example.dormitorymanagementsystem.Manager.ViewBills;
+import com.example.dormitorymanagementsystem.Manager.ViewBillsSelectDate;
 import com.example.dormitorymanagementsystem.Manager.ViewRoom;
 import com.example.dormitorymanagementsystem.Manager.ManagerPhone;
 import com.example.dormitorymanagementsystem.Manager.Post;
@@ -49,8 +50,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference myRefContact = database.getReference("Contact");
 
     private LinearLayout menu_bill,menu_parcel,menu_central,menu_my_room,menu_phone,menu_info,menu_repair,menu_chat;
-    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_post,menu_view_repair,menu_edit_info,menu_view_bill;
-    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4,admin5;
+    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_view_repair,menu_edit_info,menu_view_bill;
+    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4;
     private View view;
     private final String getType = Login.getGbTypeUser();
 
@@ -214,15 +215,7 @@ public class HomeFragment extends Fragment {
                 getActivity().startActivity(intent);
             }
         });
-        menu_post = view.findViewById(R.id.menu_post);
-        menu_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Post.class);
-                intent.putExtra("status","0");
-                getActivity().startActivity(intent);
-            }
-        });
+
         menu_view_repair = view.findViewById(R.id.menu_view_repair);
         menu_view_repair.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +238,7 @@ public class HomeFragment extends Fragment {
         menu_view_bill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewBills.class);
+                Intent intent = new Intent(getActivity(), ViewBillsSelectDate.class);
                 getActivity().startActivity(intent);
             }
         });
@@ -259,8 +252,6 @@ public class HomeFragment extends Fragment {
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
             admin4.setVisibility(View.GONE);
-            admin5 = view.findViewById(R.id.admin5);
-            admin5.setVisibility(View.GONE);
         }else {
             user1 = view.findViewById(R.id.user1);
             user1.setVisibility(View.GONE);

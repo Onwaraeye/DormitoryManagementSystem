@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapteBill;
 import com.example.dormitorymanagementsystem.Adapter.AdapteViewBill;
@@ -25,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ViewBills extends AppCompatActivity {
@@ -52,9 +55,14 @@ public class ViewBills extends AppCompatActivity {
         List<String> listRoom = new ArrayList<>();
         List<String> listDate = new ArrayList<>();
 
-        String year = "2022";
-        String month = "0";
-        String date = getMonth(Integer.parseInt(month))+"/"+year;
+        Intent intent = getIntent();
+        String month = intent.getStringExtra("month");
+        String year = intent.getStringExtra("year");
+        //String month = 0+"";
+        //String year = 2022+"";
+        String date = getMonth(Integer.parseInt(month)) + "/" + year;
+        TextView txMonth = findViewById(R.id.txMonth);
+        txMonth.setText(date);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -68,7 +76,7 @@ public class ViewBills extends AppCompatActivity {
                     String room = dataSnapshot.getKey();
                     listRoom.add(room);
                 }
-                adapter = new AdapteViewBill(mContext, list, listRoom,date);
+                adapter = new AdapteViewBill(mContext, list, listRoom, date);
                 recyclerView.setAdapter(adapter);
             }
 

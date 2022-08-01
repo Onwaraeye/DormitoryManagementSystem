@@ -9,15 +9,17 @@ public class CentralModel implements Parcelable {
     private String name;
     private String date;
     private String time;
+    private String userID;
 
     public CentralModel() {
     }
 
-    public CentralModel(String central, String name, String date, String time) {
+    public CentralModel(String central, String name, String date, String time,String userID) {
         this.central = central;
         this.name = name;
         this.date = date;
         this.time = time;
+        this.userID = userID;
     }
 
     public String getCentral() {
@@ -50,6 +52,14 @@ public class CentralModel implements Parcelable {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     protected CentralModel(Parcel in) {

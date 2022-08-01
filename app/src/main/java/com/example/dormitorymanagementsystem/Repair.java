@@ -17,6 +17,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +35,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Repair extends AppCompatActivity {
 
@@ -66,19 +70,31 @@ public class Repair extends AppCompatActivity {
         String getTitle = intent.getStringExtra("title");
         String getImage = intent.getStringExtra("image");
         String getPhone = intent.getStringExtra("phone");
+        String getStatus = intent.getStringExtra("status");
+        String getCost = intent.getStringExtra("cost");
+        Long time = System.currentTimeMillis();
 
+
+        TextView txTime = findViewById(R.id.txTime);
         EditText etRoom = findViewById(R.id.etRoom);
         EditText etTitleRepair = findViewById(R.id.etTitleRepair);
         EditText etDetail = findViewById(R.id.etDetail);
         EditText etPhone = findViewById(R.id.etPhone);
+        TextView txCost = findViewById(R.id.txCost);
+        EditText etCost = findViewById(R.id.etCost);
         Button btConfirm = findViewById(R.id.btConfirm);
         Button btAdminConfirm = findViewById(R.id.btAdminConfirm);
         imageView = findViewById(R.id.imageView);
 
 
         if (typeUser.equals("User")) {
+
+            txTime.setVisibility(View.GONE);
+
             btConfirm.setVisibility(View.VISIBLE);
             btAdminConfirm.setVisibility(View.GONE);
+            etCost.setVisibility(View.GONE);
+            txCost.setVisibility(View.GONE);
             myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -124,6 +140,7 @@ public class Repair extends AppCompatActivity {
                         myRefRepair.child("phone").setValue(inputPhone);
                         myRefRepair.child("status").setValue("0");
                         myRefRepair.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                        myRefRepair.child("cost").setValue("0");
                         uploadImage();
                         finish();
                     }
@@ -131,8 +148,18 @@ public class Repair extends AppCompatActivity {
             });
         } else {
 
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
+            String date = formatter.format(new Date(Long.parseLong(getTime)));
+            txTime.setText(date);
+
+            if (getStatus.equals("1")){
+                btAdminConfirm.setVisibility(View.GONE);
+                etCost.setEnabled(false);
+                etCost.setText(getCost);
+            }else {
+                btAdminConfirm.setVisibility(View.VISIBLE);
+            }
             btConfirm.setVisibility(View.GONE);
-            btAdminConfirm.setVisibility(View.VISIBLE);
 
             etRoom.setText(getRoom);
             etRoom.setEnabled(false);
@@ -148,6 +175,7 @@ public class Repair extends AppCompatActivity {
 
             Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
+            String timeUp = String.valueOf(System.currentTimeMillis());
             btAdminConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -157,8 +185,9 @@ public class Repair extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             for (DataSnapshot ds : snapshot.getChildren()) {
-                                Log.e("เข้าบ่", getTime);
                                 ds.getRef().child("status").setValue("1");
+                                ds.getRef().child("cost").setValue(etCost.getText().toString());
+                                ds.getRef().child("timestampComplete").setValue(timeUp);
                                 finish();
                             }
                         }

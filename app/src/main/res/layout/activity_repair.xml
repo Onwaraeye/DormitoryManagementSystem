@@ -47,8 +47,16 @@
         android:layout_margin="20dp">
 
         <TextView
+            android:id="@+id/txTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="TextView" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="ห้อง" />
 
         <EditText
@@ -132,6 +140,25 @@
             android:textColor="@drawable/edit_text_selector"
             android:inputType="phone" />
 
+        <TextView
+            android:id="@+id/txCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="ค่าใช้จ่าย" />
+
+        <EditText
+            android:id="@+id/etCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:background="@drawable/bg_menu"
+            android:backgroundTint="@color/gray"
+            android:padding="5dp"
+            android:textColor="@drawable/edit_text_selector"
+            android:inputType="phone" />
+
+
         <Button
             android:id="@+id/btConfirm"
             android:layout_marginTop="20sp"
@@ -147,10 +174,10 @@
             android:layout_marginTop="20sp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:backgroundTint="#F7DB5D"
+            android:backgroundTint="@color/yellow"
             android:background="@drawable/bg_menu"
             android:textColor="@color/black"
-            android:text="ซ่อมสำเร็จ" />
+            android:text="ยืนยันการซ่อม" />
     </LinearLayout>
 
 </LinearLayout>

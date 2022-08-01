@@ -46,7 +46,7 @@ public class AttachPayment extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST = 1;
     private Uri imUri;
-    private ImageView imageView,imageViewZoom;
+    private ImageView imageView, imageViewZoom;
 
     private String year = "";
     private String room = "";
@@ -69,12 +69,11 @@ public class AttachPayment extends AppCompatActivity {
         String[] dateBill = date.split("/");
         year = dateBill[1];
         monthThai = dateBill[0];
-        if (typeUser.equals("User")){
+        if (typeUser.equals("User")) {
             room = Login.getGbNumroom();
-        }else {
+        } else {
             room = roombills;
         }
-
 
         TextView txRoom = findViewById(R.id.txRoom);
         TextView txDate = findViewById(R.id.txDate);
@@ -91,10 +90,15 @@ public class AttachPayment extends AppCompatActivity {
 
         txRoom.setText(room);
         txDate.setText(date);
-        if (status.equals("0")){
-            btConfirm.setVisibility(View.VISIBLE);
+        if (status.equals("0")) {
+            if (typeUser.equals("Admin")) {
+                btConfirm.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+            } else {
+                btConfirm.setVisibility(View.VISIBLE);
+            }
             txStatus.setText("ยังไม่ได้ชำระ");
-            txStatus.setTextColor(ContextCompat.getColor(mContext,R.color.red));
+            txStatus.setTextColor(ContextCompat.getColor(mContext, R.color.red));
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,12 +113,11 @@ public class AttachPayment extends AppCompatActivity {
                     finish();
                 }
             });
-
-        }else if (status.equals("1")){
+        } else if (status.equals("1")) {
             LinearLayout buttonAdmin = findViewById(R.id.buttonAdmin);
             Button btCorrect = findViewById(R.id.btCorrect);
             Button btCancel = findViewById(R.id.btCancel);
-            if (typeUser.equals("Admin")){
+            if (typeUser.equals("Admin")) {
                 buttonAdmin.setVisibility(View.VISIBLE);
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -141,19 +144,19 @@ public class AttachPayment extends AppCompatActivity {
                     }
                 });
 
-            }else {
+            } else {
                 buttonAdmin.setVisibility(View.GONE);
             }
             txStatus.setText("รอการตรวจสอบ");
-            txStatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));
+            txStatus.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String imageURL = snapshot.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").getValue(String.class);
-                    if (imageURL.isEmpty()){
+                    if (imageURL.isEmpty()) {
                         int id = getResources().getIdentifier("@drawable/ic_baseline_image_24", "drawable", getPackageName());
                         imageView.setImageResource(id);
-                    }else {
+                    } else {
                         Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imageView);
                         btConfirm.setVisibility(View.GONE);
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -173,24 +176,34 @@ public class AttachPayment extends AppCompatActivity {
                         });
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
                 }
             });
-        }else {
+        } else {
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String imageURL = snapshot.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").getValue(String.class);
+                    Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imageView);
+                    txStatus.setText("ชำระแล้ว");
+                    txStatus.setTextColor(ContextCompat.getColor(mContext, R.color.green));
+                    btConfirm.setVisibility(View.GONE);
+                }
 
-            txStatus.setText("ชำระแล้ว");
-            txStatus.setTextColor(ContextCompat.getColor(mContext,R.color.green));
-            imageView.setVisibility(View.GONE);
-            btConfirm.setVisibility(View.GONE);
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
         }
         txRoomPrice.setText(billModel.getRoomprice());
         txElectricity.setText(billModel.getElectricity());
         txWater.setText(billModel.getWater());
         txDiscount.setText(billModel.getDiscount());
         txSum.setText(billModel.getSum());
-
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
@@ -201,9 +214,9 @@ public class AttachPayment extends AppCompatActivity {
         });
     }
 
-    public String getMonth(String monthThai){
+    public String getMonth(String monthThai) {
         String month = "";
-        switch(monthThai) {
+        switch (monthThai) {
             case "มกราคม":
                 month = "0";
                 break;
@@ -244,17 +257,17 @@ public class AttachPayment extends AppCompatActivity {
         return month;
     }
 
-    private void openImage(){
+    private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,IMAGE_REQUEST);
+        startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
             imUri = data.getData();
             Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
 
@@ -262,16 +275,16 @@ public class AttachPayment extends AppCompatActivity {
 
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
 
-        if (imUri != null){
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis()+"."+getFileExtension(imUri));
+        if (imUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
 
             fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -280,7 +293,7 @@ public class AttachPayment extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
-                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                             myRef.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").setValue(imageURL);
                         }
                     });

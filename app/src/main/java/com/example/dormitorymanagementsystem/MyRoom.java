@@ -58,20 +58,29 @@ public class MyRoom extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(numroom)){
-                    GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
-                    final List<String> listUser = snapshot.child(numroom).getValue(genericTypeIndicator);
-                    if (listUser.size()!=0){
-                        txMember.setText("สมาชิก "+listUser.size()+" คน");
+                    //GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>(){};
+                    //final List<String> listUser = snapshot.child(numroom).getValue(genericTypeIndicator);
+                    List<String> listMember = new ArrayList<>();
+                    for (int i=0 ; i<=3 ; i++){
+                        String member = snapshot.child(numroom).child(String.valueOf(i)).getValue(String.class);
+                        if (member == null){
+
+                        }else {
+                            listMember.add(member);
+                        }
+                    }
+                    if (listMember.size()!=0){
+                        txMember.setText("สมาชิก "+listMember.size()+" คน");
                     }else {
                         txMember.setText("0");
                     }
                     myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (int i = 0 ; i<listUser.size() ; i++){
-                                if (snapshot.hasChild(listUser.get(i))){
-                                    final String fName = snapshot.child(listUser.get(i)).child("firstname").getValue(String.class);
-                                    final String lName = snapshot.child(listUser.get(i)).child("lastname").getValue(String.class);
+                            for (int i = 0 ; i<listMember.size() ; i++){
+                                if (snapshot.hasChild(listMember.get(i))){
+                                    final String fName = snapshot.child(listMember.get(i)).child("firstname").getValue(String.class);
+                                    final String lName = snapshot.child(listMember.get(i)).child("lastname").getValue(String.class);
                                     final String name = fName+" "+lName;
                                     Log.e("nameMyRoom",name);
                                     listName.add(name);

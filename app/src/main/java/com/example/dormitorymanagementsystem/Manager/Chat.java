@@ -74,7 +74,7 @@ public class Chat extends AppCompatActivity {
         getUserID = Login.getGbIdUser();
         String getID = getIntent().getStringExtra("userID");
         if (getType.equals("Admin")) {
-            chatKey = getIntent().getStringExtra("chat_key");
+            chatKey = getID;
         } else {
             chatKey = getUserID;
         }

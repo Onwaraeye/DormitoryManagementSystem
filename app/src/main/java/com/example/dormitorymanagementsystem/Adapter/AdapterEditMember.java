@@ -93,13 +93,12 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
         dialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                ref.child("Users").child(id).child("numroom").setValue("");
                 ref.child("Room").child(room).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         for (DataSnapshot ds : snapshot.getChildren()){
-                            //Log.e("id", ds.getKey()+"");
                             if (ds.getValue().equals(id)){
-                                //Log.e("id",ds.getRef()+"");
                                 ds.getRef().removeValue();
                                 delete(position);
                             }

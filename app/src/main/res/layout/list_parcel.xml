@@ -37,9 +37,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/fc_minimal_regular"
-                android:text="ชื่อ นามสกุล"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:text="ชื่อ นามสกุล" />
 
             <TextView
                 android:id="@+id/txReceiver"
