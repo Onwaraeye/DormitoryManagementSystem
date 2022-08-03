@@ -3,14 +3,12 @@ package com.example.dormitorymanagementsystem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
+import com.example.dormitorymanagementsystem.Adapter.AdapterTabLayout;
 import com.example.dormitorymanagementsystem.Fragment.HistoryPacelFragment;
 import com.example.dormitorymanagementsystem.Fragment.NewParcelFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -36,9 +34,9 @@ public class Parcel extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.vpParcel);
         tabLayout.setupWithViewPager(viewPager);
 
-        AdapterParcel adapterParcel = new AdapterParcel(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapterParcel.addFragment(new NewParcelFragment(),"พัสดุใหม่");
-        adapterParcel.addFragment(new HistoryPacelFragment(),"ประวัติพัสดุ");
-        viewPager.setAdapter(adapterParcel);
+        AdapterTabLayout adapterTabLayout = new AdapterTabLayout(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapterTabLayout.addFragment(new NewParcelFragment(),"พัสดุใหม่");
+        adapterTabLayout.addFragment(new HistoryPacelFragment(),"ประวัติพัสดุ");
+        viewPager.setAdapter(adapterTabLayout);
     }
 }

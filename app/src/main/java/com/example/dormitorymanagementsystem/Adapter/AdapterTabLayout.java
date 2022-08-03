@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class AdapterParcel extends FragmentPagerAdapter {
+public class AdapterTabLayout extends FragmentPagerAdapter {
 
     private final ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     private final ArrayList<String> fragmentTitle = new ArrayList<>();
 
-    public AdapterParcel(@NonNull FragmentManager fm, int behavior) {
+    public AdapterTabLayout(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
 

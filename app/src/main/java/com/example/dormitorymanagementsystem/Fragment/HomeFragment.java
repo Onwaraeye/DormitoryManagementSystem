@@ -15,15 +15,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Central;
+import com.example.dormitorymanagementsystem.ChatNew.ContactActivity;
 import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Manager.Chat;
 import com.example.dormitorymanagementsystem.Info;
-import com.example.dormitorymanagementsystem.Manager.ChatManager;
-import com.example.dormitorymanagementsystem.Manager.ViewBills;
 import com.example.dormitorymanagementsystem.Manager.ViewBillsSelectDate;
 import com.example.dormitorymanagementsystem.Manager.ViewRoom;
 import com.example.dormitorymanagementsystem.Manager.ManagerPhone;
-import com.example.dormitorymanagementsystem.Manager.Post;
 import com.example.dormitorymanagementsystem.Manager.SentParcel;
 import com.example.dormitorymanagementsystem.Manager.ViewCentralUse;
 import com.example.dormitorymanagementsystem.Manager.ViewRepair;
@@ -37,7 +34,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +47,7 @@ public class HomeFragment extends Fragment {
 
     private LinearLayout menu_bill,menu_parcel,menu_central,menu_my_room,menu_phone,menu_info,menu_repair,menu_chat;
     private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_view_repair,menu_edit_info,menu_view_bill;
-    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4;
+    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4,repair;
     private View view;
     private final String getType = Login.getGbTypeUser();
 
@@ -165,12 +161,11 @@ public class HomeFragment extends Fragment {
         menu_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Chat.class);
+                /*Intent intent = new Intent(getActivity(), Chat.class);
                 if (getType.equals("User")){
                     intent.putExtra("userID","Msg01");
                 }
-                getActivity().startActivity(intent);
-
+                getActivity().startActivity(intent);*/
             }
         });
         menu_sent_parcel = view.findViewById(R.id.menu_sent_parcel);
@@ -203,7 +198,7 @@ public class HomeFragment extends Fragment {
         menu_chat_manager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChatManager.class);
+                Intent intent = new Intent(getActivity(), ContactActivity.class);
                 getActivity().startActivity(intent);
             }
         });
@@ -243,6 +238,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        LinearLayout menu_view_repair_work = view.findViewById(R.id.menu_view_repair_work);
+        menu_view_repair_work.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewRepair.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
         if (Login.getGbTypeUser().equals("User")){
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
@@ -251,8 +255,29 @@ public class HomeFragment extends Fragment {
             admin3 = view.findViewById(R.id.admin3);
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
-            admin4.setVisibility(View.GONE);
+            admin4.setVisibility(View.VISIBLE);
+            repair = view.findViewById(R.id.repair);
+            repair.setVisibility(View.GONE);
+        }else if (Login.getGbTypeUser().equals("Admin")){
+            user1 = view.findViewById(R.id.user1);
+            user1.setVisibility(View.GONE);
+            user2 = view.findViewById(R.id.user2);
+            user2.setVisibility(View.GONE);
+            user3 = view.findViewById(R.id.user3);
+            user3.setVisibility(View.GONE);
+            user4 = view.findViewById(R.id.user4);
+            user4.setVisibility(View.GONE);
+            repair = view.findViewById(R.id.repair);
+            repair.setVisibility(View.GONE);
         }else {
+            admin1 = view.findViewById(R.id.admin1);
+            admin1.setVisibility(View.GONE);
+            admin2 = view.findViewById(R.id.admin2);
+            admin2.setVisibility(View.GONE);
+            admin3 = view.findViewById(R.id.admin3);
+            admin3.setVisibility(View.GONE);
+            admin4 = view.findViewById(R.id.admin4);
+            admin4.setVisibility(View.GONE);
             user1 = view.findViewById(R.id.user1);
             user1.setVisibility(View.GONE);
             user2 = view.findViewById(R.id.user2);

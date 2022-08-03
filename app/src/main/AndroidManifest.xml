@@ -13,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DormitoryManagementSystem">
+        <activity android:name=".ChatNew.ChatActivity"></activity>
+        <activity android:name=".ChatNew.ContactActivity" />
         <activity android:name=".Manager.ViewCentralUse2" />
         <activity android:name=".Manager.ViewBills" />
         <activity android:name=".Manager.ViewBillsSelectDate" />
@@ -23,7 +25,6 @@
         <activity android:name=".ParcelDetail" />
         <activity android:name=".Manager.ViewRepair" />
         <activity android:name=".Manager.Post" />
-        <activity android:name=".Manager.ChatManager" />
         <activity android:name=".Manager.ViewCentralUse" />
         <activity android:name=".Manager.EditAddMember" />
         <activity android:name=".Manager.EditMember" />
@@ -39,7 +40,6 @@
         <activity android:name=".CentralReservation2" />
         <activity android:name=".CentralReservation" />
         <activity android:name=".AttachPayment" />
-        <activity android:name=".Manager.Chat" />
         <activity android:name=".Repair" />
         <activity android:name=".Info" />
         <activity android:name=".MyRoom" />

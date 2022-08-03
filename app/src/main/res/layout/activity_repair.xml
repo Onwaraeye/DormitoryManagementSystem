@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Repair">
 
@@ -40,144 +40,208 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="20dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/txTime"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="TextView" />
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="ห้อง" />
+            <TextView
+                android:id="@+id/txTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="TextView" />
 
-        <EditText
-            android:id="@+id/etRoom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/gray"
-            android:padding="5dp"
-            android:inputType="textPersonName"
-            android:enabled="false"
-            android:textColor="@drawable/edit_text_selector"
-            android:text="101" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="ห้อง" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="หัวข้อการแจ้งซ่อม" />
+            <EditText
+                android:id="@+id/etRoom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:padding="5dp"
+                android:inputType="textPersonName"
+                android:enabled="false"
+                android:textColor="@drawable/edit_text_selector"
+                android:text="101" />
 
-        <EditText
-            android:id="@+id/etTitleRepair"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/gray"
-            android:inputType="textPersonName"
-            android:textColor="@drawable/edit_text_selector"
-            android:text="" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="หัวข้อการแจ้งซ่อม" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="รายละเอียด" />
+            <EditText
+                android:id="@+id/etTitleRepair"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:inputType="textPersonName"
+                android:textColor="@drawable/edit_text_selector"
+                android:text="" />
 
-        <EditText
-            android:id="@+id/etDetail"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:ems="10"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/gray"
-            android:padding="10dp"
-            android:gravity="start"
-            android:textColor="@drawable/edit_text_selector"
-            android:inputType="textMultiLine" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="รายละเอียด" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="แนบรูป" />
+            <EditText
+                android:id="@+id/etDetail"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:padding="10dp"
+                android:gravity="start"
+                android:textColor="@drawable/edit_text_selector"
+                android:inputType="textMultiLine" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView"
-            android:layout_width="250dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@color/mediumgray"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
-            app:srcCompat="@drawable/ic_baseline_image_24" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="แนบรูป" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="เบอร์โทรสำหรับติดต่อ" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView"
+                android:layout_width="250dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/mediumgray"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+                app:srcCompat="@drawable/ic_baseline_image_24" />
 
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/gray"
-            android:padding="5dp"
-            android:textColor="@drawable/edit_text_selector"
-            android:inputType="phone" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="เบอร์โทรสำหรับติดต่อ" />
 
-        <TextView
-            android:id="@+id/txCost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="ค่าใช้จ่าย" />
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:padding="5dp"
+                android:textColor="@drawable/edit_text_selector"
+                android:inputType="phone" />
 
-        <EditText
-            android:id="@+id/etCost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/gray"
-            android:padding="5dp"
-            android:textColor="@drawable/edit_text_selector"
-            android:inputType="phone" />
+            <TextView
+                android:id="@+id/txRepairman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="ช่างซ่อม" />
+
+            <EditText
+                android:id="@+id/etRepairman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:padding="5dp"
+                android:textColor="@drawable/edit_text_selector"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/txCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="ค่าใช้จ่าย" />
+
+            <EditText
+                android:id="@+id/etCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:padding="5dp"
+                android:textColor="@drawable/edit_text_selector"
+                android:inputType="phone" />
 
 
-        <Button
-            android:id="@+id/btConfirm"
-            android:layout_marginTop="20sp"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:backgroundTint="#323E4D"
-            android:background="@drawable/bg_menu"
-            android:textColor="@color/white"
-            android:text="ยืนยัน" />
+            <Button
+                android:id="@+id/btConfirm"
+                android:layout_marginTop="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="#323E4D"
+                android:background="@drawable/bg_menu"
+                android:textColor="@color/white"
+                android:text="ยืนยัน" />
 
-        <Button
-            android:id="@+id/btAdminConfirm"
-            android:layout_marginTop="20sp"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:backgroundTint="@color/yellow"
-            android:background="@drawable/bg_menu"
-            android:textColor="@color/black"
-            android:text="ยืนยันการซ่อม" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/btAdminForwardWork"
+                android:layout_marginTop="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/yellow"
+                android:background="@drawable/bg_menu"
+                android:textColor="@color/black"
+                android:text="มอบหมายงาน" />
+
+            <LinearLayout
+                android:id="@+id/repairman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btChat"
+                    android:layout_marginTop="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/yellow"
+                    android:background="@drawable/bg_menu"
+                    android:textColor="@color/black"
+                    android:text="คุยกับนิติ" />
+
+                <Button
+                    android:id="@+id/btConfirmRepair"
+                    android:layout_marginTop="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/blue"
+                    android:background="@drawable/bg_menu"
+                    android:textColor="@color/white"
+                    android:text="แจ้งซ่อมสำเร็จ" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btAdminConfirm"
+                android:layout_marginTop="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/yellow"
+                android:background="@drawable/bg_menu"
+                android:textColor="@color/black"
+                android:text="ยืนยันการซ่อม" />
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

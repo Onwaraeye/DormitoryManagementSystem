@@ -1,4 +1,4 @@
-package com.example.dormitorymanagementsystem.Fragment;
+package com.example.dormitorymanagementsystem.Repairman;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapteViewPepiar;
-import com.example.dormitorymanagementsystem.Adapter.AdapterNewParcel;
 import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Manager.ViewRepair;
 import com.example.dormitorymanagementsystem.Model.NewParcelModel;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
@@ -31,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewRepairFragment extends Fragment {
+public class RepairWorkFragment extends Fragment {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Repair");
@@ -47,7 +45,7 @@ public class NewRepairFragment extends Fragment {
     private String userID = Login.getGbIdUser();
     private String typeUser = Login.getGbTypeUser();
 
-    public NewRepairFragment() {
+    public RepairWorkFragment() {
 
     }
 
@@ -60,7 +58,7 @@ public class NewRepairFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_new_repair, container, false);
+        view = inflater.inflate(R.layout.fragment_repair_work, container, false);
 
         mContext = getActivity().getApplication();
 
@@ -74,15 +72,24 @@ public class NewRepairFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
 
-                Query query = myRef.orderByChild("status").equalTo("0");
+                Query query = myRef.orderByChild("status").equalTo("2");
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         list.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (ds.child("status").getValue(String.class).equals("0")) {
-                                repairModel = ds.getValue(RepairModel.class);
-                                list.add(0, repairModel);
+                            String status = ds.child("status").getValue(String.class);
+                            String idRepairman = ds.child("repairman").getValue(String.class);
+                            if (typeUser.equals("Admin")){
+                                if (status.equals("2")) {
+                                    repairModel = ds.getValue(RepairModel.class);
+                                    list.add(0, repairModel);
+                                }
+                            }else {
+                                if (status.equals("2") && idRepairman.equals(userID)) {
+                                    repairModel = ds.getValue(RepairModel.class);
+                                    list.add(0, repairModel);
+                                }
                             }
                         }
                         adapter = new AdapteViewPepiar(mContext, list);

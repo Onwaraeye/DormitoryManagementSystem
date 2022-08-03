@@ -2,22 +2,17 @@ package com.example.dormitorymanagementsystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.ListViewAutoScrollHelper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.dormitorymanagementsystem.Model.BillModel;
-import com.example.dormitorymanagementsystem.Model.MemoryData;
 import com.example.dormitorymanagementsystem.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -96,15 +91,15 @@ public class Login extends AppCompatActivity {
         listRoom = new ArrayList<>();
 
         Button buttonAddData = findViewById(R.id.buttonAddData);
-        buttonAddData.setVisibility(View.GONE);
+        buttonAddData.setVisibility(View.VISIBLE);
         buttonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRefadd = database.getReference("Users/Mng01");
+                DatabaseReference myRefadd = database.getReference("Users/Rpm02");
 
-                myRefadd.setValue(new User("Mng01","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","ตอง","none",
-                        "1234567891234","Admin","0812345678",""));
+                myRefadd.setValue(new User("Rpm02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","ตอง","none",
+                        "1234567891234","Repairman","0812345678",""));
                 //uploadList();
             }
         });
@@ -161,7 +156,6 @@ public class Login extends AppCompatActivity {
                                     Login.setGbFNameUser(userFName);
                                     Login.setGbLNameUser(userLName);
                                     Login.setGbTypeUser(userType);
-                                    MemoryData.saveData(userId,Login.this);
                                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                     startActivity(intent);
                                     finish();

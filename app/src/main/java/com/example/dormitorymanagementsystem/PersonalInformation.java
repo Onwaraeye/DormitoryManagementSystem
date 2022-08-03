@@ -82,7 +82,7 @@ public class PersonalInformation extends AppCompatActivity {
                     String lName = snapshot.child(userID).child("lastname").getValue(String.class);
                     String name = fName+" "+lName;
                     String birthday = snapshot.child(userID).child("birthday").getValue(String.class);
-                    String gender = snapshot.child(userID).child("gender").child("gender").getValue(String.class);
+                    String gender = snapshot.child(userID).child("gender").getValue(String.class);
                     String imageURL = snapshot.child(userID).child("pictureUserUrl").getValue(String.class);
                     if (imageURL.isEmpty()){
                         int id = getResources().getIdentifier("@drawable/ic_bx_bxs_user_circle", "drawable", getPackageName());

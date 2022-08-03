@@ -2,8 +2,6 @@ package com.example.dormitorymanagementsystem.Manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -11,17 +9,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
-import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
-import com.example.dormitorymanagementsystem.Fragment.ViewFitnessFragment;
-import com.example.dormitorymanagementsystem.Fragment.ViewTutoringFragment;
-import com.example.dormitorymanagementsystem.Model.CentralManagerModel;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;

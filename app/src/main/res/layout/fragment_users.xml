@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ChatNew.UsersFragment">
+
+
+    <SearchView
+        android:id="@+id/action_search"
+        android:layoutDirection="rtl"
+        android:background="@drawable/bg_menu"
+        android:backgroundTint="@color/mediumgray"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

@@ -8,15 +8,14 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +73,6 @@ public class Repair extends AppCompatActivity {
         String getCost = intent.getStringExtra("cost");
         Long time = System.currentTimeMillis();
 
-
         TextView txTime = findViewById(R.id.txTime);
         EditText etRoom = findViewById(R.id.etRoom);
         EditText etTitleRepair = findViewById(R.id.etTitleRepair);
@@ -82,19 +80,30 @@ public class Repair extends AppCompatActivity {
         EditText etPhone = findViewById(R.id.etPhone);
         TextView txCost = findViewById(R.id.txCost);
         EditText etCost = findViewById(R.id.etCost);
+        TextView txRepairman = findViewById(R.id.txRepairman);
+        EditText etRepairman = findViewById(R.id.etRepairman);
         Button btConfirm = findViewById(R.id.btConfirm);
         Button btAdminConfirm = findViewById(R.id.btAdminConfirm);
+        Button btAdminForwardWork = findViewById(R.id.btAdminForwardWork);
+        Button btChat = findViewById(R.id.btChat);
+        Button btConfirmRepair = findViewById(R.id.btConfirmRepair);
+        LinearLayout repairman = findViewById(R.id.repairman);
         imageView = findViewById(R.id.imageView);
 
+        btConfirm.setVisibility(View.GONE);
+        btAdminConfirm.setVisibility(View.GONE);
+        btAdminForwardWork.setVisibility(View.GONE);
+        repairman.setVisibility(View.GONE);
 
+        //ส่วนของUser
         if (typeUser.equals("User")) {
 
             txTime.setVisibility(View.GONE);
-
             btConfirm.setVisibility(View.VISIBLE);
-            btAdminConfirm.setVisibility(View.GONE);
             etCost.setVisibility(View.GONE);
             txCost.setVisibility(View.GONE);
+            etRepairman.setVisibility(View.GONE);
+            txRepairman.setVisibility(View.GONE);
             myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,32 +155,81 @@ public class Repair extends AppCompatActivity {
                     }
                 }
             });
-        } else {
+        }
+        //ส่วนของช่าง
+        else if (typeUser.equals("Repairman")){
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
             String date = formatter.format(new Date(Long.parseLong(getTime)));
             txTime.setText(date);
 
-            if (getStatus.equals("1")){
-                btAdminConfirm.setVisibility(View.GONE);
-                etCost.setEnabled(false);
-                etCost.setText(getCost);
-            }else {
-                btAdminConfirm.setVisibility(View.VISIBLE);
-            }
-            btConfirm.setVisibility(View.GONE);
+            repairman.setVisibility(View.VISIBLE);
 
             etRoom.setText(getRoom);
             etRoom.setEnabled(false);
-
             etDetail.setText(getDetail);
             etDetail.setEnabled(false);
-
             etTitleRepair.setText(getTitle);
             etTitleRepair.setEnabled(false);
-
             etPhone.setText(getPhone);
             etPhone.setEnabled(false);
+            etRepairman.setText(userID);
+            etRepairman.setEnabled(false);
+
+            Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
+
+            btChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    /*Intent intent = new Intent(getApplicationContext(), Chat.class);
+                    intent.putExtra("userID","Msg01");
+                    startActivity(intent);*/
+                }
+            });
+
+
+        }
+        //ส่วนของAdmin
+        else {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
+            String date = formatter.format(new Date(Long.parseLong(getTime)));
+            txTime.setText(date);
+
+            if(getStatus.equals("1")){
+                etCost.setEnabled(false);
+                etCost.setText(getCost);
+            }else if (getStatus.equals("2")){
+                txCost.setVisibility(View.GONE);
+                etCost.setVisibility(View.GONE);
+            }else if (getStatus.equals("3")){
+
+            }else {
+                btAdminForwardWork.setVisibility(View.VISIBLE);
+                txCost.setVisibility(View.GONE);
+                etCost.setVisibility(View.GONE);
+            }
+
+            etRoom.setText(getRoom);
+            etRoom.setEnabled(false);
+            etDetail.setText(getDetail);
+            etDetail.setEnabled(false);
+            etTitleRepair.setText(getTitle);
+            etTitleRepair.setEnabled(false);
+            etPhone.setText(getPhone);
+            etPhone.setEnabled(false);
+
+            myRefRepair.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    etRepairman.setText(snapshot.child("repairman").getValue(String.class));
+                    etRepairman.setEnabled(false);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
 
             Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
@@ -179,7 +237,6 @@ public class Repair extends AppCompatActivity {
             btAdminConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     Query query = myRef.orderByChild("timestamp").equalTo(getTime);
                     query.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -188,6 +245,27 @@ public class Repair extends AppCompatActivity {
                                 ds.getRef().child("status").setValue("1");
                                 ds.getRef().child("cost").setValue(etCost.getText().toString());
                                 ds.getRef().child("timestampComplete").setValue(timeUp);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+            });
+            btAdminForwardWork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                ds.getRef().child("status").setValue("2");
+                                ds.getRef().child("timestampComplete").setValue(timeUp);
+                                ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
                                 finish();
                             }
                         }

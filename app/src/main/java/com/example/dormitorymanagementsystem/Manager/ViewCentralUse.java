@@ -2,22 +2,12 @@ package com.example.dormitorymanagementsystem.Manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -26,30 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
-import com.example.dormitorymanagementsystem.Adapter.AdapterParcel;
-import com.example.dormitorymanagementsystem.Fragment.CentralFragment;
-import com.example.dormitorymanagementsystem.Fragment.CentralReservationFragment;
-import com.example.dormitorymanagementsystem.Fragment.ViewFitnessFragment;
-import com.example.dormitorymanagementsystem.Fragment.ViewTutoringFragment;
-import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Model.CentralManagerModel;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
-import com.example.dormitorymanagementsystem.Model.ManagerModel;
-import com.example.dormitorymanagementsystem.Model.ViewCentralModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ViewCentralUse extends AppCompatActivity {
