@@ -62,7 +62,6 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
         if (userImage.isEmpty()){
             holder.mAvatarIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
         }else {
-            //Picasso.get().load(userImage).placeholder(R.drawable.ic_bx_bx_user).into(holder.mAvatarIv);
             Glide.with(context).load(userImage).fitCenter().centerCrop().into(holder.mAvatarIv);
         }
 

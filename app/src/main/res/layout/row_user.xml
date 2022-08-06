@@ -39,5 +39,15 @@
             android:fontFamily="@font/fc_minimal_regular"
             android:layout_weight="1"
             android:text="TextView" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/red"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
     </LinearLayout>
 </LinearLayout>

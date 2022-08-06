@@ -4,15 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterTabLayout;
+import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.R;
+import com.example.dormitorymanagementsystem.notifications.Token;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ContactActivity extends AppCompatActivity {
+
+    String mUID = Login.getGbIdUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +43,28 @@ public class ContactActivity extends AppCompatActivity {
         adapterTabLayout.addFragment(new UsersFragment(),"แชท");
         viewPager.setAdapter(adapterTabLayout);
 
+        updateToken(mUID);
+        checkUserStatus();
 
+    }
 
+    @Override
+    protected void onResume() {
+        checkUserStatus();
+        super.onResume();
+    }
+
+    private void checkUserStatus(){
+
+        SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("Current_USERID", mUID);
+        editor.apply();
+    }
+
+    public void updateToken(String token) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token mToken = new Token(token);
+        ref.child(mUID).setValue(mToken);
     }
 }
