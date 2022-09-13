@@ -86,9 +86,11 @@ public class RepairSuccessful extends Fragment {
                                     list.add(0, repairModel);
                                 }
                             }else {
-                                if (status.equals("3") && idRepairman.equals(userID)) {
-                                    repairModel = ds.getValue(RepairModel.class);
-                                    list.add(0, repairModel);
+                                if (idRepairman != null) {
+                                    if (status.equals("3") && idRepairman.equals(userID)) {
+                                        repairModel = ds.getValue(RepairModel.class);
+                                        list.add(0, repairModel);
+                                    }
                                 }
                             }
                         }

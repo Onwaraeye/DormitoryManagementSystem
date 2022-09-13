@@ -71,6 +71,7 @@ public class Repair extends AppCompatActivity {
         String getPhone = intent.getStringExtra("phone");
         String getStatus = intent.getStringExtra("status");
         String getCost = intent.getStringExtra("cost");
+        String getRepairman = intent.getStringExtra("repairman");
         Long time = System.currentTimeMillis();
 
         TextView txTime = findViewById(R.id.txTime);
@@ -163,8 +164,6 @@ public class Repair extends AppCompatActivity {
             String date = formatter.format(new Date(Long.parseLong(getTime)));
             txTime.setText(date);
 
-            repairman.setVisibility(View.VISIBLE);
-
             etRoom.setText(getRoom);
             etRoom.setEnabled(false);
             etDetail.setText(getDetail);
@@ -173,42 +172,56 @@ public class Repair extends AppCompatActivity {
             etTitleRepair.setEnabled(false);
             etPhone.setText(getPhone);
             etPhone.setEnabled(false);
-            etRepairman.setText(userID);
+            String name = Login.getGbFNameUser()+" "+Login.getGbLNameUser();
+            etRepairman.setText(name);
             etRepairman.setEnabled(false);
-
             Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
-            btChat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if (getStatus.equals("2")){
+                repairman.setVisibility(View.VISIBLE);
+                btChat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                     /*Intent intent = new Intent(getApplicationContext(), Chat.class);
                     intent.putExtra("userID","Msg01");
                     startActivity(intent);*/
-                }
-            });
+                    }
+                });
+                btConfirmRepair.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String timeUp = String.valueOf(System.currentTimeMillis());
+                        Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    ds.getRef().child("status").setValue("3");
+                                    ds.getRef().child("cost").setValue(etCost.getText().toString());
+                                    ds.getRef().child("timestampRepair").setValue(timeUp);
+                                    finish();
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                etCost.setText(getCost);
+                etCost.setEnabled(false);
+            }
 
         }
         //ส่วนของAdmin
-        else {
+        else if (typeUser.equals("Admin")){
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
             String date = formatter.format(new Date(Long.parseLong(getTime)));
             txTime.setText(date);
 
-            if(getStatus.equals("1")){
-                etCost.setEnabled(false);
-                etCost.setText(getCost);
-            }else if (getStatus.equals("2")){
-                txCost.setVisibility(View.GONE);
-                etCost.setVisibility(View.GONE);
-            }else if (getStatus.equals("3")){
-
-            }else {
-                btAdminForwardWork.setVisibility(View.VISIBLE);
-                txCost.setVisibility(View.GONE);
-                etCost.setVisibility(View.GONE);
-            }
-
             etRoom.setText(getRoom);
             etRoom.setEnabled(false);
             etDetail.setText(getDetail);
@@ -217,65 +230,122 @@ public class Repair extends AppCompatActivity {
             etTitleRepair.setEnabled(false);
             etPhone.setText(getPhone);
             etPhone.setEnabled(false);
+            etCost.setText(getCost);
+            etCost.setEnabled(false);
+            etRepairman.setEnabled(false);
 
-            myRefRepair.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    etRepairman.setText(snapshot.child("repairman").getValue(String.class));
-                    etRepairman.setEnabled(false);
-                }
+            //0คือแจ้งมา
+            if(getStatus.equals("0")){
+                etRepairman.setEnabled(true);
+                btAdminForwardWork.setVisibility(View.VISIBLE);
+                txCost.setVisibility(View.GONE);
+                etCost.setVisibility(View.GONE);
+                btAdminForwardWork.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String timeUp = String.valueOf(System.currentTimeMillis());
+                        Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    ds.getRef().child("status").setValue("2");
+                                    ds.getRef().child("timestampForward").setValue(timeUp);
+                                    ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
+                                    finish();
+                                }
+                            }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            }
+                        });
+                    }
+                });
+            }
+            //2คืองานที่นิติมอบหมายให้ช่าง
+            else if (getStatus.equals("2")){
+                txCost.setVisibility(View.GONE);
+                etCost.setVisibility(View.GONE);
+                repairman.setVisibility(View.VISIBLE);
+                etRepairman.setEnabled(true);
 
-                }
-            });
+                btChat.setText("คุยกับช่าง");
+                btChat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    /*Intent intent = new Intent(getApplicationContext(), Chat.class);
+                    intent.putExtra("userID","Msg01");
+                    startActivity(intent);*/
+                    }
+                });
+                btConfirmRepair.setText("แก้ไข");
+                btConfirmRepair.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String timeUp = String.valueOf(System.currentTimeMillis());
+                        Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            }
+                        });
+                    }
+                });
+            }
+            //3คืองานที่ช่างทำสำเร็จ
+            else if (getStatus.equals("3")){
+                etRepairman.setEnabled(false);
+                String timeUp = String.valueOf(System.currentTimeMillis());
+                btAdminConfirm.setVisibility(View.VISIBLE);
+                btAdminConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    ds.getRef().child("status").setValue("1");
+                                    ds.getRef().child("timestampComplete").setValue(timeUp);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            }
+                        });
+                    }
+                });
+            }
+            //1คือสำเร็จ
+            else {
+
+            }
+
+            if (getRepairman != null){
+                myRefUser.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String name = snapshot.child(getRepairman).child("firstname").getValue(String.class)+" "+snapshot.child(getRepairman).child("lastname").getValue(String.class);
+                        etRepairman.setText(name);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+            }
             Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
-
-            String timeUp = String.valueOf(System.currentTimeMillis());
-            btAdminConfirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Query query = myRef.orderByChild("timestamp").equalTo(getTime);
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                ds.getRef().child("status").setValue("1");
-                                ds.getRef().child("cost").setValue(etCost.getText().toString());
-                                ds.getRef().child("timestampComplete").setValue(timeUp);
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            });
-            btAdminForwardWork.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Query query = myRef.orderByChild("timestamp").equalTo(getTime);
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                ds.getRef().child("status").setValue("2");
-                                ds.getRef().child("timestampComplete").setValue(timeUp);
-                                ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            });
         }
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);

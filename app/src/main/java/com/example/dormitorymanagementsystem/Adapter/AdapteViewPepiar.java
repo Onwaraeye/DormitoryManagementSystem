@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class AdapteViewPepiar extends RecyclerView.Adapter<AdapteViewPepiar.MyVi
 
     private Context mContext;
     List<RepairModel> list;
+    String typeUser = Login.getGbTypeUser();
 
 
     public AdapteViewPepiar(Context mContext, List<RepairModel> list) {
@@ -65,25 +67,44 @@ public class AdapteViewPepiar extends RecyclerView.Adapter<AdapteViewPepiar.MyVi
             String image = list.get(position).getImageUrl();
             String phone = list.get(position).getPhone();
             String cost = list.get(position).getCost();
-
+            String repairman = list.get(position).getRepairman();
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy" + " / " + "HH:mm");
             String date = formatter.format(new Date(Long.parseLong(time)));
 
             if (status.equals("1")){
                 String timestampComplete = list.get(position).getTimestampComplete();
-                if (timestampComplete == null){
-
-                }else {
-                    String dateRepair = formatter.format(new Date(Long.parseLong(timestampComplete)));
-                    holder.txTime.setText(dateRepair);
+                if (timestampComplete != null){
+                    String dateComplete = formatter.format(new Date(Long.parseLong(timestampComplete)));
+                    holder.txTime.setText("สำเร็จเมื่อ "+dateComplete);
                 }
-            }else {
-                holder.txTime.setText(date);
+            }
+            else if (status.equals("2")){
+                String timestampForward = list.get(position).getTimestampForward();
+                if (timestampForward != null){
+                    String dateForward = formatter.format(new Date(Long.parseLong(timestampForward)));
+                    holder.txTime.setText("มอบหมายเมื่อ "+dateForward);
+                }
+            }
+            else if (status.equals("3")){
+                String timestampRepair = list.get(position).getTimestampRepair();
+                if (timestampRepair != null){
+                    String dateRepair = formatter.format(new Date(Long.parseLong(timestampRepair)));
+                    holder.txTime.setText("ซ่อมเสร็จเมื่อ "+dateRepair);
+                }
+            }
+            else {
+                holder.txTime.setText("");
             }
 
-            holder.txTitle.setText(title);
-            holder.txDetail.setText(detail);
+            if (status.equals("3") && typeUser.equals("Repairman")){
+                holder.txTitle.setText(title+" กำลังตรวจสอบ");
+                holder.txTitle.setTextColor(Color.RED);
+            }else {
+                holder.txTitle.setText(title);
+            }
+
+            holder.txDetail.setText(date);
             holder.txRoom.setText(room);
 
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +120,7 @@ public class AdapteViewPepiar extends RecyclerView.Adapter<AdapteViewPepiar.MyVi
                     intent.putExtra("phone", phone);
                     intent.putExtra("status", status);
                     intent.putExtra("cost", cost);
+                    intent.putExtra("repairman", repairman);
                     mContext.startActivity(intent);
                 }
             });

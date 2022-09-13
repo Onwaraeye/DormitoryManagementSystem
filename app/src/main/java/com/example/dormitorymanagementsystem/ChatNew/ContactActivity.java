@@ -1,5 +1,6 @@
 package com.example.dormitorymanagementsystem.ChatNew;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -13,13 +14,18 @@ import com.example.dormitorymanagementsystem.Adapter.AdapterTabLayout;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.R;
 import com.example.dormitorymanagementsystem.notifications.Token;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ContactActivity extends AppCompatActivity {
 
     String mUID = Login.getGbIdUser();
+    String userID = Login.getGbIdUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +46,29 @@ public class ContactActivity extends AppCompatActivity {
 
         AdapterTabLayout adapterTabLayout = new AdapterTabLayout(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         adapterTabLayout.addFragment(new UsersFragment(),"ผู้ใช้งาน");
-        adapterTabLayout.addFragment(new UsersFragment(),"แชท");
+        adapterTabLayout.addFragment(new ChatListFragment(),"แชท");
         viewPager.setAdapter(adapterTabLayout);
 
-        updateToken(mUID);
-        checkUserStatus();
+        /*com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<String> task) {
+                if (!task.isSuccessful()){
+                    return;
+                }
+                mUID = task.getResult();
+                String user = Login.getGbIdUser();
+                updateToken(mUID);
+                checkUserStatus();
+            }
+        });*/
+
+
+        //updateToken(mUID);
+        //checkUserStatus();
 
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         checkUserStatus();
         super.onResume();
@@ -65,6 +85,6 @@ public class ContactActivity extends AppCompatActivity {
     public void updateToken(String token) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
         Token mToken = new Token(token);
-        ref.child(mUID).setValue(mToken);
-    }
+        ref.child(userID).setValue(mToken);
+    }*/
 }

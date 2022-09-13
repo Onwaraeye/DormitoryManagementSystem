@@ -11,8 +11,11 @@ public class RepairModel {
     private String timestamp;
     private String cost;
     private String timestampComplete;
+    private String repairman;
+    private String timestampRepair;
+    private String timestampForward;
 
-    public RepairModel(String numroom, String titleRepair, String detail, String imageUrl, String phone, String userID, String status, String timestamp, String cost) {
+    public RepairModel(String numroom, String titleRepair, String detail, String imageUrl, String phone, String userID, String status, String timestamp, String cost, String timestampComplete, String repairman, String timestampRepair, String timestampForward) {
         this.numroom = numroom;
         this.titleRepair = titleRepair;
         this.detail = detail;
@@ -22,6 +25,34 @@ public class RepairModel {
         this.status = status;
         this.timestamp = timestamp;
         this.cost = cost;
+        this.timestampComplete = timestampComplete;
+        this.repairman = repairman;
+        this.timestampRepair = timestampRepair;
+        this.timestampForward = timestampForward;
+    }
+
+    public String getTimestampForward() {
+        return timestampForward;
+    }
+
+    public void setTimestampForward(String timestampForward) {
+        this.timestampForward = timestampForward;
+    }
+
+    public String getTimestampRepair() {
+        return timestampRepair;
+    }
+
+    public void setTimestampRepair(String timestampRepair) {
+        this.timestampRepair = timestampRepair;
+    }
+
+    public String getRepairman() {
+        return repairman;
+    }
+
+    public void setRepairman(String repairman) {
+        this.repairman = repairman;
     }
 
     public String getTimestampComplete() {

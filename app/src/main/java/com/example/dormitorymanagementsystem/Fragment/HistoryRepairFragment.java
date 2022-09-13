@@ -42,7 +42,6 @@ public class HistoryRepairFragment extends Fragment {
     private View view;
     private Context mContext;
 
-    private NewParcelModel newParcelModel;
     private String numroom = Login.getGbNumroom();
     private String userID = Login.getGbIdUser();
 
@@ -70,32 +69,63 @@ public class HistoryRepairFragment extends Fragment {
 
         repairModel = new RepairModel();
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Query query = myRef.orderByChild("status").equalTo("1");
-                query.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        list.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (ds.child("status").getValue(String.class).equals("1")) {
-                                repairModel = ds.getValue(RepairModel.class);
-                                list.add(0,repairModel);
+        if (Login.getGbTypeUser().equals("Repairman")){
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Query query = myRef.orderByChild("status").equalTo("1");
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("repairman").getValue(String.class).equals(userID)) {
+                                    repairModel = ds.getValue(RepairModel.class);
+                                    list.add(0,repairModel);
+                                }
                             }
+                            adapter = new AdapteViewPepiar(mContext, list);
+                            recyclerView.setAdapter(adapter);
                         }
-                        adapter = new AdapteViewPepiar(mContext, list);
-                        recyclerView.setAdapter(adapter);
-                    }
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                    }
-                });
-            }
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }else {
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Query query = myRef.orderByChild("status").equalTo("1");
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("status").getValue(String.class).equals("1")) {
+                                    repairModel = ds.getValue(RepairModel.class);
+                                    list.add(0,repairModel);
+                                }
+                            }
+                            adapter = new AdapteViewPepiar(mContext, list);
+                            recyclerView.setAdapter(adapter);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+
 
         return view;
     }

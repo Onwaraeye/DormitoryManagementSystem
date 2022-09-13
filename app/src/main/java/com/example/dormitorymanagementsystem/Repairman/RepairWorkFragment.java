@@ -71,36 +71,49 @@ public class RepairWorkFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (typeUser.equals("Admin")) {
+                    Query query = myRef.orderByChild("status").equalTo("2");
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                repairModel = ds.getValue(RepairModel.class);
+                                list.add(0, repairModel);
+                            }
+                            adapter = new AdapteViewPepiar(mContext, list);
+                            recyclerView.setAdapter(adapter);
+                        }
 
-                Query query = myRef.orderByChild("status").equalTo("2");
-                query.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        list.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            String status = ds.child("status").getValue(String.class);
-                            String idRepairman = ds.child("repairman").getValue(String.class);
-                            if (typeUser.equals("Admin")){
-                                if (status.equals("2")) {
-                                    repairModel = ds.getValue(RepairModel.class);
-                                    list.add(0, repairModel);
-                                }
-                            }else {
-                                if (status.equals("2") && idRepairman.equals(userID)) {
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+                else if (typeUser.equals("Repairman")) {
+                    Query query = myRef.orderByChild("repairman").equalTo(userID);
+                    query.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                String status = ds.child("status").getValue(String.class);
+                                if (status.equals("2")||status.equals("3")){
                                     repairModel = ds.getValue(RepairModel.class);
                                     list.add(0, repairModel);
                                 }
                             }
+                            adapter = new AdapteViewPepiar(mContext, list);
+                            recyclerView.setAdapter(adapter);
                         }
-                        adapter = new AdapteViewPepiar(mContext, list);
-                        recyclerView.setAdapter(adapter);
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
             }
+
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {

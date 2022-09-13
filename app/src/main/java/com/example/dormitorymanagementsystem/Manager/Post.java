@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -19,7 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +44,10 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Post extends AppCompatActivity {
 
@@ -49,6 +60,7 @@ public class Post extends AppCompatActivity {
     private ImageView imageView;
     private String getStatus;
     private String getTime;
+    private String uid = Login.getGbIdUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +86,7 @@ public class Post extends AppCompatActivity {
         etDetail.setText(getDetail);
         Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
-        if (getStatus.equals("1")){
+        if (getStatus.equals("1")) {
             btConfirm.setVisibility(View.GONE);
             linearLayoutEdit.setVisibility(View.VISIBLE);
             bt_edit.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +103,7 @@ public class Post extends AppCompatActivity {
                                 finish();
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull @NotNull DatabaseError error) {
                         }
@@ -103,7 +116,7 @@ public class Post extends AppCompatActivity {
                     showDialogDelete();
                 }
             });
-        }else {
+        } else {
             btConfirm.setVisibility(View.VISIBLE);
             linearLayoutEdit.setVisibility(View.GONE);
             btConfirm.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +128,7 @@ public class Post extends AppCompatActivity {
                     myRefPost.child("detail").setValue(inputDetail);
                     myRefPost.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
                     uploadImage();
+                    prepareNotification(""+uid,""+"added new post",inputTitle+"\n"+inputDetail,"PostNotification");
                     finish();
                 }
             });
@@ -135,36 +149,36 @@ public class Post extends AppCompatActivity {
         });
     }
 
-    private void openImage(){
+    private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,IMAGE_REQUEST);
+        startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
             imUri = data.getData();
             Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
         }
 
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         /*ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("กำลังอัพโหลด");
         pd.show();*/
 
-        if (imUri != null){
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsPost").child(System.currentTimeMillis()+"."+getFileExtension(imUri));
+        if (imUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsPost").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
 
             fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -174,7 +188,7 @@ public class Post extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
                             //pd.dismiss();
-                            if (getStatus.equals("1")){
+                            if (getStatus.equals("1")) {
                                 Query query = myRef.orderByChild("timestamp").equalTo(getTime);
                                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -183,13 +197,14 @@ public class Post extends AppCompatActivity {
                                             ds.getRef().child("imageUrl").setValue(imageURL);
                                         }
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
                                     }
                                 });
-                            }else {
-                                Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                                 myRefPost.child("imageUrl").setValue(imageURL);
                             }
                         }
@@ -199,7 +214,7 @@ public class Post extends AppCompatActivity {
         }
     }
 
-    private void showDialogDelete(){
+    private void showDialogDelete() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(Post.this);
         dialog.setTitle("ลบ");
         dialog.setMessage("คุณแน่ใจที่จะลบหรือไม่");
@@ -215,6 +230,7 @@ public class Post extends AppCompatActivity {
                             finish();
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
@@ -231,4 +247,61 @@ public class Post extends AppCompatActivity {
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
     }
+
+    private void prepareNotification(String uid, String title, String description, String notificationType) {
+        //String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
+        String NOTIFICATION_TITLE = title;
+        String NOTIFICATION_MESSAGE = description;
+        String NOTIFICATION_TYPE = notificationType;
+
+        JSONObject notificationJo = new JSONObject();
+        JSONObject notificationBodyJo = new JSONObject();
+
+        try {
+            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+            notificationBodyJo.put("sender", uid);
+            //notificationBodyJo.put("pId", pId);
+            notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
+            notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
+
+            //notificationBodyJo.put("to", NOTIFICATION_TOPIC);
+
+            notificationBodyJo.put("data", notificationBodyJo);
+
+        } catch (Exception e) {
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        sendPostNotification(notificationJo);
+    }
+
+    private void sendPostNotification(JSONObject notificationJo) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("FCM_RESPONSE", "onResponse" + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(Post.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content=Type", "application/json");
+                headers.put("Authorization", "key=AAAAfLk6hVI:APA91bFBUDhsSt7GN2VyzStzNSH7Y2ijWPv5T1IZQ8fcPHNGaFn4P2b9OcFv67CaCD4n0FhS3pvJD9ZpjA6knKd86vv1qdHFd6dzAE9XugmT0lO1ZlvsVQSpKUQQRfv2Lsy2Ltzei76Z");
+
+
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
+
 }

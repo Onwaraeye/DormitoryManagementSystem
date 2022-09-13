@@ -36,11 +36,11 @@ public class ViewRepair extends AppCompatActivity {
         if (typeUser.equals("Admin")){
             adapterTabLayout.addFragment(new NewRepairFragment(),"รายการใหม่");
             adapterTabLayout.addFragment(new RepairWorkFragment(),"งานที่มอบหมาย");
-            adapterTabLayout.addFragment(new RepairSuccessful(),"งานที่สำเร็จ");
+            adapterTabLayout.addFragment(new RepairSuccessful(),"ตรวจสอบงาน");
             adapterTabLayout.addFragment(new HistoryRepairFragment(),"ประวัติการซ่อม");
         }else {
             adapterTabLayout.addFragment(new RepairWorkFragment(),"งานที่มอบหมาย");
-            adapterTabLayout.addFragment(new RepairSuccessful(),"งานที่สำเร็จ");
+            adapterTabLayout.addFragment(new HistoryRepairFragment(),"ประวัติการซ่อม");
         }
         viewPager.setAdapter(adapterTabLayout);
 

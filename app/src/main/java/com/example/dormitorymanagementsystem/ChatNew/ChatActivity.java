@@ -22,6 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Parcel;
@@ -38,16 +44,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.iid.internal.FirebaseInstanceIdInternal;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -65,12 +75,15 @@ public class ChatActivity extends AppCompatActivity {
     String hisUid;
     String myUid;
     String hisImage;
+    String hisToken;
 
+    private RequestQueue requestQueue;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
+    private DatabaseReference refToken = database.getReference("Tokens");
     private DatabaseReference myRefChat = database.getReference("Chats").push();
 
-    int notify = 0;
+    private int notify = 0;
 
     private static final int IMAGE_REQUEST = 1;
     private Uri imUri;
@@ -87,6 +100,8 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         attachBtn = findViewById(R.id.attachBtn);
 
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
 
@@ -96,6 +111,19 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
+        refToken.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                hisToken = snapshot.child(hisUid).child("token").getValue(String.class);
+                Log.e("hisToken", hisToken);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
+
         myUid = Login.getGbIdUser();
 
 
@@ -122,6 +150,37 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child(hisUid);
+        chatRef1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                if (!snapshot.exists()){
+                    chatRef1.child("id").setValue(hisUid);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
+        DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child(hisUid).child(myUid);
+        chatRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                if (!snapshot.exists()){
+                    chatRef2.child("id").setValue(myUid);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
+
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +195,6 @@ public class ChatActivity extends AppCompatActivity {
                 messageEt.setText("");
             }
         });
-
         attachBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,7 +203,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         readMessages();
-
         seenMessages();
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
@@ -220,8 +277,6 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("type", "text");
         databaseReference.child("Chats").push().setValue(hashMap);
 
-
-
         String msg = message;
         DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
         database.addValueEventListener(new ValueEventListener() {
@@ -229,7 +284,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 ModelUser user = snapshot.getValue(ModelUser.class);
                 if (notify==1) {
-                    senNotification(hisUid, user.getFirstname()+" "+user.getLastname(), message);
+                    senNotification(hisToken, user.getFirstname()+" "+user.getLastname(), message);
                 }
                 notify = 0;
             }
@@ -262,7 +317,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 ModelUser user = snapshot.getValue(ModelUser.class);
                 if (notify==1) {
-                    senNotification(hisUid, user.getFirstname()+" "+user.getLastname(), message);
+                    senNotification(hisToken, user.getFirstname()+" "+user.getLastname(), message);
                 }
                 notify = 0;
             }
@@ -274,18 +329,47 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void senNotification(String hisUid, String name, String message) {
-        DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Token");
-        Query query = allToken.orderByKey().equalTo(hisUid);
+    private void senNotification(String hisToken, String name, String message) {
+        DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allToken.child(hisUid).orderByChild("token").equalTo(hisToken);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(myUid, name + " : " + message, "New_Message", hisUid, R.drawable.ic_bx_bxs_user_circle);
+                    Data data = new Data(myUid, name + " : " + message, "New_Message", hisToken,"ChatNotification", R.drawable.ic_bx_bxs_user_circle);
 
                     Sender sender = new Sender(data, token.getToken());
 
+                    try {
+                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(ChatActivity.this, "onResponse : " + response.toString(), Toast.LENGTH_SHORT).show();
+                                        Log.d("JSON_RESPONSE", "onResponse : " + response.toString());
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("JSON_RESPONSE", "onResponse : " + error.toString());
+                            }
+                        }){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "key=AAAAfLk6hVI:APA91bFBUDhsSt7GN2VyzStzNSH7Y2ijWPv5T1IZQ8fcPHNGaFn4P2b9OcFv67CaCD4n0FhS3pvJD9ZpjA6knKd86vv1qdHFd6dzAE9XugmT0lO1ZlvsVQSpKUQQRfv2Lsy2Ltzei76Z");
+
+                                return super.getHeaders();
+                            }
+                        };
+                        requestQueue.add(jsonObjectRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -331,7 +415,7 @@ public class ChatActivity extends AppCompatActivity {
         pd.show();
 
         if (imUri != null){
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChars").child(System.currentTimeMillis()+"."+getFileExtension(imUri));
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis()+"."+getFileExtension(imUri));
 
             fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override

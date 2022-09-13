@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Central;
+import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.ChatNew.ContactActivity;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Info;
@@ -161,11 +162,11 @@ public class HomeFragment extends Fragment {
         menu_chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(getActivity(), Chat.class);
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
                 if (getType.equals("User")){
-                    intent.putExtra("userID","Msg01");
+                    //intent.putExtra("hisUid","Msg01");
                 }
-                getActivity().startActivity(intent);*/
+                getActivity().startActivity(intent);
             }
         });
         menu_sent_parcel = view.findViewById(R.id.menu_sent_parcel);

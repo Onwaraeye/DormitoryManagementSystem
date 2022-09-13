@@ -79,9 +79,12 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
         }
 
         holder.timeTv.setText(dateTime);
-        if (imageUrl.isEmpty()){
-            holder.profileIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
-        }else {
+        if (imageUrl != null){
+            if (imageUrl.isEmpty()){
+                holder.profileIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
+            }
+        }
+        else {
             Glide.with(context).load(imageUrl).fitCenter().centerCrop().into(holder.profileIv);
         }
 

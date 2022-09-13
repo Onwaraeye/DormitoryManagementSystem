@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
         listRoom = new ArrayList<>();
 
         Button buttonAddData = findViewById(R.id.buttonAddData);
-        buttonAddData.setVisibility(View.VISIBLE);
+        buttonAddData.setVisibility(View.GONE);
         buttonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +111,7 @@ public class Login extends AppCompatActivity {
         Button btLogin = findViewById(R.id.btLogin);
 
         SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = keep.getString("user",inputUser);
+        String user = keep.getString("memuser",inputUser);
         etUser.setText(user);
         String pass = keep.getString("pass",inputPass);
         etPass.setText(pass);
@@ -134,7 +134,7 @@ public class Login extends AppCompatActivity {
 
                 SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(getApplication());
                 SharedPreferences.Editor editorkp = keep.edit();
-                editorkp.putString("user",inputUser);
+                editorkp.putString("memuser",inputUser);
                 editorkp.putString("pass",inputPass);
                 editorkp.apply();
                 if (inputUser.isEmpty() || inputPass.isEmpty()){
