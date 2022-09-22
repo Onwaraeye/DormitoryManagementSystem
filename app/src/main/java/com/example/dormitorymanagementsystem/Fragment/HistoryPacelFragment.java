@@ -74,7 +74,7 @@ public class HistoryPacelFragment extends Fragment {
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         list.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (ds.child("status").getValue(String.class).equals("1")){
+                            if (ds.child("status").getValue(String.class) != null && ds.child("status").getValue(String.class).equals("1")){
                                 newParcelModel = ds.getValue(NewParcelModel.class);
                                 list.add(newParcelModel);
                             }

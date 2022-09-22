@@ -80,7 +80,7 @@ public class NewParcelFragment extends Fragment {
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         list.clear();
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (ds.child("status").getValue(String.class).equals("0")){
+                            if (ds.child("status").getValue(String.class)!=null && ds.child("status").getValue(String.class).equals("0")){
                                 newParcelModel = ds.getValue(NewParcelModel.class);
                                 list.add(newParcelModel);
                             }

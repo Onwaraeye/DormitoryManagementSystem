@@ -37,7 +37,6 @@ public class MonthlyBill extends AppCompatActivity {
     private AdapteBill adapter;
 
     private Context mContext;
-    //private String TAG = "x";
     private String monthThai = "";
 
     @Override
@@ -76,7 +75,6 @@ public class MonthlyBill extends AppCompatActivity {
                     }
                 }
                 adapter = new AdapteBill(mContext,list,listDate);
-                //adapter.notifyItemChanged();
                 recyclerView.setAdapter(adapter);
             }
             @Override

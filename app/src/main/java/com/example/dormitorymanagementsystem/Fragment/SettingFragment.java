@@ -61,6 +61,16 @@ public class SettingFragment extends Fragment {
         menu_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences preferences = getActivity().getSharedPreferences("checkbox",Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("remember","false");
+                editor.putString("numroom", "");
+                editor.putString("userId", "");
+                editor.putString("userFName", "");
+                editor.putString("userLName", "");
+                editor.putString("userType", "");
+                editor.apply();
+
                 Intent intent = new Intent(getActivity().getApplicationContext(), Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

@@ -11,10 +11,32 @@ public class BillModel implements Serializable {
     private String status;
     private String imageUrl;
 
+    private String elecafter;
+    private String elecbefore;
+    private String fee;
+    private String waterafter;
+    private String waterbefore;
+
+
     public BillModel() {
     }
 
-    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status,String imageUrl) {
+    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status, String imageUrl, String elecafter, String elecbefore, String fee, String waterafter, String waterbefore) {
+        this.discount = discount;
+        this.electricity = electricity;
+        this.water = water;
+        this.roomprice = roomprice;
+        this.sum = sum;
+        this.status = status;
+        this.imageUrl = imageUrl;
+        this.elecafter = elecafter;
+        this.elecbefore = elecbefore;
+        this.fee = fee;
+        this.waterafter = waterafter;
+        this.waterbefore = waterbefore;
+    }
+
+    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status, String imageUrl) {
         this.discount = discount;
         this.electricity = electricity;
         this.water = water;

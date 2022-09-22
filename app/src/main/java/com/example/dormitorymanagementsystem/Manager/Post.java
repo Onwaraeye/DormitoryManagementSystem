@@ -21,14 +21,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.R;
+import com.example.dormitorymanagementsystem.notifications.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +48,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -52,8 +57,7 @@ import java.util.Map;
 public class Post extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRefPost = database.getReference("Posts").push();
-    private DatabaseReference myRef = database.getReference("Posts");
+    private DatabaseReference myRefPost = database.getReference("Posts");
 
     private static final int IMAGE_REQUEST = 1;
     private Uri imUri;
@@ -61,11 +65,19 @@ public class Post extends AppCompatActivity {
     private String getStatus;
     private String getTime;
     private String uid = Login.getGbIdUser();
+    private String name = Login.getGbFNameUser() +" "+Login.getGbLNameUser();
+    String pTimestamps = "";
+
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+
+        requestQueue = Volley.newRequestQueue(Post.this);
+
+        pTimestamps = String.valueOf(System.currentTimeMillis());
 
         Intent intent = getIntent();
         String getTitle = intent.getStringExtra("titlePost");
@@ -86,13 +98,14 @@ public class Post extends AppCompatActivity {
         etDetail.setText(getDetail);
         Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
+
         if (getStatus.equals("1")) {
             btConfirm.setVisibility(View.GONE);
             linearLayoutEdit.setVisibility(View.VISIBLE);
             bt_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                    Query query = myRefPost.orderByChild("timestamp").equalTo(getTime);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -122,13 +135,20 @@ public class Post extends AppCompatActivity {
             btConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     String inputTitle = etTitle.getText().toString();
                     String inputDetail = etDetail.getText().toString();
-                    myRefPost.child("title").setValue(inputTitle);
-                    myRefPost.child("detail").setValue(inputDetail);
-                    myRefPost.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                    myRefPost.child(pTimestamps).child("title").setValue(inputTitle);
+                    myRefPost.child(pTimestamps).child("detail").setValue(inputDetail);
+                    myRefPost.child(pTimestamps).child("timestamp").setValue(pTimestamps);
+                    myRefPost.child(pTimestamps).child("uid").setValue(uid);
                     uploadImage();
-                    prepareNotification(""+uid,""+"added new post",inputTitle+"\n"+inputDetail,"PostNotification");
+                    prepareNotification(
+                            ""+pTimestamps,
+                            name+" เพิ่มโพสใหม่",
+                            inputTitle+"\n"+inputDetail,
+                            "PostNotification",
+                            "POST");
                     finish();
                 }
             });
@@ -173,9 +193,6 @@ public class Post extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        /*ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("กำลังอัพโหลด");
-        pd.show();*/
 
         if (imUri != null) {
             StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsPost").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
@@ -187,9 +204,8 @@ public class Post extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
-                            //pd.dismiss();
                             if (getStatus.equals("1")) {
-                                Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                                Query query = myRefPost.orderByChild("timestamp").equalTo(getTime);
                                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -205,7 +221,7 @@ public class Post extends AppCompatActivity {
                                 });
                             } else {
                                 Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
-                                myRefPost.child("imageUrl").setValue(imageURL);
+                                myRefPost.child(pTimestamps).child("imageUrl").setValue(imageURL);
                             }
                         }
                     });
@@ -221,7 +237,7 @@ public class Post extends AppCompatActivity {
         dialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                Query query = myRefPost.orderByChild("timestamp").equalTo(getTime);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -248,35 +264,52 @@ public class Post extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void prepareNotification(String uid, String title, String description, String notificationType) {
-        //String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
-        String NOTIFICATION_TITLE = title;
-        String NOTIFICATION_MESSAGE = description;
-        String NOTIFICATION_TYPE = notificationType;
+    private void prepareNotification(String pId, String title, String description, String notificationType,String notificationTopic) {
+        DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
+        allToken.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Token token = ds.getValue(Token.class);
+                    if (!token.getRole().equals("Repairman")){
+                        String NOTIFICATION_TOPIC = token.getToken();
+                        String NOTIFICATION_TITLE = title;
+                        String NOTIFICATION_MESSAGE = description;
+                        String NOTIFICATION_TYPE = notificationType;
 
-        JSONObject notificationJo = new JSONObject();
-        JSONObject notificationBodyJo = new JSONObject();
+                        JSONObject notificationJo = new JSONObject();
+                        JSONObject notificationBodyJo = new JSONObject();
 
-        try {
-            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
-            notificationBodyJo.put("sender", uid);
-            //notificationBodyJo.put("pId", pId);
-            notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
-            notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
+                        try {
+                            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+                            notificationBodyJo.put("sender", uid);
+                            notificationBodyJo.put("pId", pId);
+                            notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
+                            notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
 
-            //notificationBodyJo.put("to", NOTIFICATION_TOPIC);
+                            notificationJo.put("to", NOTIFICATION_TOPIC);
+                            notificationJo.put("data", notificationBodyJo);
 
-            notificationBodyJo.put("data", notificationBodyJo);
+                        } catch (Exception e) {
+                            //Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        Log.e("notificationJo", notificationJo.toString());
+                        sendPostNotification(notificationJo);
+                    }
+                }
+            }
 
-        } catch (Exception e) {
-            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-        sendPostNotification(notificationJo);
+            }
+        });
+
+
     }
 
     private void sendPostNotification(JSONObject notificationJo) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,"https://fcm.googleapis.com/fcm/send", notificationJo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -287,21 +320,19 @@ public class Post extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(Post.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("FCM_RESPONSE",  error.toString()+" onResponseError "+ error.getMessage());
                     }
                 })
         {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content=Type", "application/json");
-                headers.put("Authorization", "key=AAAAfLk6hVI:APA91bFBUDhsSt7GN2VyzStzNSH7Y2ijWPv5T1IZQ8fcPHNGaFn4P2b9OcFv67CaCD4n0FhS3pvJD9ZpjA6knKd86vv1qdHFd6dzAE9XugmT0lO1ZlvsVQSpKUQQRfv2Lsy2Ltzei76Z");
-
-
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAAfLk6hVI:APA91bGmlTXFRoHjFSfv_qpaQw1NmIi0B5p-lluErCtQtY1TCbMkCoF8pr73q3_rE33rgOhhl0o_Os4vAY4x3oLeKpiO8LlilnvyOQ8SeIad6Byti4yTHlGyZLOeDdF7PwllZyxQ8clP");
                 return headers;
             }
         };
-
-        Volley.newRequestQueue(this).add(jsonObjectRequest);
+        requestQueue.add(jsonObjectRequest);
     }
 
 }

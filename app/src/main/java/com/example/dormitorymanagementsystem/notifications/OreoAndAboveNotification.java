@@ -34,7 +34,7 @@ public class OreoAndAboveNotification extends ContextWrapper {
         getManager().createNotificationChannel(notificationChannel);
     }
 
-    NotificationManager getManager() {
+    public NotificationManager getManager() {
         if (notificationManager == null) {
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }

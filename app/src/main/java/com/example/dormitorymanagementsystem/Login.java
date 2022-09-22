@@ -37,47 +37,57 @@ public class Login extends AppCompatActivity {
     private String inputPass;
 
     private static String gbroom;
+
     public static String getGbNumroom() {
         return gbroom;
     }
+
     public static void setGbNumroom(String gbNumroom) {
         gbroom = gbNumroom;
     }
 
     private static String gbUserID;
+
     public static String getGbIdUser() {
         return gbUserID;
     }
+
     public static void setGbIdUser(String gbIdUser) {
         gbUserID = gbIdUser;
     }
 
     private static String gbFNameUser;
+
     public static String getGbFNameUser() {
         return gbFNameUser;
     }
+
     public static void setGbFNameUser(String gbNameID) {
         Login.gbFNameUser = gbNameID;
     }
 
     private static String gbLNameUser;
+
     public static String getGbLNameUser() {
         return gbLNameUser;
     }
+
     public static void setGbLNameUser(String gbLNameUser) {
         Login.gbLNameUser = gbLNameUser;
     }
 
     private static String gbTypeUser;
+
     public static String getGbTypeUser() {
         return gbTypeUser;
     }
+
     public static void setGbTypeUser(String gbTypeUser) {
         Login.gbTypeUser = gbTypeUser;
     }
 
     List<List<String>> myList;
-    List<String> user,user2;
+    List<String> user, user2;
     List<String> listRoom;
 
     @Override
@@ -91,16 +101,16 @@ public class Login extends AppCompatActivity {
         listRoom = new ArrayList<>();
 
         Button buttonAddData = findViewById(R.id.buttonAddData);
-        buttonAddData.setVisibility(View.GONE);
+        buttonAddData.setVisibility(View.VISIBLE);
         buttonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRefadd = database.getReference("Users/Rpm02");
 
-                myRefadd.setValue(new User("Rpm02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","ตอง","none",
-                        "1234567891234","Repairman","0812345678",""));
+                //myRefadd.setValue(new User("Rpm02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","ตอง","none","1234567891234","Repairman","0812345678",""));
                 //uploadList();
+                uploadBill();
             }
         });
 
@@ -111,18 +121,30 @@ public class Login extends AppCompatActivity {
         Button btLogin = findViewById(R.id.btLogin);
 
         SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(this);
-        String user = keep.getString("memuser",inputUser);
+        String user = keep.getString("memuser", inputUser);
         etUser.setText(user);
-        String pass = keep.getString("pass",inputPass);
+        String pass = keep.getString("pass", inputPass);
         etPass.setText(pass);
 
-        SharedPreferences preferences = getSharedPreferences("checkbox",MODE_PRIVATE);
-        String checkbox = preferences.getString("remember","");
-        if (checkbox.equals("true")){
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
+        String checkbox = preferences.getString("remember", "");
+        if (checkbox.equals("true")) {
+            String numroom = keep.getString("numroom", inputUser);
+            String userId = keep.getString("userId", inputUser);
+            String userFName = keep.getString("userFName", inputUser);
+            String userLName = keep.getString("userLName", inputUser);
+            String userType = keep.getString("userType", inputUser);
+
+            Login.setGbNumroom(numroom);
+            Login.setGbIdUser(userId);
+            Login.setGbFNameUser(userFName);
+            Login.setGbLNameUser(userLName);
+            Login.setGbTypeUser(userType);
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
-        }else if (checkbox.equals("false")){
+        } else if (checkbox.equals("false")) {
 
         }
 
@@ -132,38 +154,49 @@ public class Login extends AppCompatActivity {
                 inputUser = etUser.getText().toString();
                 inputPass = etPass.getText().toString();
 
-                SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                SharedPreferences.Editor editorkp = keep.edit();
-                editorkp.putString("memuser",inputUser);
-                editorkp.putString("pass",inputPass);
-                editorkp.apply();
-                if (inputUser.isEmpty() || inputPass.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Enter details",Toast.LENGTH_SHORT).show();
-                }else {
+
+                if (inputUser.isEmpty() || inputPass.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter details", Toast.LENGTH_SHORT).show();
+                } else {
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.hasChild(inputUser)){
+                            if (snapshot.hasChild(inputUser)) {
                                 final String getPass = snapshot.child(inputUser).child("password").getValue(String.class);
-                                if (getPass.equals(inputPass)){
+                                if (getPass.equals(inputPass)) {
                                     String numroom = snapshot.child(inputUser).child("numroom").getValue(String.class);
                                     String userId = snapshot.child(inputUser).child("id").getValue(String.class);
                                     String userFName = snapshot.child(inputUser).child("firstname").getValue(String.class);
                                     String userLName = snapshot.child(inputUser).child("lastname").getValue(String.class);
                                     String userType = snapshot.child(inputUser).child("role").getValue(String.class);
+
+                                    SharedPreferences.Editor editorkp = keep.edit();
+                                    editorkp.putString("memuser", inputUser);
+                                    editorkp.putString("pass", inputPass);
+                                    editorkp.putString("numroom", numroom);
+                                    editorkp.putString("userId", userId);
+                                    editorkp.putString("userFName", userFName);
+                                    editorkp.putString("userLName", userLName);
+                                    editorkp.putString("userType", userType);
+
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putString("remember","true");
+                                    editor.apply();
+                                    editorkp.apply();
+
                                     Login.setGbNumroom(numroom);
                                     Login.setGbIdUser(userId);
                                     Login.setGbFNameUser(userFName);
                                     Login.setGbLNameUser(userLName);
                                     Login.setGbTypeUser(userType);
-                                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
-                                }else {
-                                    Toast.makeText(getApplicationContext(),"Incorrect Password",Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Incorrect Password", Toast.LENGTH_SHORT).show();
                                 }
-                            }else {
-                                Toast.makeText(getApplicationContext(),"Incorrect User",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Incorrect User", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -177,25 +210,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        /*remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (compoundButton.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember","true");
-                    editor.apply();
-                }else if (!compoundButton.isChecked()){
-                    SharedPreferences preferences = getSharedPreferences("checkbox",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember","false");
-                    editor.apply();
-                }
-            }
-        });*/
     }
 
-    public void uploadList(){
+    public void uploadList() {
 
         listRoom.add("101");
         listRoom.add("102");
@@ -208,7 +225,7 @@ public class Login extends AppCompatActivity {
         myList.add(user);
         myList.add(user2);
 
-        for (int i = 0 ; i<listRoom.size() ; i++){
+        for (int i = 0; i < listRoom.size(); i++) {
             myRefRoom.child(listRoom.get(i)).setValue(myList.get(i)).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -218,11 +235,10 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void uploadBill(){
+    public void uploadBill() {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRefadd = database.getReference("Bills/2022/1/101");
-
-        myRefadd.setValue(new BillModel("0","1400","100","4500","6000","0",""));
+        DatabaseReference myRefadd = database.getReference("Bills/2022/8/101");
+        myRefadd.setValue(new BillModel("0", "1400", "100", "4500", "6000", "0", "", "150", "100", "0", "150", "100"));
     }
 }

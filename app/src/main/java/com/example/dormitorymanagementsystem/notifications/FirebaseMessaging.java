@@ -22,6 +22,8 @@ import androidx.core.app.NotificationCompat;
 import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.MainActivity;
+import com.example.dormitorymanagementsystem.MonthlyBill;
+import com.example.dormitorymanagementsystem.Parcel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,20 +45,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull @NotNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        /*com.google.firebase.messaging.FirebaseMessaging.getInstance().subscribeToTopic("weather").addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<Void> task) {
-                String msg = "Subscribed";
-                if (!task.isSuccessful()) {
-                    msg = "Subscribe failed";
-                }
-                Log.d("TAG", msg);
-                Toast.makeText(FirebaseMessaging.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
-        Log.e("onMessagerun", "run");
-
         SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
         String saveCurrentUser = sp.getString("Current_USERID", "None");
 
@@ -64,13 +52,16 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         if (notificationType.equals("PostNotification")) {
 
             String sender = remoteMessage.getData().get("sender");
+            String pId = remoteMessage.getData().get("pId");
             String pTitle = remoteMessage.getData().get("pTitle");
             String pDescription = remoteMessage.getData().get("pDescription");
 
             if (!sender.equals(saveCurrentUser)) {
-                showPostNotification("" + sender, "" + pTitle, "" + pDescription);
+                showPostNotification("" + pId, "" + pTitle, "" + pDescription);
             }
+
         } else if (notificationType.equals("ChatNotification")) {
+
             String sent = remoteMessage.getData().get("sent");
             String user = remoteMessage.getData().get("user");
             String fUser = Login.getGbIdUser();
@@ -83,20 +74,118 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                     }
                 }
             }
+
+        }else if (notificationType.equals("ParcelNotification")) {
+
+            String sender = remoteMessage.getData().get("sender");
+            String pId = remoteMessage.getData().get("pId");
+            String pTitle = remoteMessage.getData().get("pTitle");
+            String pDescription = remoteMessage.getData().get("pDescription");
+
+            if (!sender.equals(saveCurrentUser)) {
+                showParcelNotification("" + pId, "" + pTitle, "" + pDescription);
+            }
+
+        } else if (notificationType.equals("BillNotification")) {
+
+            String pId = remoteMessage.getData().get("pId");
+            String pTitle = remoteMessage.getData().get("pTitle");
+            String pDescription = remoteMessage.getData().get("pDescription");
+
+            showBillNotification("" + pId, "" + pTitle, "" + pDescription);
+
+
         }
     }
 
-    private void showPostNotification(String sender, String pTitle, String pDescription) {
+    private void showBillNotification(String pId, String pTitle, String pDescription) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int notificationID = new Random().nextInt(3000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setupBillNotificationChannel(notificationManager);
+        }
+
+        Intent intent = new Intent(this, MonthlyBill.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
+                .setContentTitle(pTitle)
+                .setContentText(pDescription)
+                .setContentIntent(pIntent);
+
+        notificationManager.notify(notificationID, notificationBuilder.build());
+    }
+
+    private void setupBillNotificationChannel(NotificationManager notificationManager) {
+        CharSequence channelName = "New Notification";
+        String channelDescription = "Device to device post notification";
+
+        NotificationChannel adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel.setDescription(channelDescription);
+        adminChannel.enableLights(true);
+        adminChannel.setLightColor(Color.RED);
+        adminChannel.enableVibration(true);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(adminChannel);
+        }
+    }
+
+    private void showParcelNotification(String pId, String pTitle, String pDescription) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int notificationID = new Random().nextInt(3000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setupParcelNotificationChannel(notificationManager);
+        }
+
+        Intent intent = new Intent(this, Parcel.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
+                .setContentTitle(pTitle)
+                .setContentText(pDescription)
+                .setContentIntent(pIntent);
+
+        notificationManager.notify(notificationID, notificationBuilder.build());
+    }
+
+    private void setupParcelNotificationChannel(NotificationManager notificationManager) {
+        CharSequence channelName = "New Notification";
+        String channelDescription = "Device to device post notification";
+
+        NotificationChannel adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel.setDescription(channelDescription);
+        adminChannel.enableLights(true);
+        adminChannel.setLightColor(Color.RED);
+        adminChannel.enableVibration(true);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(adminChannel);
+        }
+    }
+
+    private void showPostNotification(String pId, String pTitle, String pDescription) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         int notificationID = new Random().nextInt(3000);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupPostNotificationChannel(notificationManager);
         }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("postFromNotification","postFromNotification");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
                 .setContentTitle(pTitle)
-                .setContentText(pDescription);
+                .setContentText(pDescription)
+                .setContentIntent(pIntent);
 
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
@@ -117,7 +206,6 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
     private void sendNormalNotification(RemoteMessage remoteMessage) {
         String user = remoteMessage.getData().get("user");
-        Log.e("user", user);
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
@@ -188,8 +276,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
     private void updateToken(String tokenRefresh) {
         String user = Login.getGbIdUser();
+        String typeUser = Login.getGbTypeUser();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
-        Token token = new Token(tokenRefresh);
+        Token token = new Token(tokenRefresh,typeUser);
         ref.child(user).setValue(token);
 
     }
