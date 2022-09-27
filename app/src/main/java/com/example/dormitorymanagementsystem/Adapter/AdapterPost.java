@@ -68,7 +68,7 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
             holder.txDetail.setText(detail);
             Glide.with(mContext).load(imageUrl).fitCenter().centerCrop().into(holder.imageView);
 
-            if (Login.getGbTypeUser().equals("User")){
+            if (Login.getGbTypeUser().equals("User") || Login.getGbTypeUser().equals("Repairman")){
                 holder.btEdit.setVisibility(View.GONE);
             }else {
                 holder.btEdit.setOnClickListener(new View.OnClickListener() {

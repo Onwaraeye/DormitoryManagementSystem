@@ -62,7 +62,7 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
             Glide.with(context).load(userImage).fitCenter().centerCrop().into(holder.profileIv);
         }
 
-        if (userList.get(position).getNumroom().equals("none")){
+        if (userRoom.equals("none")){
             if (userList.get(position).getRole().equals("Admin")){
                 holder.mRoomTv.setText("นิติบุลคล");
             }else {

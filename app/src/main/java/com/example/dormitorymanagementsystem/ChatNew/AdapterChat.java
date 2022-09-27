@@ -34,6 +34,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
     List<ModelChat> chatList;
     String imageUrl;
     String userID = Login.getGbIdUser();
+    String typeUser = Login.getGbTypeUser();
 
 
 
@@ -78,15 +79,16 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
             Glide.with(context).load(message).fitCenter().centerCrop().into(holder.messageIv);
         }
 
+        holder.nameUser.setText(chatList.get(position).getNameUser());
         holder.timeTv.setText(dateTime);
         if (imageUrl != null){
             if (imageUrl.isEmpty()){
-                holder.profileIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
+                holder.profileIv.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
+            }else {
+                Glide.with(context).load(imageUrl).fitCenter().centerCrop().into(holder.profileIv);
             }
         }
-        else {
-            Glide.with(context).load(imageUrl).fitCenter().centerCrop().into(holder.profileIv);
-        }
+
 
         if (position==chatList.size()-1){
             if (chatList.get(position).getIsSeen() == 1){
@@ -106,17 +108,26 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
 
     @Override
     public int getItemViewType(int position) {
-        if (chatList.get(position).getSender().equals(userID)){
-            return MSG_TYPE_RIGHT;
+        if (typeUser.equals("Admin")){
+            if (chatList.get(position).getSender().equals("Mng")){
+                return MSG_TYPE_RIGHT;
+            }else {
+                return MSG_TYPE_LEFT;
+            }
         }else {
-            return MSG_TYPE_LEFT;
+            if (chatList.get(position).getSender().equals(userID)){
+                return MSG_TYPE_RIGHT;
+            }else {
+                return MSG_TYPE_LEFT;
+            }
         }
+
     }
 
     class MyHoler extends RecyclerView.ViewHolder{
 
         ImageView profileIv,messageIv;
-        TextView messageTv,timeTv,isSeenTv;
+        TextView messageTv,timeTv,isSeenTv,nameUser;
 
         public MyHoler(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -126,6 +137,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
             messageIv = itemView.findViewById(R.id.messageIv);
             timeTv = itemView.findViewById(R.id.timeTv);
             isSeenTv = itemView.findViewById(R.id.isSeenTv);
+            nameUser = itemView.findViewById(R.id.nameUser);
         }
     }
 }

@@ -106,18 +106,17 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRefadd = database.getReference("Users/Rpm02");
+                DatabaseReference myRefadd = database.getReference("Users/Mng02");
 
-                //myRefadd.setValue(new User("Rpm02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","ตอง","none","1234567891234","Repairman","0812345678",""));
+                myRefadd.setValue(new User("Mng02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","มาร์ค","none","1234567891234","Admin","0812345678",""));
                 //uploadList();
-                uploadBill();
+                //uploadBill();
             }
         });
 
 
         etUser = findViewById(R.id.etUsername);
         etPass = findViewById(R.id.etPassword);
-        //CheckBox remember = findViewById(R.id.remember);
         Button btLogin = findViewById(R.id.btLogin);
 
         SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(this);
@@ -129,11 +128,11 @@ public class Login extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
         String checkbox = preferences.getString("remember", "");
         if (checkbox.equals("true")) {
-            String numroom = keep.getString("numroom", inputUser);
-            String userId = keep.getString("userId", inputUser);
-            String userFName = keep.getString("userFName", inputUser);
-            String userLName = keep.getString("userLName", inputUser);
-            String userType = keep.getString("userType", inputUser);
+            String numroom = keep.getString("numroom", "");
+            String userId = keep.getString("userId", "");
+            String userFName = keep.getString("userFName", "");
+            String userLName = keep.getString("userLName", "");
+            String userType = keep.getString("userType", "");
 
             Login.setGbNumroom(numroom);
             Login.setGbIdUser(userId);
@@ -153,7 +152,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 inputUser = etUser.getText().toString();
                 inputPass = etPass.getText().toString();
-
 
                 if (inputUser.isEmpty() || inputPass.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter details", Toast.LENGTH_SHORT).show();

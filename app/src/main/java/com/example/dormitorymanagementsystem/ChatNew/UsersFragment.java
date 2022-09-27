@@ -97,7 +97,7 @@ public class UsersFragment extends Fragment {
                 userList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()){
                     ModelUser modelUser = ds.getValue(ModelUser.class);
-                    if (!modelUser.getId().equals(userId)){
+                    if (!modelUser.getRole().equals("Admin")){
                         userList.add(modelUser);
                     }
                     adapterUsers = new AdapterUsers(context, userList);

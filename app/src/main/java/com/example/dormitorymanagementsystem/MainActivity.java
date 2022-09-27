@@ -66,11 +66,17 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(bottomNavMethod);
         fromNoti = getIntent().getStringExtra("postFromNotification");
+
+        if (typeUser.equals("Repairman")){
+            bottomNavigationView.getMenu().removeItem(R.id.announce);
+        }
+
         if (fromNoti!=null && fromNoti.equals("postFromNotification")){
             getSupportFragmentManager().beginTransaction().replace(R.id.container,new AnnounceFragment()).commit();
         }else {
             getSupportFragmentManager().beginTransaction().replace(R.id.container,new HomeFragment()).commit();
         }
+
 
         com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
@@ -83,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 checkUserStatus();
             }
         });
-
-        SharedPreferences keep = PreferenceManager.getDefaultSharedPreferences(this);
 
         prepareNotification(
                 ""+System.currentTimeMillis(),

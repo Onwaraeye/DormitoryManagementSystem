@@ -1,19 +1,28 @@
 package com.example.dormitorymanagementsystem.ChatNew;
 
 public class ModelChat {
-    String message,receiver,sender,timestamp,type;
+    String message,receiver,sender,timestamp,type,nameUser;
     int isSeen;
 
     public ModelChat() {
     }
 
-    public ModelChat(String message, String receiver, String sender, String timestamp, String type, int isSeen) {
+    public ModelChat(String message, String receiver, String sender, String timestamp, String type,String nameUser, int isSeen) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
         this.timestamp = timestamp;
         this.type = type;
         this.isSeen = isSeen;
+        this.nameUser = nameUser;
+    }
+
+    public String getNameUser() {
+        return nameUser;
+    }
+
+    public void setNameUser(String nameUser) {
+        this.nameUser = nameUser;
     }
 
     public String getType() {

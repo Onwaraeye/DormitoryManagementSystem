@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -182,9 +183,9 @@ public class Repair extends AppCompatActivity {
                 btChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    /*Intent intent = new Intent(getApplicationContext(), Chat.class);
-                    intent.putExtra("userID","Msg01");
-                    startActivity(intent);*/
+                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                    intent.putExtra("hisUid","Mng01");
+                    startActivity(intent);
                     }
                 });
                 btConfirmRepair.setOnClickListener(new View.OnClickListener() {

@@ -79,7 +79,7 @@ public class AnnounceFragment extends Fragment {
             }
         });
 
-        if (typeUser.equals("User")){
+        if (typeUser.equals("User") || typeUser.equals("Repairman")){
             addPost.setVisibility(View.INVISIBLE);
         }
 

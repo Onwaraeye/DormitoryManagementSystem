@@ -57,8 +57,8 @@ import java.util.Map;
 public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ImageView sendBtn,attachBtn;
-    TextView nameTv,roomTv;
+    ImageView sendBtn, attachBtn;
+    TextView nameTv, roomTv;
     EditText messageEt;
 
     ValueEventListener seenListener;
@@ -70,7 +70,9 @@ public class ChatActivity extends AppCompatActivity {
     String hisUid;
     String myUid;
     String hisImage;
-    String hisToken;
+    String imageAdmin;
+    String typeUser = Login.getGbTypeUser();
+    String nameUser = Login.getGbFNameUser()+" "+Login.getGbLNameUser();
 
     private RequestQueue requestQueue;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -108,21 +110,46 @@ public class ChatActivity extends AppCompatActivity {
 
         myUid = Login.getGbIdUser();
 
+        //if (typeUser.equals("User"))
 
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Contact");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                imageAdmin = snapshot.child("image").getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
 
         Query userQuery = myRef.orderByChild("id").equalTo(hisUid);
         //get user name
         userQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot ds: snapshot.getChildren()){
-                    String name = ds.child("firstname").getValue(String.class) + " "+ds.child("lastname").getValue(String.class);
-                    String room = "ห้อง "+ds.child("numroom").getValue(String.class);
-                    hisImage = ds.child("pictureUserUrl").getValue(String.class);
-
-                    nameTv.setText(name);
-                    roomTv.setText(room);
-
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String name = ds.child("firstname").getValue(String.class) + " " + ds.child("lastname").getValue(String.class);
+                    String room = ds.child("numroom").getValue(String.class);
+                    String role = ds.child("role").getValue(String.class);
+                    if (room != null && room.equals("none")) {
+                        if (role != null && role.equals("Admin")) {
+                            roomTv.setVisibility(View.INVISIBLE);
+                            nameTv.setText("นิติบุลคล");
+                        } else if (role != null && role.equals("Repairman")) {
+                            roomTv.setText("ช่างซ่อม");
+                        }
+                    } else {
+                        roomTv.setText("ห้อง " + room);
+                        nameTv.setText(name);
+                    }
+                    if (role != null && role.equals("Admin")){
+                        hisImage = imageAdmin;
+                    }else {
+                        hisImage = ds.child("pictureUserUrl").getValue(String.class);
+                    }
                 }
             }
 
@@ -132,46 +159,79 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child(hisUid);
-        chatRef1.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                if (!snapshot.exists()){
-                    chatRef1.child("id").setValue(hisUid);
+        if (typeUser.equals("Admin")) {
+            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(hisUid);
+            chatRef1.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef1.child("id").setValue(hisUid);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
 
                 }
-            }
+            });
+            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child(hisUid).child("Mng");
+            chatRef2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef2.child("id").setValue("Mng");
 
-            @Override
-            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+                    }
+                }
 
-            }
-        });
-        DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child(hisUid).child(myUid);
-        chatRef2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                if (!snapshot.exists()){
-                    chatRef2.child("id").setValue(myUid);
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
 
                 }
-            }
+            });
+        } else {
+            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child("Mng");
+            chatRef1.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef1.child("id").setValue("Mng");
 
-            @Override
-            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+                    }
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(myUid);
+            chatRef2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef2.child("id").setValue(myUid);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+        }
+
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 notify = 1;
                 String message = messageEt.getText().toString().trim();
-                if (TextUtils.isEmpty(message)){
-                    Toast.makeText(ChatActivity.this,"กรุณากรอกข้อความ",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (TextUtils.isEmpty(message)) {
+                    Toast.makeText(ChatActivity.this, "กรุณากรอกข้อความ", Toast.LENGTH_SHORT).show();
+                } else {
                     sendMessage(message);
                 }
                 messageEt.setText("");
@@ -201,9 +261,9 @@ public class ChatActivity extends AppCompatActivity {
         seenListener = userRefForSeen.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid)){
+                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid)) {
                         HashMap<String, Object> hasSeenHashMap = new HashMap<>();
                         hasSeenHashMap.put("isSeen", 1);
                         ds.getRef().updateChildren(hasSeenHashMap);
@@ -225,11 +285,20 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 chatList.clear();
-                for (DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid) || chat.getReceiver().equals(hisUid) && chat.getSender().equals(myUid)){
-                        chatList.add(chat);
+                    if (typeUser.equals("Admin")){
+                        if (chat.getReceiver().equals("Mng") && chat.getSender().equals(hisUid) || chat.getReceiver().equals(hisUid) && chat.getSender().equals("Mng")) {
+                            chatList.add(chat);
+                        }
+                    }else {
+                        if (chat.getReceiver().equals(myUid) && chat.getSender().equals("Mng") || chat.getReceiver().equals("Mng") && chat.getSender().equals(myUid)) {
+                            chatList.add(chat);
+                        }
                     }
+                    /*if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid) || chat.getReceiver().equals(hisUid) && chat.getSender().equals(myUid)) {
+                        chatList.add(chat);
+                    }*/
                     adapterChat = new AdapterChat(ChatActivity.this, chatList, hisImage);
                     adapterChat.notifyDataSetChanged();
 
@@ -251,8 +320,16 @@ public class ChatActivity extends AppCompatActivity {
         String timestamp = String.valueOf(System.currentTimeMillis());
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("sender",myUid);
-        hashMap.put("receiver", hisUid);
+        if (typeUser.equals("Admin")) {
+            hashMap.put("sender", "Mng");
+            hashMap.put("receiver", hisUid);
+        } else {
+            hashMap.put("sender", myUid);
+            hashMap.put("receiver", "Mng");
+        }
+        /*hashMap.put("sender", myUid);
+        hashMap.put("receiver", hisUid);*/
+        hashMap.put("nameUser",nameUser);
         hashMap.put("message", message);
         hashMap.put("timestamp", timestamp);
         hashMap.put("isSeen", 0);
@@ -265,8 +342,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 ModelUser user = snapshot.getValue(ModelUser.class);
-                if (notify==1) {
-                    senNotification(hisUid, user.getFirstname()+" "+user.getLastname(), message);
+                if (notify == 1) {
+                    senNotification(hisUid, user.getFirstname() + " " + user.getLastname(), message);
                 }
                 notify = 0;
             }
@@ -284,8 +361,17 @@ public class ChatActivity extends AppCompatActivity {
         String timestamp = String.valueOf(System.currentTimeMillis());
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("sender",myUid);
-        hashMap.put("receiver", hisUid);
+        if (typeUser.equals("Admin")) {
+            hashMap.put("sender", "Mng");
+            hashMap.put("receiver", hisUid);
+            hashMap.put("admin",myUid);
+        } else {
+            hashMap.put("sender", myUid);
+            hashMap.put("receiver", "Mng");
+        }
+        /*hashMap.put("sender", myUid);
+        hashMap.put("receiver", hisUid);*/
+        hashMap.put("nameUser",nameUser);
         hashMap.put("message", message);
         hashMap.put("timestamp", timestamp);
         hashMap.put("isSeen", 0);
@@ -298,8 +384,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 ModelUser user = snapshot.getValue(ModelUser.class);
-                if (notify==1) {
-                    senNotification(hisUid, user.getFirstname()+" "+user.getLastname(), message);
+                if (notify == 1) {
+                    senNotification(hisUid, user.getFirstname() + " " + user.getLastname(), message);
                 }
                 notify = 0;
             }
@@ -313,53 +399,105 @@ public class ChatActivity extends AppCompatActivity {
 
     private void senNotification(String hisUid, String name, String message) {
         DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = allToken.orderByKey().equalTo(hisUid);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    Token token = ds.getValue(Token.class);
-                    Data data = new Data(myUid, name + " : " + message, "ข้อความใหม่", hisUid,"ChatNotification", R.drawable.ic_bx_bxs_user_circle);
+        if (typeUser.equals("Admin")){
+            Query query = allToken.orderByKey().equalTo(hisUid);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Token token = ds.getValue(Token.class);
+                        Data data = new Data(myUid, name + " : " + message, "ข้อความใหม่", hisUid, "ChatNotification", R.drawable.ic_bx_bxs_user_circle);
 
-                    Sender sender = new Sender(data, token.getToken());
+                        Sender sender = new Sender(data, token.getToken());
 
-                    try {
-                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+                        try {
+                            JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
 
 
-                        Log.e("JSONObject",senderJsonObj.toString());
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://fcm.googleapis.com/fcm/send", senderJsonObj,
-                                new com.android.volley.Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        //Toast.makeText(ChatActivity.this, "onResponse : " + response.toString(), Toast.LENGTH_SHORT).show();
-                                        Log.d("JSON_RESPONSE", "onResponse : " + response.toString());
-                                    }
-                                }, new com.android.volley.Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("JSON_RESPONSE", "onResponseError : " + error.toString());
-                            }
-                        }){
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                Map<String, String> headers = new HashMap<>();
-                                headers.put("Content-Type", "application/json");
-                                headers.put("Authorization", "key=AAAAfLk6hVI:APA91bGmlTXFRoHjFSfv_qpaQw1NmIi0B5p-lluErCtQtY1TCbMkCoF8pr73q3_rE33rgOhhl0o_Os4vAY4x3oLeKpiO8LlilnvyOQ8SeIad6Byti4yTHlGyZLOeDdF7PwllZyxQ8clP");
-                                return headers;
-                            }
-                        };
-                        requestQueue.add(jsonObjectRequest);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            Log.e("JSONObject", senderJsonObj.toString());
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                    new com.android.volley.Response.Listener<JSONObject>() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+                                            //Toast.makeText(ChatActivity.this, "onResponse : " + response.toString(), Toast.LENGTH_SHORT).show();
+                                            Log.d("JSON_RESPONSE", "onResponse : " + response.toString());
+                                        }
+                                    }, new com.android.volley.Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("JSON_RESPONSE", "onResponseError : " + error.toString());
+                                }
+                            }) {
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("Content-Type", "application/json");
+                                    headers.put("Authorization", "key=AAAAfLk6hVI:APA91bGmlTXFRoHjFSfv_qpaQw1NmIi0B5p-lluErCtQtY1TCbMkCoF8pr73q3_rE33rgOhhl0o_Os4vAY4x3oLeKpiO8LlilnvyOQ8SeIad6Byti4yTHlGyZLOeDdF7PwllZyxQ8clP");
+                                    return headers;
+                                }
+                            };
+                            requestQueue.add(jsonObjectRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }else {
+            Query query = allToken.orderByChild("role").equalTo("Admin");
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Token token = ds.getValue(Token.class);
+                        Data data = new Data(myUid, name + " : " + message, "ข้อความใหม่", ds.getKey(), "ChatNotification", R.drawable.ic_bx_bxs_user_circle);
+
+                        Sender sender = new Sender(data, token.getToken());
+
+                        try {
+                            JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+
+
+                            Log.e("JSONObject", senderJsonObj.toString());
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                    new com.android.volley.Response.Listener<JSONObject>() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+                                            //Toast.makeText(ChatActivity.this, "onResponse : " + response.toString(), Toast.LENGTH_SHORT).show();
+                                            Log.d("JSON_RESPONSE", "onResponse : " + response.toString());
+                                        }
+                                    }, new com.android.volley.Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("JSON_RESPONSE", "onResponseError : " + error.toString());
+                                }
+                            }) {
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("Content-Type", "application/json");
+                                    headers.put("Authorization", "key=AAAAfLk6hVI:APA91bGmlTXFRoHjFSfv_qpaQw1NmIi0B5p-lluErCtQtY1TCbMkCoF8pr73q3_rE33rgOhhl0o_Os4vAY4x3oLeKpiO8LlilnvyOQ8SeIad6Byti4yTHlGyZLOeDdF7PwllZyxQ8clP");
+                                    return headers;
+                                }
+                            };
+                            requestQueue.add(jsonObjectRequest);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+
     }
 
     @Override
@@ -368,36 +506,36 @@ public class ChatActivity extends AppCompatActivity {
         userRefForSeen.removeEventListener(seenListener);
     }
 
-    private void openImage(){
+    private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,IMAGE_REQUEST);
+        startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
             imUri = data.getData();
             uploadImage();
         }
 
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("กำลังอัพโหลด");
         pd.show();
 
-        if (imUri != null){
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis()+"."+getFileExtension(imUri));
+        if (imUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
 
             fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -406,7 +544,7 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
-                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                             sendImageMessage(imageURL);
                             pd.dismiss();
                         }

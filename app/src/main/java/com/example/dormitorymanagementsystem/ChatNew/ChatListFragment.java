@@ -52,7 +52,8 @@ public class ChatListFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.chat_recyclerView);
         chatlistList = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(currentUser);
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng");
+        //reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(currentUser);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -118,9 +119,12 @@ public class ChatListFragment extends Fragment {
                     if (sender == null || receiver == null) {
                         continue;
                     }
-                    if (chat.getReceiver().equals(currentUser) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(currentUser)) {
+                    if (chat.getReceiver().equals("Mng") && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals("Mng")) {
                         theLastMessage = chat.getMessage();
                     }
+                    /*if (chat.getReceiver().equals(currentUser) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(currentUser)) {
+                        theLastMessage = chat.getMessage();
+                    }*/
                 }
                 adapterChatlist.setLastMessageMap(userId, theLastMessage);
                 adapterChatlist.notifyDataSetChanged();

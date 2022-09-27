@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 if (getType.equals("User")){
-                    //intent.putExtra("hisUid","Msg01");
+                    intent.putExtra("hisUid","Mng01");
                 }
                 getActivity().startActivity(intent);
             }
@@ -248,6 +248,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        LinearLayout menu_chat_manager_rpm = view.findViewById(R.id.menu_chat_manager_rpm);
+        menu_chat_manager_rpm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("hisUid","Mng01");
+                getActivity().startActivity(intent);
+            }
+        });
+
         if (Login.getGbTypeUser().equals("User")){
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
@@ -256,7 +266,7 @@ public class HomeFragment extends Fragment {
             admin3 = view.findViewById(R.id.admin3);
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
-            admin4.setVisibility(View.VISIBLE);
+            admin4.setVisibility(View.GONE);
             repair = view.findViewById(R.id.repair);
             repair.setVisibility(View.GONE);
         }else if (Login.getGbTypeUser().equals("Admin")){
