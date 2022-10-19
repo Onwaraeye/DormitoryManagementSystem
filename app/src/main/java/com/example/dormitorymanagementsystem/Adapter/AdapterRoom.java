@@ -47,7 +47,6 @@ public class AdapterRoom extends RecyclerView.Adapter<AdapterRoom.AdapterRoomHol
 
             }
 
-
             holder.txRoom.setText("ห้อง " + list.get(position).getNumroom());
             holder.menu_edit.setOnClickListener(new View.OnClickListener() {
                 @Override

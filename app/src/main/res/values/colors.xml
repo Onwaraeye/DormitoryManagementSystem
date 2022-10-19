@@ -17,6 +17,8 @@
     <color name="enabled_color">#FF000000</color>
     <color name="disabled_color">#FF000000</color>
     <color name="orange">#EAA829</color>
-    <color name="blue">#323E4D</color>
+    <color name="blue">#435D7D</color>#323E4D
+    <color name="darkblue">#323E4D</color>
     <color name="yellow">#F7DB5D</color>
+    <color name="sky">#83c5be</color>
 </resources>

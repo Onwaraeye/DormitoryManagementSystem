@@ -85,19 +85,14 @@
             android:text="ห้อง" />
 
 
-        <EditText
+        <TextView
             android:id="@+id/etNumroom"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/mediumgray"
+            android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
-            android:enabled="false"
+            android:layout_gravity="center"
             android:textColor="@color/black"
-            android:text="xxxx"
-            android:layout_marginTop="5dp" />
+            android:text="xxxx" />
 
         <TextView
             android:layout_width="match_parent"

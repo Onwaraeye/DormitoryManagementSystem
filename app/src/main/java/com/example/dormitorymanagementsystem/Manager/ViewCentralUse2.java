@@ -69,6 +69,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
                             if (snapshot.child("fitness").child(year).hasChild(month)) {
                                 if (snapshot.child("fitness").child(year).child(month).hasChild(day)) {
                                     for (DataSnapshot ds : snapshot.child("fitness").child(year).child(month).child(day).getChildren()) {
+                                        String phone = snapshot.child("fitness").child(year).child(month).child(day).child(ds.getKey()).child("phone").getValue(String.class);
                                         String fname = snapshotUser.child(ds.getKey()).child("firstname").getValue(String.class);
                                         String lname = snapshotUser.child(ds.getKey()).child("lastname").getValue(String.class);
                                         String name = fname + " " + lname;
@@ -77,7 +78,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
 
                                         }else {
                                             for (int i = 0; i < timefitness.size(); i++) {
-                                                CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),ds.getKey());
+                                                CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),ds.getKey(),phone);
                                                 listCentral.add(centralModel);
                                             }
                                         }
@@ -89,6 +90,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
                             if (snapshot.child("tutoringRoom").child(year).hasChild(month)) {
                                 if (snapshot.child("tutoringRoom").child(year).child(month).hasChild(day)) {
                                     for (DataSnapshot ds : snapshot.child("tutoringRoom").child(year).child(month).child(day).getChildren()) {
+                                        String phone = snapshot.child("fitness").child(year).child(month).child(day).child(ds.getKey()).child("phone").getValue(String.class);
                                         String fname = snapshotUser.child(ds.getKey()).child("firstname").getValue(String.class);
                                         String lname = snapshotUser.child(ds.getKey()).child("firstname").getValue(String.class);
                                         String name = fname + " " + lname;
@@ -97,7 +99,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
 
                                         }else {
                                             for (int i = 0; i < timetutoringRoom.size(); i++) {
-                                                CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),ds.getKey());
+                                                CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),ds.getKey(),phone);
                                                 listCentral.add(centralModel);
                                             }
                                         }

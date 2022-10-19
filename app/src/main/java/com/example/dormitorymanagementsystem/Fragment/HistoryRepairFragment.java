@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dormitorymanagementsystem.Adapter.AdapteViewPepiar;
-import com.example.dormitorymanagementsystem.Adapter.AdapterNewParcel;
+import com.example.dormitorymanagementsystem.Adapter.AdapteViewRepiar;
 import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Model.NewParcelModel;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +35,7 @@ public class HistoryRepairFragment extends Fragment {
     private List<RepairModel> list = new ArrayList<>();
     private RepairModel repairModel;
     private RecyclerView recyclerView;
-    private AdapteViewPepiar adapter;
+    private AdapteViewRepiar adapter;
 
     private View view;
     private Context mContext;
@@ -69,10 +67,10 @@ public class HistoryRepairFragment extends Fragment {
 
         repairModel = new RepairModel();
 
-        if (Login.getGbTypeUser().equals("Repairman")){
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (Login.getGbTypeUser().equals("Repairman")) {
                     Query query = myRef.orderByChild("status").equalTo("1");
                     query.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -81,25 +79,18 @@ public class HistoryRepairFragment extends Fragment {
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 if (ds.child("repairman").getValue(String.class).equals(userID)) {
                                     repairModel = ds.getValue(RepairModel.class);
-                                    list.add(0,repairModel);
+                                    list.add(0, repairModel);
                                 }
                             }
-                            adapter = new AdapteViewPepiar(mContext, list);
+                            adapter = new AdapteViewRepiar(mContext, list);
                             recyclerView.setAdapter(adapter);
                         }
+
                         @Override
                         public void onCancelled(@NonNull @NotNull DatabaseError error) {
                         }
                     });
-                }
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-        }else {
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                } else if (Login.getGbTypeUser().equals("Admin")) {
                     Query query = myRef.orderByChild("status").equalTo("1");
                     query.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -108,24 +99,45 @@ public class HistoryRepairFragment extends Fragment {
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 if (ds.child("status").getValue(String.class).equals("1")) {
                                     repairModel = ds.getValue(RepairModel.class);
-                                    list.add(0,repairModel);
+                                    list.add(0, repairModel);
                                 }
                             }
-                            adapter = new AdapteViewPepiar(mContext, list);
+                            adapter = new AdapteViewRepiar(mContext, list);
                             recyclerView.setAdapter(adapter);
                         }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                } else {
+                    Query query = myRef.orderByChild("numroom").equalTo(numroom);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("status").getValue(String.class).equals("1")) {
+                                    repairModel = ds.getValue(RepairModel.class);
+                                    list.add(0, repairModel);
+                                }
+                            }
+                            adapter = new AdapteViewRepiar(mContext, list);
+                            recyclerView.setAdapter(adapter);
+                        }
+
                         @Override
                         public void onCancelled(@NonNull @NotNull DatabaseError error) {
                         }
                     });
                 }
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-        }
+            }
 
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
+            }
+        });
 
         return view;
     }

@@ -43,12 +43,12 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabRepair"
-        android:background="@color/white"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:background="@color/white"
         app:tabTextAppearance="@style/CustomTabText"
         app:tabIndicatorColor="@color/blue"
-        app:tabMode="auto"
-        android:layout_height="wrap_content">
+        app:tabMode="auto">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -64,6 +64,26 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpRepair"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_menu"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="เพิ่มรายการซ่อม" />
+    </LinearLayout>
 
 </LinearLayout>

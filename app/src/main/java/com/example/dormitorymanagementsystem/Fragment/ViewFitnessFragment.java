@@ -65,12 +65,6 @@ public class ViewFitnessFragment extends Fragment {
             }
         },delay);
 
-
-
-
-
-
-
         return view;
 
     }

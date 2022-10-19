@@ -75,8 +75,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
         }else {
             holder.messageTv.setVisibility(View.GONE);
             holder.messageIv.setVisibility(View.VISIBLE);
-
-            Glide.with(context).load(message).fitCenter().centerCrop().into(holder.messageIv);
+            Glide.with(context).load(message).fitCenter().into(holder.messageIv);
         }
 
         holder.nameUser.setText(chatList.get(position).getNameUser());

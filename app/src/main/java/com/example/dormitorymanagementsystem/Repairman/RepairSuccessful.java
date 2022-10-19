@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dormitorymanagementsystem.Adapter.AdapteViewPepiar;
+import com.example.dormitorymanagementsystem.Adapter.AdapteViewRepiar;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
@@ -35,7 +35,7 @@ public class RepairSuccessful extends Fragment {
     private List<RepairModel> list = new ArrayList<>();
     private RepairModel repairModel;
     private RecyclerView recyclerView;
-    private AdapteViewPepiar adapter;
+    private AdapteViewRepiar adapter;
 
     private View view;
     private Context mContext;
@@ -73,7 +73,7 @@ public class RepairSuccessful extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
 
                 Query query = myRef.orderByChild("status").equalTo("3");
-                query.addValueEventListener(new ValueEventListener() {
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         list.clear();
@@ -94,7 +94,7 @@ public class RepairSuccessful extends Fragment {
                                 }
                             }
                         }
-                        adapter = new AdapteViewPepiar(mContext, list);
+                        adapter = new AdapteViewRepiar(mContext, list);
                         recyclerView.setAdapter(adapter);
                     }
 

@@ -2,14 +2,17 @@ package com.example.dormitorymanagementsystem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -45,6 +48,16 @@ public class CentralReservation1 extends AppCompatActivity {
             central = "ห้องติวหนังสือ";
         }
         txCentral.setText(central);
+
+        TimePicker timePicker = findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(false);
+
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+            }
+        };
 
 
 
@@ -141,6 +154,7 @@ public class CentralReservation1 extends AppCompatActivity {
                     listTime.add(time);
                 }
                 if (value>3){
+                    listTime.clear();
                     Toast.makeText(getApplicationContext(),"ส่วนกลางนี้จองได้ไม่เกินคนละ 3 ชม.ต่อครั้ง",Toast.LENGTH_SHORT).show();
                 }else {
                     if (value<1){

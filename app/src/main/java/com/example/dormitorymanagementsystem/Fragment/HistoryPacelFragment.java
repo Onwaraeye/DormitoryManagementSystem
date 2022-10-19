@@ -43,6 +43,7 @@ public class HistoryPacelFragment extends Fragment {
     private NewParcelModel newParcelModel;
     private String numroom = Login.getGbNumroom();
     private String userID = Login.getGbIdUser();
+    private String typeUser = Login.getGbTypeUser();
 
     public HistoryPacelFragment() {
     }
@@ -68,26 +69,47 @@ public class HistoryPacelFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Query query = myRef.orderByChild("numroom").equalTo(numroom);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        list.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (ds.child("status").getValue(String.class) != null && ds.child("status").getValue(String.class).equals("1")){
+                if (typeUser.equals("User")) {
+                    Query query = myRef.orderByChild("numroom").equalTo(numroom);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                if (ds.child("status").getValue(String.class) != null && ds.child("status").getValue(String.class).equals("1")) {
+                                    newParcelModel = ds.getValue(NewParcelModel.class);
+                                    list.add(newParcelModel);
+                                }
+                            }
+                            adapter = new AdapterNewParcel(mContext, list);
+                            recyclerView.setAdapter(adapter);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    Query query = myRef.orderByChild("status").equalTo("1");
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            list.clear();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
                                 newParcelModel = ds.getValue(NewParcelModel.class);
                                 list.add(newParcelModel);
                             }
+                            adapter = new AdapterNewParcel(mContext, list);
+                            recyclerView.setAdapter(adapter);
                         }
-                        adapter = new AdapterNewParcel(mContext, list);
-                        recyclerView.setAdapter(adapter);
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
             @Override

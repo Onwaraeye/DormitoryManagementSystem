@@ -43,7 +43,6 @@ public class PersonalInformationEdit extends AppCompatActivity {
 
         EditText etFName = findViewById(R.id.etFName);
         EditText etLName = findViewById(R.id.etLName);
-        EditText etDate = findViewById(R.id.etDate);
 
 
         radioGroup = findViewById(R.id.radioGroup);
@@ -75,7 +74,6 @@ public class PersonalInformationEdit extends AppCompatActivity {
                     Log.e("gender",valueGender+"");
                     etFName.setText(fName);
                     etLName.setText(lName);
-                    etDate.setText(birthday);
                 }
             }
             @Override
@@ -84,24 +82,22 @@ public class PersonalInformationEdit extends AppCompatActivity {
             }
         });
 
-
         Button btConfirm = findViewById(R.id.btConfirm);
         btConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String inputFName = etFName.getText().toString();
                 String inputLName = etLName.getText().toString();
-                String inputDate = etDate.getText().toString();
 
                 RadioButton inputradioButton;
                 myRefUser.child(userID).child("firstname").setValue(inputFName);
                 myRefUser.child(userID).child("lastname").setValue(inputLName);
-                myRefUser.child(userID).child("birthday").setValue(inputDate);
 
                 int selectedID = radioGroup.getCheckedRadioButtonId();
                 inputradioButton = findViewById(selectedID);
                 String gender = inputradioButton.getText().toString();
-                myRefUser.child(userID).child("gender").setValue(gender);/*.addOnSuccessListener(new OnSuccessListener<Void>() {
+                myRefUser.child(userID).child("gender").setValue(gender);
+                /*.addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Intent intent = new Intent(getApplicationContext(),PersonalInformation.class);

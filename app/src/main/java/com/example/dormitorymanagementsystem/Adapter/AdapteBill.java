@@ -32,7 +32,8 @@ public class AdapteBill extends RecyclerView.Adapter<AdapteBill.MyViewHolder> {
     private List<BillModel> list;
     private List<String> date;
 
-    public AdapteBill(Context mContext, List<BillModel> list,List<String> date) {
+
+    public AdapteBill(Context mContext, List<BillModel> list, List<String> date) {
         this.mContext = mContext;
         this.list = list;
         this.date = date;

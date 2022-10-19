@@ -44,11 +44,13 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
         String hisUID = userList.get(i).getId();
         String userName = userList.get(i).getFirstname() + " " + userList.get(i).getLastname();
         String userRoom = "";
-        if (userList.get(i).getNumroom().equals("none")){
+        if (userList.get(i).getNumroom() == null){
             if (userList.get(i).getRole().equals("Admin")){
                 holder.mRoomTv.setText("นิติบุลคล");
-            }else {
+            }else if (userList.get(i).getRole().equals("Repairman")){
                 holder.mRoomTv.setText("ช่างซ่อม");
+            }else {
+                holder.mRoomTv.setText("");
             }
         }else {
             userRoom = "ห้อง "+userList.get(i).getNumroom();
@@ -56,15 +58,12 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
         }
 
         String userImage = userList.get(i).getPictureUserUrl();
-
         holder.mNameTv.setText(userName);
-
         if (userImage.isEmpty()){
             holder.mAvatarIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
         }else {
             Glide.with(context).load(userImage).fitCenter().centerCrop().into(holder.mAvatarIv);
         }
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,11 +3,14 @@ package com.example.dormitorymanagementsystem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +54,7 @@ public class Repair extends AppCompatActivity {
     private String userID;
 
     private static final int IMAGE_REQUEST = 1;
-    private Uri imUri;
+    private Uri resultUri;
     private ImageView imageView;
 
 
@@ -73,10 +77,10 @@ public class Repair extends AppCompatActivity {
         String getStatus = intent.getStringExtra("status");
         String getCost = intent.getStringExtra("cost");
         String getRepairman = intent.getStringExtra("repairman");
-        Long time = System.currentTimeMillis();
+        String getDate = intent.getStringExtra("date");
 
         TextView txTime = findViewById(R.id.txTime);
-        EditText etRoom = findViewById(R.id.etRoom);
+        TextView etRoom = findViewById(R.id.etRoom);
         EditText etTitleRepair = findViewById(R.id.etTitleRepair);
         EditText etDetail = findViewById(R.id.etDetail);
         EditText etPhone = findViewById(R.id.etPhone);
@@ -97,76 +101,98 @@ public class Repair extends AppCompatActivity {
         btAdminForwardWork.setVisibility(View.GONE);
         repairman.setVisibility(View.GONE);
 
+        txTime.setText(getDate);
+
         //ส่วนของUser
         if (typeUser.equals("User")) {
-
-            txTime.setVisibility(View.GONE);
-            btConfirm.setVisibility(View.VISIBLE);
-            etCost.setVisibility(View.GONE);
-            txCost.setVisibility(View.GONE);
-            etRepairman.setVisibility(View.GONE);
-            txRepairman.setVisibility(View.GONE);
-            myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.hasChild(userID)) {
-                        String numroom = snapshot.child(userID).child("numroom").getValue(String.class);
-                        String phone = snapshot.child(userID).child("phone").getValue(String.class);
-                        etRoom.setText(numroom);
-                        etPhone.setText(phone);
+            if (getStatus != null){
+                etRoom.setText(getRoom);
+                etDetail.setText(getDetail);
+                etDetail.setEnabled(false);
+                etTitleRepair.setText(getTitle);
+                etTitleRepair.setEnabled(false);
+                etPhone.setText(getPhone);
+                etPhone.setEnabled(false);
+                btConfirm.setVisibility(View.GONE);
+                Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
+                etCost.setVisibility(View.GONE);
+                txCost.setVisibility(View.GONE);
+                etRepairman.setVisibility(View.GONE);
+                txRepairman.setVisibility(View.GONE);
+            }
+            else {
+                txTime.setVisibility(View.GONE);
+                btConfirm.setVisibility(View.VISIBLE);
+                etCost.setVisibility(View.GONE);
+                txCost.setVisibility(View.GONE);
+                etRepairman.setVisibility(View.GONE);
+                txRepairman.setVisibility(View.GONE);
+                myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.hasChild(userID)) {
+                            String numroom = snapshot.child(userID).child("numroom").getValue(String.class);
+                            String phone = snapshot.child(userID).child("phone").getValue(String.class);
+                            etRoom.setText(numroom);
+                            etPhone.setText(phone);
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openImage();
-                }
-            });
-            btConfirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String inputRoom = etRoom.getText().toString();
-                    String inputRepair = etTitleRepair.getText().toString();
-                    String inputDetail = etDetail.getText().toString();
-                    String inputPhone = etPhone.getText().toString();
-                    if (inputRoom.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "กรุณาระบุห้อง", Toast.LENGTH_SHORT).show();
-                    } else if (inputRepair.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "กรุณาระบุหัวข้อ", Toast.LENGTH_SHORT).show();
-                    } else if (inputDetail.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "กรุณาระบุรายละเอียด", Toast.LENGTH_SHORT).show();
-                    } else if (inputPhone.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "กรุณาระบุเบอร์โทรศัพท์", Toast.LENGTH_SHORT).show();
-                    } else {
-                        myRefRepair.child("userID").setValue(userID);
-                        myRefRepair.child("numroom").setValue(inputRoom);
-                        myRefRepair.child("titleRepair").setValue(inputRepair);
-                        myRefRepair.child("detail").setValue(inputDetail);
-                        myRefRepair.child("phone").setValue(inputPhone);
-                        myRefRepair.child("status").setValue("0");
-                        myRefRepair.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
-                        myRefRepair.child("cost").setValue("0");
-                        uploadImage();
-                        finish();
                     }
-                }
-            });
+                });
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean pick=true;
+                        if (pick==true){
+                            if (!checkCameraPermission()){
+                                requestCameraPermission();
+                            }else PickImage();
+                        }else {
+                            if (!checkStoragePermission()){
+                                requestStoragePermission();
+                            }else PickImage();
+                        }
+                    }
+                });
+                btConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String inputRoom = etRoom.getText().toString();
+                        String inputRepair = etTitleRepair.getText().toString();
+                        String inputDetail = etDetail.getText().toString();
+                        String inputPhone = etPhone.getText().toString();
+                        if (inputRoom.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "กรุณาระบุห้อง", Toast.LENGTH_SHORT).show();
+                        } else if (inputRepair.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "กรุณาระบุหัวข้อ", Toast.LENGTH_SHORT).show();
+                        } else if (inputDetail.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "กรุณาระบุรายละเอียด", Toast.LENGTH_SHORT).show();
+                        } else if (inputPhone.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "กรุณาระบุเบอร์โทรศัพท์", Toast.LENGTH_SHORT).show();
+                        } else {
+                            myRefRepair.child("userID").setValue(userID);
+                            myRefRepair.child("numroom").setValue(inputRoom);
+                            myRefRepair.child("titleRepair").setValue(inputRepair);
+                            myRefRepair.child("detail").setValue(inputDetail);
+                            myRefRepair.child("phone").setValue(inputPhone);
+                            myRefRepair.child("status").setValue("0");
+                            myRefRepair.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                            myRefRepair.child("cost").setValue("0");
+                            uploadImage();
+                            finish();
+                        }
+                    }
+                });
+            }
         }
         //ส่วนของช่าง
         else if (typeUser.equals("Repairman")){
 
-            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
-            String date = formatter.format(new Date(Long.parseLong(getTime)));
-            txTime.setText(date);
-
             etRoom.setText(getRoom);
-            etRoom.setEnabled(false);
             etDetail.setText(getDetail);
             etDetail.setEnabled(false);
             etTitleRepair.setText(getTitle);
@@ -219,12 +245,8 @@ public class Repair extends AppCompatActivity {
         }
         //ส่วนของAdmin
         else if (typeUser.equals("Admin")){
-            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy / HH:mm");
-            String date = formatter.format(new Date(Long.parseLong(getTime)));
-            txTime.setText(date);
 
             etRoom.setText(getRoom);
-            etRoom.setEnabled(false);
             etDetail.setText(getDetail);
             etDetail.setEnabled(false);
             etTitleRepair.setText(getTitle);
@@ -358,45 +380,67 @@ public class Repair extends AppCompatActivity {
         });
     }
 
-    private void openImage() {
-        Intent intent = new Intent();
-        intent.setType("image/");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+    private void PickImage() {
+        CropImage.activity().start(this);
+    }
+
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private void requestCameraPermission() {
+        requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res1 && res2;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
-            imUri = data.getData();
-            Glide.with(getApplication()).load(imUri).fitCenter().centerCrop().into(imageView);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                /*try {
+                    InputStream stream = getContentResolver().openInputStream(resultUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    image.setImageBitmap(bitmap);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }*/
+                Glide.with(getApplication()).load(resultUri).fitCenter().centerCrop().into(imageView);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
     }
 
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    private void uploadImage() {
+    private void uploadImage(){
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("กำลังอัพโหลด");
         pd.show();
 
-        if (imUri != null) {
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsRepair").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
+        if (resultUri != null){
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsRepair").child(System.currentTimeMillis()+"");
 
-            fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            fileRef.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            pd.dismiss();
                             String imageURL = uri.toString();
-                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
                             myRefRepair.child("imageUrl").setValue(imageURL);
                         }
                     });

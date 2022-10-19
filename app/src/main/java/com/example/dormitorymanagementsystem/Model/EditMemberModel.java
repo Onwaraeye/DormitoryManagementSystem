@@ -4,11 +4,21 @@ public class EditMemberModel {
     private String userId;
     private String name;
     private String room;
+    private String owner;
 
-    public EditMemberModel(String userId, String name, String room) {
+    public EditMemberModel(String userId, String name, String room, String owner) {
         this.userId = userId;
         this.name = name;
         this.room = room;
+        this.owner = owner;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getRoom() {

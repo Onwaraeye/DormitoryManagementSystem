@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="1dp">
+
+    <TextView
+        android:id="@+id/txRoom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/gray"
+        android:gravity="center"
+        android:fontFamily="@font/fc_minimal_regular"
+        android:textSize="20sp"
+        android:paddingVertical="10dp"
+        android:text="ห้อง" />
+
+    <EditText
+        android:id="@+id/txUnitBefore"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="1dp"
+        android:layout_weight="1"
+        android:background="@color/gray"
+        android:fontFamily="@font/fc_minimal_regular"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:enabled="false"
+        android:paddingVertical="10dp"
+        android:inputType="number"
+        android:hint="หน่วยก่อนหน้า" />
+
+    <EditText
+        android:id="@+id/etUnitAfter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#83c5be"
+        android:layout_weight="1"
+        android:ems="10"
+        android:gravity="center"
+        android:fontFamily="@font/fc_minimal_regular"
+        android:textSize="20sp"
+        android:hint="หน่วยล่าสุด"
+        android:inputType="number" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/btSave"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:tint="@color/darkergray"
+            android:visibility="visible"
+            android:src="@drawable/ic_baseline_save_alt_24" />
+
+        <ImageView
+            android:id="@+id/btEdit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            android:tint="@color/darkergray"
+            android:src="@drawable/ic_ant_design_edit_filled" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -34,7 +34,7 @@ public class InfoEditBank extends AppCompatActivity {
         setContentView(R.layout.activity_info_edit_bank);
 
         String bank = getIntent().getStringExtra("bank");
-        int icon = Integer.parseInt(getIntent().getStringExtra("icon"));
+        String icon = getIntent().getStringExtra("icon");
 
         TextView txBank = findViewById(R.id.txBank);
         EditText etName = findViewById(R.id.etName);

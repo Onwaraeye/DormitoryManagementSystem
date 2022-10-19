@@ -21,12 +21,25 @@
             android:id="@+id/textName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
             android:fontFamily="@font/fc_minimal_regular"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:text="ชื่อ นามสกุล" />
+
+        <TextView
+            android:id="@+id/txOwn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:fontFamily="@font/fc_minimal_regular"
+            android:textSize="20sp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:visibility="invisible"
+            android:text="( เจ้าของห้อง )" />
 
         <TextView
             android:id="@+id/bt_del"
@@ -38,7 +51,7 @@
             android:textSize="20sp"
             android:textColor="@color/red"
             android:paddingEnd="20dp"
-            android:paddingStart="10dp"
+            android:paddingStart="20dp"
             android:text="ลบ" />
 
     </LinearLayout>

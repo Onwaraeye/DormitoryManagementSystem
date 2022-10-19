@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Model.User;
 import com.example.dormitorymanagementsystem.R;
 
@@ -18,11 +19,17 @@ import java.util.List;
 public class AdapterNameMember extends RecyclerView.Adapter<AdapterNameMember.AdapterNameMemberHolder> {
 
     private Context mContext;
-    List<String> list;
+    private List<String> list;
+    private String owner;
+    private List<String> listImage;
+    private List<String> listMember;
 
-    public AdapterNameMember(Context mContext, List<String> list) {
+    public AdapterNameMember(Context mContext, List<String> list, String owner, List<String> listImage, List<String> listMember) {
         this.mContext = mContext;
         this.list = list;
+        this.owner = owner;
+        this.listImage = listImage;
+        this.listMember = listMember;
     }
 
     @NonNull
@@ -36,6 +43,14 @@ public class AdapterNameMember extends RecyclerView.Adapter<AdapterNameMember.Ad
     public void onBindViewHolder(@NonNull AdapterNameMember.AdapterNameMemberHolder holder, int position) {
         try {
             holder.text_name.setText(list.get(position));
+            if (listMember.get(position).equals(owner)){
+                holder.txOwn.setVisibility(View.VISIBLE);
+            }
+            if (!listImage.get(position).isEmpty()){
+                Glide.with(mContext).load(listImage.get(position)).fitCenter().centerCrop().into(holder.image);
+            }else {
+                Glide.with(mContext).load(R.drawable.ic_carbon_user_avatar).fitCenter().into(holder.image);
+            }
 
 
         }catch (NullPointerException e){ }
@@ -48,14 +63,16 @@ public class AdapterNameMember extends RecyclerView.Adapter<AdapterNameMember.Ad
 
     public class AdapterNameMemberHolder extends RecyclerView.ViewHolder {
 
-        TextView text_name;
+        TextView text_name,txOwn;
         ImageView image;
 
         public AdapterNameMemberHolder(@NonNull View itemView) {
             super(itemView);
 
             text_name = itemView.findViewById(R.id.textName);
-            image = itemView.findViewById(R.id.image);
+            txOwn = itemView.findViewById(R.id.txOwn);
+            image = itemView.findViewById(R.id.imageView);
+
         }
     }
 }

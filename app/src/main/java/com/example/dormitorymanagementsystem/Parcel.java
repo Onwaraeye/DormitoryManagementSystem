@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterTabLayout;
 import com.example.dormitorymanagementsystem.Fragment.HistoryPacelFragment;
 import com.example.dormitorymanagementsystem.Fragment.NewParcelFragment;
+import com.example.dormitorymanagementsystem.Manager.SentParcel;
 import com.google.android.material.tabs.TabLayout;
 
 public class Parcel extends AppCompatActivity {
@@ -21,6 +24,8 @@ public class Parcel extends AppCompatActivity {
         setContentView(R.layout.activity_parcel);
 
         //Context mContext = getApplication();
+
+        String typeUser = Login.getGbTypeUser();
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
@@ -34,9 +39,23 @@ public class Parcel extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.vpParcel);
         tabLayout.setupWithViewPager(viewPager);
 
+
         AdapterTabLayout adapterTabLayout = new AdapterTabLayout(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapterTabLayout.addFragment(new NewParcelFragment(),"พัสดุใหม่");
-        adapterTabLayout.addFragment(new HistoryPacelFragment(),"ประวัติพัสดุ");
+
+        adapterTabLayout.addFragment(new NewParcelFragment(), "พัสดุใหม่");
+        adapterTabLayout.addFragment(new HistoryPacelFragment(), "ประวัติพัสดุ");
+        if (typeUser.equals("Admin")){
+            Button button = findViewById(R.id.button);
+            button.setVisibility(View.VISIBLE);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), SentParcel.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
         viewPager.setAdapter(adapterTabLayout);
     }
 }

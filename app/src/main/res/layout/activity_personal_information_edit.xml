@@ -101,24 +101,6 @@
                 android:text="ผู้หญิง" />
         </RadioGroup>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="วันเกิด" />
-
-        <EditText
-            android:id="@+id/etDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_la_birthday_cake"
-            android:drawablePadding="10dp"
-            android:ems="10"
-            android:hint="dd/mm/yyy"
-            android:inputType="date" />
-
         <Button
             android:id="@+id/btConfirm"
             android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.example.dormitorymanagementsystem.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
                     intent.putExtra("name", list.get(position).getName());
                     intent.putExtra("date", list.get(position).getDate());
                     intent.putExtra("time", list.get(position).getTime());
+                    intent.putExtra("phone", list.get(position).getPhone());
                     intent.putExtra("userID", list.get(position).getUserID());
                     if (list.get(position).getCentral().equals("พื้นที่ออกกำลังกาย")){
                         intent.putExtra("image",imageFitness);

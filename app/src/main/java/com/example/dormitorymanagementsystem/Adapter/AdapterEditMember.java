@@ -53,6 +53,9 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
     public void onBindViewHolder(@NonNull AdapterEditMember.AdapterEditMemberHolder holder, int position) {
         try {
             holder.text_name.setText(list.get(position).getName());
+            if (list.get(position).getOwner().equals(list.get(position).getUserId())){
+                holder.txOwn.setVisibility(View.VISIBLE);
+            }
             holder.bt_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -71,12 +74,13 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
 
     public class AdapterEditMemberHolder extends RecyclerView.ViewHolder {
 
-        TextView text_name,bt_del;
+        TextView text_name,bt_del,txOwn;
 
         public AdapterEditMemberHolder(@NonNull View itemView) {
             super(itemView);
 
             text_name = itemView.findViewById(R.id.textName);
+            txOwn = itemView.findViewById(R.id.txOwn);
             bt_del = itemView.findViewById(R.id.bt_del);
         }
     }

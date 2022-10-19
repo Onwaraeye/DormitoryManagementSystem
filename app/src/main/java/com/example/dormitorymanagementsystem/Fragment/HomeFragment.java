@@ -19,6 +19,8 @@ import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.ChatNew.ContactActivity;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Info;
+import com.example.dormitorymanagementsystem.Manager.MeterRecord;
+import com.example.dormitorymanagementsystem.Manager.ViewBills;
 import com.example.dormitorymanagementsystem.Manager.ViewBillsSelectDate;
 import com.example.dormitorymanagementsystem.Manager.ViewRoom;
 import com.example.dormitorymanagementsystem.Manager.ManagerPhone;
@@ -47,8 +49,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference myRefContact = database.getReference("Contact");
 
     private LinearLayout menu_bill,menu_parcel,menu_central,menu_my_room,menu_phone,menu_info,menu_repair,menu_chat;
-    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_view_repair,menu_edit_info,menu_view_bill;
-    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4,repair;
+    private LinearLayout menu_sent_parcel,menu_edit_phone,menu_edit_room_member,menu_chat_manager,menu_view_central,menu_view_repair,menu_edit_info,menu_view_bill,menu_add_unit;
+    private LinearLayout user1,user2,user3,user4,admin1,admin2,admin3,admin4,admin5,repair;
     private View view;
     private final String getType = Login.getGbTypeUser();
 
@@ -154,7 +156,7 @@ public class HomeFragment extends Fragment {
         menu_repair.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Repair.class);
+                Intent intent = new Intent(getActivity(), ViewRepair.class);
                 getActivity().startActivity(intent);
             }
         });
@@ -173,7 +175,7 @@ public class HomeFragment extends Fragment {
         menu_sent_parcel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SentParcel.class);
+                Intent intent = new Intent(getActivity(), Parcel.class);
                 getActivity().startActivity(intent);
             }
         });
@@ -234,7 +236,7 @@ public class HomeFragment extends Fragment {
         menu_view_bill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ViewBillsSelectDate.class);
+                Intent intent = new Intent(getActivity(), ViewBills.class);
                 getActivity().startActivity(intent);
             }
         });
@@ -258,6 +260,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        menu_add_unit = view.findViewById(R.id.menu_add_unit);
+        menu_add_unit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MeterRecord.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
         if (Login.getGbTypeUser().equals("User")){
             admin1 = view.findViewById(R.id.admin1);
             admin1.setVisibility(View.GONE);
@@ -267,6 +278,8 @@ public class HomeFragment extends Fragment {
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
             admin4.setVisibility(View.GONE);
+            admin5 = view.findViewById(R.id.admin5);
+            admin5.setVisibility(View.GONE);
             repair = view.findViewById(R.id.repair);
             repair.setVisibility(View.GONE);
         }else if (Login.getGbTypeUser().equals("Admin")){
@@ -289,6 +302,8 @@ public class HomeFragment extends Fragment {
             admin3.setVisibility(View.GONE);
             admin4 = view.findViewById(R.id.admin4);
             admin4.setVisibility(View.GONE);
+            admin5 = view.findViewById(R.id.admin5);
+            admin5.setVisibility(View.GONE);
             user1 = view.findViewById(R.id.user1);
             user1.setVisibility(View.GONE);
             user2 = view.findViewById(R.id.user2);

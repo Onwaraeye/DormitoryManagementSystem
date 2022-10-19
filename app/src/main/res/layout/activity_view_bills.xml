@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray"
     tools:context=".Manager.ViewBills">
 
     <LinearLayout
@@ -40,14 +41,32 @@
             app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/txMonth"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="24sp"
-        android:text="TextView" />
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btMonthPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_rad5"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
+        <TextView
+            android:id="@+id/txMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="TextView"
+            android:textSize="24sp" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_item"

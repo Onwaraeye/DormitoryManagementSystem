@@ -60,7 +60,7 @@ public class BookingDetails extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String date = getIntent().getStringExtra("date");
         String time = getIntent().getStringExtra("time");
-
+        String phone = getIntent().getStringExtra("phone");
 
         TextView txCentral = findViewById(R.id.txCentral);
         TextView txDate = findViewById(R.id.txDate);
@@ -88,7 +88,6 @@ public class BookingDetails extends AppCompatActivity {
                 myRefUser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String phone = snapshot.child(userID).child("phone").getValue(String.class);
                         String numroom = snapshot.child(userID).child("numroom").getValue(String.class);
                         txPhone.setText("เบอร์โทร " + phone);
                         txCentral.setText(central);

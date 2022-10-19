@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dormitorymanagementsystem.AttachPayment;
+import com.example.dormitorymanagementsystem.Manager.CreateBill;
 import com.example.dormitorymanagementsystem.Model.BillModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DatabaseReference;
@@ -22,8 +23,6 @@ import java.util.List;
 
 public class AdapteViewBill extends RecyclerView.Adapter<AdapteViewBill.MyViewHolder> {
 
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
     private Context mContext;
     private List<BillModel> list;
     private List<String> room;
@@ -32,7 +31,7 @@ public class AdapteViewBill extends RecyclerView.Adapter<AdapteViewBill.MyViewHo
     public AdapteViewBill(Context mContext, List<BillModel> list, List<String> room, String date) {
         this.mContext = mContext;
         this.list = list;
-        this.room = room;
+        this.room = room;;
         this.date = date;
     }
 
@@ -47,35 +46,79 @@ public class AdapteViewBill extends RecyclerView.Adapter<AdapteViewBill.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull AdapteViewBill.MyViewHolder holder, int position) {
         try {
-            String datebill = room.get(position);
+            String roombill = room.get(position);
             String status = list.get(position).getStatus();
 
-            holder.txRoom.setText(datebill);
-            if (status.equals("0")){
-                holder.txstatus.setText("ยังไม่ได้ชำระ");
-                holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.red));
-            }else if (status.equals("1")){
-                holder.txstatus.setText("รอการตรวจสอบ");
-                holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));
+            holder.txRoom.setText(roombill);
+            if (status != null){
+                if (status.equals("0")){
+                    holder.txstatus.setText("ยังไม่ได้ชำระ");
+                    holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.red));
+                    holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            BillModel billModel = new BillModel();
+                            billModel = list.get(position);
+                            Intent intent = new Intent(mContext, CreateBill.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("room", roombill);
+                            intent.putExtra("date", date);
+                            intent.putExtra("bill",(BillModel) billModel);
+                            mContext.startActivity(intent);
+                        }
+                    });
+                }else if (status.equals("1")){
+                    holder.txstatus.setText("รอการตรวจสอบ");
+                    holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));
+                    holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            BillModel billModel = new BillModel();
+                            billModel = list.get(position);
+                            Intent intent = new Intent(mContext, AttachPayment.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("room", roombill);
+                            intent.putExtra("date", date);
+                            intent.putExtra("bill",(BillModel) billModel);
+                            mContext.startActivity(intent);
+                        }
+                    });
+                }else {
+                    holder.txstatus.setText("ชำระแล้ว");
+                    holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.green));
+                    holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            BillModel billModel = new BillModel();
+                            billModel = list.get(position);
+                            Intent intent = new Intent(mContext, AttachPayment.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("room", roombill);
+                            intent.putExtra("date", date);
+                            intent.putExtra("bill",(BillModel) billModel);
+                            mContext.startActivity(intent);
+                        }
+                    });
+                }
             }else {
-                holder.txstatus.setText("ชำระแล้ว");
-                holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.green));
+                holder.txstatus.setText("ยังไม่ได้ส่งใบแจ้งหนี้");
+                holder.txstatus.setTextColor(ContextCompat.getColor(mContext,R.color.darkergray));
+                holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BillModel billModel = new BillModel();
+                        billModel = list.get(position);
+                        Intent intent = new Intent(mContext, CreateBill.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("room", roombill);
+                        intent.putExtra("date", date);
+                        intent.putExtra("bill",(BillModel) billModel);
+                        mContext.startActivity(intent);
+                    }
+                });
             }
 
 
-            holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    BillModel billModel = new BillModel();
-                    billModel = list.get(position);
-                    Intent intent = new Intent(mContext, AttachPayment.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("room", datebill);
-                    intent.putExtra("date", date);
-                    intent.putExtra("bill",(BillModel) billModel);
-                    mContext.startActivity(intent);
-                }
-            });
         } catch (NullPointerException e) {
         }
     }
@@ -98,8 +141,4 @@ public class AdapteViewBill extends RecyclerView.Adapter<AdapteViewBill.MyViewHo
             linearLayout = itemView.findViewById(R.id.linearLayout);
         }
     }
-    /*public void updateData(List list) {
-        this.list = list;
-        notifyDataSetChanged();
-    }*/
 }

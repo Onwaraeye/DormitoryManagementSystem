@@ -41,13 +41,13 @@ public class SelectBank extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        list.add(new BankModel(R.drawable.kbank,"กสิกรไทย"));
-        list.add(new BankModel(R.drawable.bangkok,"กรุงเทพ"));
-        list.add(new BankModel(R.drawable.krungthai,"กรุงไทย"));
-        list.add(new BankModel(R.drawable.krungsri,"กรุงศรี"));
-        list.add(new BankModel(R.drawable.tmb,"ทหารไทยธนชาต"));
-        list.add(new BankModel(R.drawable.scb,"ไทยพาณิชย์"));
-        list.add(new BankModel(R.drawable.government_savings,"ออมสิน"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fkbank.png?alt=media&token=7c8d6aff-dec5-4741-952c-196c60c7063e","กสิกรไทย"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fbangkok.png?alt=media&token=33cee91e-0103-4a92-9d4d-bf961aa5660b","กรุงเทพ"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fkrungthai.png?alt=media&token=0633e88e-b25d-4fda-b014-3ca383fd2cb2","กรุงไทย"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fkrungsri.png?alt=media&token=3bb51409-49be-4e7a-a661-028fb9ae52ac","กรุงศรี"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Ftmb.png?alt=media&token=dd5f7e08-6b0e-43f7-ba2c-b0151a638a52","ทหารไทยธนชาต"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fscb.png?alt=media&token=a09e8939-7582-48ca-881d-2fb569452c94","ไทยพาณิชย์"));
+        list.add(new BankModel("https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/Bank%2Fgovernment_savings.png?alt=media&token=4fcbe342-4fe2-44d8-a250-f2b07ad13e31","ออมสิน"));
 
         adapter = new AdapterBank(SelectBank.this,list);
         recyclerView.setAdapter(adapter);

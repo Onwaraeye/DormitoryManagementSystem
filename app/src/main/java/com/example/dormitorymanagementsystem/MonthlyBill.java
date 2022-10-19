@@ -55,6 +55,7 @@ public class MonthlyBill extends AppCompatActivity {
 
         List<String> listYear = new ArrayList<>();
         List<String> listDate = new ArrayList<>();
+        List<String> listMonth = new ArrayList<>();
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -67,11 +68,16 @@ public class MonthlyBill extends AppCompatActivity {
                 }
                 for (String y : listYear){
                     for (DataSnapshot dataSnapshot : snapshot.child(y).getChildren()){
-                        BillModel billModel = new BillModel();
-                        billModel = dataSnapshot.child(room).getValue(BillModel.class);
-                        list.add(0,billModel);
-                        String date = getMonth(Integer.parseInt(dataSnapshot.getKey()))+"/"+y;
-                        listDate.add(0,date);
+                        Log.e("Month",dataSnapshot.getKey());
+                        if (snapshot.child(y).child(dataSnapshot.getKey()).child(room).hasChild("status")){
+                            BillModel billModel = new BillModel();
+                            billModel = dataSnapshot.child(room).getValue(BillModel.class);
+                            list.add(0,billModel);
+                            int yr = Integer.parseInt(y)+543;
+                            String date = getMonth(Integer.parseInt(dataSnapshot.getKey()))+" "+yr;
+                            listDate.add(0,date);
+                            listMonth.add(0,dataSnapshot.getKey());
+                        }
                     }
                 }
                 adapter = new AdapteBill(mContext,list,listDate);
@@ -94,40 +100,40 @@ public class MonthlyBill extends AppCompatActivity {
 
     public String getMonth(int month){
         switch(month) {
-            case 0:
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }

@@ -52,7 +52,7 @@ public class AdapterBank extends RecyclerView.Adapter<AdapterBank.MyViewHolder> 
     public void onBindViewHolder(@NonNull AdapterBank.MyViewHolder holder, int position) {
         try {
             String title = list.get(position).getTitle();
-            int icon = list.get(position).getIcon();
+            String icon = list.get(position).getIcon();
 
             holder.txTitle.setText(title);
             Glide.with(mContext).load(icon).fitCenter().centerCrop().into(holder.imageView);

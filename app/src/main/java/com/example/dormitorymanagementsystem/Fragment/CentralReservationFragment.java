@@ -69,7 +69,8 @@ public class CentralReservationFragment extends Fragment {
         String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
         String month = Calendar.getInstance().get(Calendar.MONTH) + "";
         String year = Calendar.getInstance().get(Calendar.YEAR) + "";
-        String date = day + " " + getMonth(Integer.parseInt(month)) + " " + year;
+        int ye = Integer.valueOf(year)+543;
+        String date = day + " " + getMonth(Integer.parseInt(month)) + " " + ye;
 
         mContext = getActivity().getApplication();
         recyclerView = view.findViewById(R.id.list_item);
@@ -80,9 +81,11 @@ public class CentralReservationFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+
                 listCentral.clear();
                 GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>() {
                 };
+                String phone = snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("phone").getValue(String.class);
                 if (snapshot.child("fitness").hasChild(year)) {
                     if (snapshot.child("fitness").child(year).hasChild(month)) {
                         if (snapshot.child("fitness").child(year).child(month).hasChild(day)) {
@@ -92,7 +95,7 @@ public class CentralReservationFragment extends Fragment {
 
                                 }else {
                                     for (int i = 0; i < timefitness.size(); i++) {
-                                        CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),userID);
+                                        CentralModel centralModel = new CentralModel("พื้นที่ออกกำลังกาย", name, date, convertTime(timefitness.get(i)),userID,phone);
                                         listCentral.add(centralModel);
                                     }
                                 }
@@ -106,10 +109,9 @@ public class CentralReservationFragment extends Fragment {
                             if (snapshot.child("tutoringRoom").child(year).child(month).child(day).hasChild(userID)) {
                                 List<String> timetutoringRoom = snapshot.child("tutoringRoom").child(year).child(month).child(day).child(userID).child("time").getValue(genericTypeIndicator);
                                 if (snapshot.child("tutoringRoom").child(year).child(month).child(day).child(userID).child("time").getChildrenCount() == 0){
-
                                 }else {
                                     for (int i = 0; i < timetutoringRoom.size(); i++) {
-                                        CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),userID);
+                                        CentralModel centralModel = new CentralModel("ห้องติวหนังสือ", name, date, convertTime(timetutoringRoom.get(i)),userID,phone);
                                         listCentral.add(centralModel);
                                     }
                                 }

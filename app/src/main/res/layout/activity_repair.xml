@@ -63,17 +63,12 @@
                 android:layout_marginTop="5dp"
                 android:text="ห้อง" />
 
-            <EditText
+            <TextView
                 android:id="@+id/etRoom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:background="@drawable/bg_menu"
-                android:backgroundTint="@color/gray"
                 android:padding="5dp"
-                android:inputType="textPersonName"
-                android:enabled="false"
-                android:textColor="@drawable/edit_text_selector"
                 android:text="101" />
 
             <TextView

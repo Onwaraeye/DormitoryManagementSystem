@@ -70,7 +70,6 @@ public class PersonalInformation extends AppCompatActivity {
 
         TextView txName = findViewById(R.id.txHeadName);
         TextView txHeadName = findViewById(R.id.txName);
-        TextView txBirthday = findViewById(R.id.txBirthday);
         TextView txGender = findViewById(R.id.txGender);
         imUser = findViewById(R.id.imUser);
 
@@ -81,7 +80,6 @@ public class PersonalInformation extends AppCompatActivity {
                     String fName = snapshot.child(userID).child("firstname").getValue(String.class);
                     String lName = snapshot.child(userID).child("lastname").getValue(String.class);
                     String name = fName+" "+lName;
-                    String birthday = snapshot.child(userID).child("birthday").getValue(String.class);
                     String gender = snapshot.child(userID).child("gender").getValue(String.class);
                     String imageURL = snapshot.child(userID).child("pictureUserUrl").getValue(String.class);
                     if (imageURL.isEmpty()){
@@ -104,7 +102,6 @@ public class PersonalInformation extends AppCompatActivity {
                     txGender.setText(gender);
                     txHeadName.setText(name);
                     txName.setText(name);
-                    txBirthday.setText(birthday);
                 }
             }
 

@@ -3,12 +3,15 @@ package com.example.dormitorymanagementsystem.ChatNew;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.R;
 import com.example.dormitorymanagementsystem.notifications.Data;
@@ -45,6 +49,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,7 +88,7 @@ public class ChatActivity extends AppCompatActivity {
     private int notify = 0;
 
     private static final int IMAGE_REQUEST = 1;
-    private Uri imUri;
+    private Uri resultUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,11 +139,11 @@ public class ChatActivity extends AppCompatActivity {
                     String name = ds.child("firstname").getValue(String.class) + " " + ds.child("lastname").getValue(String.class);
                     String room = ds.child("numroom").getValue(String.class);
                     String role = ds.child("role").getValue(String.class);
-                    if (room != null && room.equals("none")) {
-                        if (role != null && role.equals("Admin")) {
+                    if (room == null) {
+                        if (role.equals("Admin")) {
                             roomTv.setVisibility(View.INVISIBLE);
                             nameTv.setText("นิติบุลคล");
-                        } else if (role != null && role.equals("Repairman")) {
+                        } else if (role.equals("Repairman")) {
                             roomTv.setText("ช่างซ่อม");
                         }
                     } else {
@@ -159,71 +164,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        if (typeUser.equals("Admin")) {
-            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(hisUid);
-            chatRef1.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        chatRef1.child("id").setValue(hisUid);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-                }
-            });
-            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child(hisUid).child("Mng");
-            chatRef2.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        chatRef2.child("id").setValue("Mng");
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-                }
-            });
-        } else {
-            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child("Mng");
-            chatRef1.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        chatRef1.child("id").setValue("Mng");
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-                }
-            });
-            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(myUid);
-            chatRef2.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        chatRef2.child("id").setValue(myUid);
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-                }
-            });
-        }
-
-
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,10 +177,20 @@ public class ChatActivity extends AppCompatActivity {
                 messageEt.setText("");
             }
         });
+
         attachBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openImage();
+                boolean pick=true;
+                if (pick==true){
+                    if (!checkCameraPermission()){
+                        requestCameraPermission();
+                    }else PickImage();
+                }else {
+                    if (!checkStoragePermission()){
+                        requestStoragePermission();
+                    }else PickImage();
+                }
             }
         });
 
@@ -263,10 +213,18 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(hisUid)) {
-                        HashMap<String, Object> hasSeenHashMap = new HashMap<>();
-                        hasSeenHashMap.put("isSeen", 1);
-                        ds.getRef().updateChildren(hasSeenHashMap);
+                    if (typeUser.equals("Admin")){
+                        if (chat.getReceiver().equals("Mng") && chat.getSender().equals(hisUid)) {
+                            HashMap<String, Object> hasSeenHashMap = new HashMap<>();
+                            hasSeenHashMap.put("isSeen", 1);
+                            ds.getRef().updateChildren(hasSeenHashMap);
+                        }
+                    }else {
+                        if (chat.getReceiver().equals(myUid) && chat.getSender().equals("Mng")) {
+                            HashMap<String, Object> hasSeenHashMap = new HashMap<>();
+                            hasSeenHashMap.put("isSeen", 1);
+                            ds.getRef().updateChildren(hasSeenHashMap);
+                        }
                     }
                 }
             }
@@ -353,6 +311,71 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        //AddChatList
+        if (typeUser.equals("Admin")) {
+            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(hisUid);
+            chatRef1.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef1.child("id").setValue(hisUid);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child(hisUid).child("Mng");
+            chatRef2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef2.child("id").setValue("Mng");
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+        } else {
+            DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist").child(myUid).child("Mng");
+            chatRef1.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef1.child("id").setValue("Mng");
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+            DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist").child("Mng").child(myUid);
+            chatRef2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        chatRef2.child("id").setValue(myUid);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void sendImageMessage(String message) {
@@ -506,7 +529,7 @@ public class ChatActivity extends AppCompatActivity {
         userRefForSeen.removeEventListener(seenListener);
     }
 
-    private void openImage() {
+    /*private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -518,7 +541,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
             imUri = data.getData();
-            uploadImage();
         }
 
     }
@@ -530,9 +552,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("กำลังอัพโหลด");
-        pd.show();
+
 
         if (imUri != null) {
             StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
@@ -546,7 +566,76 @@ public class ChatActivity extends AppCompatActivity {
                             String imageURL = uri.toString();
                             Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                             sendImageMessage(imageURL);
+
+                        }
+                    });
+                }
+            });
+        }
+    }*/
+
+    private void PickImage() {
+        CropImage.activity().start(this);
+    }
+
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private void requestCameraPermission() {
+        requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res1 && res2;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                /*try {
+                    InputStream stream = getContentResolver().openInputStream(resultUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    image.setImageBitmap(bitmap);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }*/
+                uploadImage();
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
+    private void uploadImage(){
+        ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("กำลังอัพโหลด");
+        pd.show();
+
+        if (resultUri != null){
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis()+"");
+
+            fileRef.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
                             pd.dismiss();
+                            String imageURL = uri.toString();
+                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
+                            sendImageMessage(imageURL);
                         }
                     });
                 }

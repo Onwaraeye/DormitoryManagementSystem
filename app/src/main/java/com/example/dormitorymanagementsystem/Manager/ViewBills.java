@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kal.rackmonthpicker.MonthType;
+import com.kal.rackmonthpicker.RackMonthPicker;
+import com.kal.rackmonthpicker.listener.DateMonthDialogListener;
+import com.kal.rackmonthpicker.listener.OnCancelMonthDialogListener;
+
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,9 +43,14 @@ public class ViewBills extends AppCompatActivity {
     private List<BillModel> list = new ArrayList<>();
     private RecyclerView recyclerView;
     private AdapteViewBill adapter;
+    List<String> listRoom;
 
     private Context mContext;
     private String monthThai = "";
+    TextView txMonth;
+
+    int monthCurrent = Calendar.getInstance().get(Calendar.MONTH) + 1;
+    int yearCurrent = Calendar.getInstance().get(Calendar.YEAR);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +63,63 @@ public class ViewBills extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        List<String> listRoom = new ArrayList<>();
-        List<String> listDate = new ArrayList<>();
 
-        Intent intent = getIntent();
-        String month = intent.getStringExtra("month");
-        String year = intent.getStringExtra("year");
-        //String month = 0+"";
-        //String year = 2022+"";
-        String date = getMonth(Integer.parseInt(month)) + "/" + year;
-        TextView txMonth = findViewById(R.id.txMonth);
+        listRoom = new ArrayList<>();
+
+        int yr = yearCurrent + 543;
+        txMonth = findViewById(R.id.txMonth);
+
+        String date = getMonth(monthCurrent) + " " + yr;
         txMonth.setText(date);
+        getListData(monthCurrent + "", yearCurrent + "", date);
+        showMonthYear();
 
+        ImageView arrow_back = findViewById(R.id.ic_arrow_back);
+        arrow_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    public void showMonthYear() {
+        final RackMonthPicker rackMonthPicker = new RackMonthPicker(this)
+                .setMonthType(MonthType.TEXT)
+                .setPositiveButton(new DateMonthDialogListener() {
+                    @Override
+                    public void onDateMonth(int month, int startDate, int endDate, int year, String monthLabel) {
+                        int ye = year + 543;
+                        String date = getMonth(month) + " " + ye;
+                        String mo = String.valueOf(month);
+                        getListData(mo, year + "", date);
+                        txMonth.setText(date);
+
+                    }
+                })
+                .setNegativeButton(new OnCancelMonthDialogListener() {
+                    @Override
+                    public void onCancel(androidx.appcompat.app.AlertDialog dialog) {
+                        dialog.dismiss();
+                    }
+                });
+
+        ImageButton btMonthPicker = findViewById(R.id.btMonthPicker);
+        btMonthPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rackMonthPicker.show();
+            }
+        });
+    }
+
+    public void getListData(String month, String year, String date) {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 list.clear();
                 listRoom.clear();
-                for (DataSnapshot dataSnapshot : snapshot.child(year).child(month).getChildren()) {
+                for (DataSnapshot dataSnapshot : snapshot.child(year + "").child(month).getChildren()) {
                     BillModel billModel = new BillModel();
                     billModel = dataSnapshot.getValue(BillModel.class);
                     list.add(billModel);
@@ -85,52 +135,44 @@ public class ViewBills extends AppCompatActivity {
 
             }
         });
-
-        ImageView arrow_back = findViewById(R.id.ic_arrow_back);
-        arrow_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     public String getMonth(int month) {
         switch (month) {
-            case 0:
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }

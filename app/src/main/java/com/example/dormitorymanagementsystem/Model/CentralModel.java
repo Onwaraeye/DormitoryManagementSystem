@@ -10,16 +10,26 @@ public class CentralModel implements Parcelable {
     private String date;
     private String time;
     private String userID;
+    private String phone;
 
     public CentralModel() {
     }
 
-    public CentralModel(String central, String name, String date, String time,String userID) {
+    public CentralModel(String central, String name, String date, String time, String userID, String phone) {
         this.central = central;
         this.name = name;
         this.date = date;
         this.time = time;
         this.userID = userID;
+        this.phone = phone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getCentral() {

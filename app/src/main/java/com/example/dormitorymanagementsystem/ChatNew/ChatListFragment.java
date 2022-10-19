@@ -60,7 +60,7 @@ public class ChatListFragment extends Fragment {
                 chatlistList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChatlist chatlist = ds.getValue(ModelChatlist.class);
-                    chatlistList.add(chatlist);
+                    chatlistList.add(0,chatlist);
                 }
                 loadChats();
             }

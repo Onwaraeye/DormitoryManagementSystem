@@ -35,7 +35,9 @@ public class MyRoom extends AppCompatActivity {
 
     RecyclerView recyclerView;
     AdapterNameMember adapterNameMember;
-    List<String> listName = new ArrayList<>();;
+    List<String> listName = new ArrayList<>();
+    List<String> listImage = new ArrayList<>();
+    List<String> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,30 +65,34 @@ public class MyRoom extends AppCompatActivity {
                     List<String> listMember = new ArrayList<>();
                     for (int i=0 ; i<=3 ; i++){
                         String member = snapshot.child(numroom).child(String.valueOf(i)).getValue(String.class);
-                        if (member == null){
-
-                        }else {
+                        if (member != null){
                             listMember.add(member);
                         }
                     }
                     if (listMember.size()!=0){
-                        txMember.setText("สมาชิก "+listMember.size()+" คน");
+                        txMember.setText("จำนวนสมาชิกทั้งหมด "+listMember.size()+" คน");
                     }else {
                         txMember.setText("0");
                     }
+                    String owner = snapshot.child(numroom).child("Owner").getValue(String.class);
+
                     myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
                             for (int i = 0 ; i<listMember.size() ; i++){
                                 if (snapshot.hasChild(listMember.get(i))){
+                                    final String image = snapshot.child(listMember.get(i)).child("pictureUserUrl").getValue(String.class);
                                     final String fName = snapshot.child(listMember.get(i)).child("firstname").getValue(String.class);
                                     final String lName = snapshot.child(listMember.get(i)).child("lastname").getValue(String.class);
                                     final String name = fName+" "+lName;
-                                    Log.e("nameMyRoom",name);
+                                    Log.e("nameMyRoom",listMember.get(i));
                                     listName.add(name);
+                                    listImage.add(image);
                                 }
                             }
-                            adapterNameMember = new AdapterNameMember(mContext,listName);
+                            adapterNameMember = new AdapterNameMember(mContext,listName,owner,listImage,listMember);
                             recyclerView.setAdapter(adapterNameMember);
                         }
                         @Override
@@ -106,12 +112,7 @@ public class MyRoom extends AppCompatActivity {
         arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( getFragmentManager().getBackStackEntryCount() > 0)
-                {
-                    getFragmentManager().popBackStack();
-                    return;
-                }
-                onBackPressed();
+                finish();
             }
         });
     }

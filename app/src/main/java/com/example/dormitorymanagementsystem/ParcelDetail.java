@@ -3,6 +3,7 @@ package com.example.dormitorymanagementsystem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -48,12 +49,14 @@ public class ParcelDetail extends AppCompatActivity {
         Button btConfirm = findViewById(R.id.btConfirm);
         ImageView imageView = findViewById(R.id.imageView);
 
+        String date = getIntent().getStringExtra("date");
         String name = newParcelModel.getFirstname()+" "+newParcelModel.getLastname();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy" + " / " + "HH:mm");
-        String date = formatter.format(new Date(Long.parseLong(newParcelModel.getTimestamp())));
 
 
         if (newParcelModel.getStatus().equals("0")){
+            if (Login.getGbTypeUser().equals("Admin")){
+                btConfirm.setVisibility(View.GONE);
+            }
             receiver.setVisibility(View.GONE);
             txRoom.setText(newParcelModel.getNumroom());
             txName.setText(name);
@@ -90,8 +93,7 @@ public class ParcelDetail extends AppCompatActivity {
                 }
             });
         }else {
-            SimpleDateFormat formatter2 = new SimpleDateFormat("dd MMM yy" + " / " + "HH:mm");
-            String dateReceiver = formatter2.format(new Date(Long.parseLong(newParcelModel.getTimestampReceiver())));
+            String dateReceiver = getIntent().getStringExtra("dateReceiver");
 
             txRoom.setText(newParcelModel.getNumroom());
             txName.setText(name);

@@ -5,9 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.icu.text.DecimalFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,12 +49,13 @@ public class AttachPayment extends AppCompatActivity {
     private Context mContext;
 
     private static final int IMAGE_REQUEST = 1;
-    private Uri imUri;
+    private Uri resultUri;
     private ImageView imageView, imageViewZoom;
 
     private String year = "";
     private String room = "";
     private String monthThai = "";
+    private String yearThai = "";
 
 
     @Override
@@ -66,8 +71,10 @@ public class AttachPayment extends AppCompatActivity {
         String typeUser = Login.getGbTypeUser();
         String roombills = getIntent().getStringExtra("room");
 
-        String[] dateBill = date.split("/");
-        year = dateBill[1];
+        String[] dateBill = date.split(" ");
+        yearThai = dateBill[1];
+        int yearCv = Integer.parseInt(yearThai)-543;
+        year = String.valueOf(yearCv);
         monthThai = dateBill[0];
         if (typeUser.equals("User")) {
             room = Login.getGbNumroom();
@@ -82,11 +89,43 @@ public class AttachPayment extends AppCompatActivity {
         TextView txElectricity = findViewById(R.id.txElectricity);
         TextView txWater = findViewById(R.id.txWater);
         TextView txDiscount = findViewById(R.id.txDiscount);
+        TextView txFee = findViewById(R.id.txFee);
+        TextView txInternet = findViewById(R.id.txInternet);
         TextView txSum = findViewById(R.id.txSum);
+        TextView txElecUnit = findViewById(R.id.txElecUnit);
+        TextView txWaterUnit = findViewById(R.id.txWaterUnit);
         imageView = findViewById(R.id.imageView);
         imageViewZoom = findViewById(R.id.imageViewZoom);
         LinearLayout linearLayout3 = findViewById(R.id.linearLayout3);
         Button btConfirm = findViewById(R.id.btConfirm);
+
+        int unitElecAfter = Integer.parseInt(billModel.getElecafter());
+        int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
+        int sumEl = 0;
+        if (unitElecAfter>unitElecBefore){
+            sumEl = (unitElecAfter-unitElecBefore);
+        }else if (unitElecAfter<unitElecBefore){
+            sumEl = ((9999-unitElecBefore)+unitElecAfter);
+        }
+        txElecUnit.setText("ค่าไฟ\n("+unitElecBefore+" - "+unitElecAfter+" = "+sumEl+" หน่วย)");
+
+        int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
+        int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
+        int sumWt = 0;
+        if (unitWaterAfter>unitWaterBefore){
+            sumWt = (unitWaterAfter-unitWaterBefore);
+        }else if (unitWaterAfter<unitWaterBefore){
+            sumWt = ((9999-unitWaterBefore)+unitWaterAfter);
+        }
+        txWaterUnit.setText("ค่าน้ำ\n("+unitWaterBefore+" - "+unitWaterAfter+" = "+sumWt+" หน่วย)");
+
+        txRoomPrice.setText(billModel.getRoomprice()+" บาท");
+        txElectricity.setText(billModel.getElectricity()+" บาท");
+        txWater.setText(billModel.getWater()+" บาท");
+        txDiscount.setText(billModel.getDiscount()+" บาท");
+        txSum.setText(billModel.getSum()+" บาท");
+        txFee.setText(billModel.getFee()+" บาท");
+        txInternet.setText(billModel.getInternet()+" บาท");
 
         txRoom.setText(room);
         txDate.setText(date);
@@ -102,7 +141,16 @@ public class AttachPayment extends AppCompatActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openImage();
+                    boolean pick=true;
+                    if (pick==true){
+                        if (!checkCameraPermission()){
+                            requestCameraPermission();
+                        }else PickImage();
+                    }else {
+                        if (!checkStoragePermission()){
+                            requestStoragePermission();
+                        }else PickImage();
+                    }
                 }
             });
             btConfirm.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +212,7 @@ public class AttachPayment extends AppCompatActivity {
                             public void onClick(View v) {
                                 linearLayout3.setVisibility(View.GONE);
                                 imageViewZoom.setVisibility(View.VISIBLE);
-                                Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().centerCrop().into(imageViewZoom);
+                                Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().into(imageViewZoom);
                                 imageViewZoom.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -199,11 +247,6 @@ public class AttachPayment extends AppCompatActivity {
                 }
             });
         }
-        txRoomPrice.setText(billModel.getRoomprice());
-        txElectricity.setText(billModel.getElectricity());
-        txWater.setText(billModel.getWater());
-        txDiscount.setText(billModel.getDiscount());
-        txSum.setText(billModel.getSum());
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
@@ -218,82 +261,101 @@ public class AttachPayment extends AppCompatActivity {
         String month = "";
         switch (monthThai) {
             case "มกราคม":
-                month = "0";
-                break;
-            case "กุมภาพันธ์":
                 month = "1";
                 break;
-            case "มีนาคม":
+            case "กุมภาพันธ์":
                 month = "2";
                 break;
-            case "เมษายน":
+            case "มีนาคม":
                 month = "3";
                 break;
-            case "พฤษภาคม":
+            case "เมษายน":
                 month = "4";
                 break;
-            case "มิถุนายน":
+            case "พฤษภาคม":
                 month = "5";
                 break;
-            case "กรกฎาคม":
+            case "มิถุนายน":
                 month = "6";
                 break;
-            case "สิงหาคม":
+            case "กรกฎาคม":
                 month = "7";
                 break;
-            case "กันยายน":
+            case "สิงหาคม":
                 month = "8";
                 break;
-            case "ตุลาคม":
+            case "กันยายน":
                 month = "9";
                 break;
-            case "พฤศจิกายน":
+            case "ตุลาคม":
                 month = "10";
                 break;
-            case "ธันวาคม":
+            case "พฤศจิกายน":
                 month = "11";
+                break;
+            case "ธันวาคม":
+                month = "12";
                 break;
         }
         return month;
     }
 
-    private void openImage() {
-        Intent intent = new Intent();
-        intent.setType("image/");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+    private void PickImage() {
+        CropImage.activity().start(this);
+    }
+
+    private void requestStoragePermission() {
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private void requestCameraPermission() {
+        requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res2;
+    }
+
+    private boolean checkCameraPermission() {
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        return res1 && res2;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
-            imUri = data.getData();
-            Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
-
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                /*try {
+                    InputStream stream = getContentResolver().openInputStream(resultUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    image.setImageBitmap(bitmap);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }*/
+                Glide.with(getApplicationContext()).load(resultUri).fitCenter().centerCrop().into(imageView);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
-
     }
 
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
+    private void uploadImage(){
+        if (resultUri != null){
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis()+"");
 
-    private void uploadImage() {
-
-        if (imUri != null) {
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
-
-            fileRef.putFile(imUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            fileRef.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
-                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
                             myRef.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").setValue(imageURL);
                         }
                     });

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,12 +11,14 @@
         android:background="@drawable/bg_white_rad5_stroke"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_carbon_user_avatar"
-            android:layout_margin="5dp" />
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            app:srcCompat="@drawable/ic_carbon_user_avatar"
+            app:shapeAppearanceOverlay="@style/Circular"/>
 
         <TextView
             android:id="@+id/textName"
@@ -26,6 +29,20 @@
             android:textSize="20sp"
             android:textColor="@color/black"
             android:text="ชื่อ นามสกุล" />
+
+        <TextView
+            android:id="@+id/txOwn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:gravity="end"
+            android:fontFamily="@font/fc_minimal_regular"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginEnd="10dp"
+            android:text="เจ้าของห้อง" />
 
     </LinearLayout>
 

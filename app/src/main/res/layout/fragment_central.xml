@@ -22,7 +22,7 @@
             android:paddingVertical="30dp"
             android:background="@drawable/bg_menu"
             android:gravity="center"
-            android:text="พื้นที่ออกกำลังกาย\nชั้น 2" />
+            android:text="พื้นที่ออกกำลังกาย" />
 
         <TextView
             android:id="@+id/menu_tutoringRoom"
@@ -33,6 +33,6 @@
             android:paddingVertical="30dp"
             android:background="@drawable/bg_menu"
             android:gravity="center"
-            android:text="ห้องติว\nชั้น 2" />
+            android:text="ห้องอเนกประสงค์" />
     </LinearLayout>
 </LinearLayout>

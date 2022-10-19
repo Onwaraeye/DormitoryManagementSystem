@@ -46,14 +46,10 @@ public class ViewRoom extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-
-
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 list.clear();
-
                 for (DataSnapshot ds : snapshot.getChildren()){
                     if (snapshot.hasChild(ds.getKey())){
                         if(snapshot.child(ds.getKey()).getChildrenCount()==0){
@@ -79,7 +75,6 @@ public class ViewRoom extends AppCompatActivity {
                             Log.e("listmember",listMember+"");
                             Log.e("listroom",ds.getKey());
                         }
-
                     }
                 }
                 adapter = new AdapterRoom(mContext,list);

@@ -1,29 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AttachPayment">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageViewZoom"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_baseline_image_24" />
-    </LinearLayout>
+    tools:context=".Manager.CreateBill">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -57,7 +39,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="แนบหลักฐานการชำระเงิน"
+                android:text="ทำใบแจ้งหนี้"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -70,9 +52,8 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,18 +72,19 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="ห้อง" />
 
                         <TextView
                             android:id="@+id/txRoom"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="609" />
+
                     </LinearLayout>
 
                     <View
@@ -117,14 +99,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="ใบแจ้งหนี้" />
 
                         <TextView
                             android:id="@+id/txDate"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
@@ -143,14 +125,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="สถานะบิล" />
 
                         <TextView
                             android:id="@+id/txStatus"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
@@ -169,14 +151,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="ค่าเช่าห้อง" />
 
                         <TextView
                             android:id="@+id/txRoomPrice"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
@@ -196,14 +178,14 @@
 
                         <TextView
                             android:id="@+id/txElecUnit"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="ค่าไฟ" />
 
                         <TextView
                             android:id="@+id/txElectricity"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
@@ -223,14 +205,14 @@
 
                         <TextView
                             android:id="@+id/txWaterUnit"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="ค่าน้ำ" />
 
                         <TextView
                             android:id="@+id/txWater"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
@@ -254,13 +236,30 @@
                             android:layout_weight="1"
                             android:text="ค่าส่วนกลาง" />
 
-                        <TextView
-                            android:id="@+id/txFee"
+                        <EditText
+                            android:id="@+id/etFee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="ค่าส่วนกลาง" />
+                            android:inputType="number"
+                            android:enabled="false"
+                            android:hint="ค่าส่วนกลาง" />
+
+                        <ImageView
+                            android:id="@+id/btEditFee"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_ant_design_edit_filled" />
+
+                        <ImageView
+                            android:id="@+id/btSaveFee"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
                     </LinearLayout>
 
@@ -279,15 +278,33 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:text="ค่าอินเตอร์เน็ต" />
 
-                        <TextView
-                            android:id="@+id/txInternet"
+                        <EditText
+                            android:id="@+id/etInternet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="ค่าอินเตอร์เน็ต" />
+                            android:enabled="false"
+                            android:inputType="number"
+                            android:hint="ค่าอินเตอร์เน็ต" />
+
+                        <ImageView
+                            android:id="@+id/btEditInternet"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_ant_design_edit_filled" />
+
+                        <ImageView
+                            android:id="@+id/btSaveInternet"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
                     </LinearLayout>
 
@@ -306,15 +323,33 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:text="ส่วนลด" />
 
-                        <TextView
-                            android:id="@+id/txDiscount"
+                        <EditText
+                            android:id="@+id/etDiscount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:text="ค่าส่วนลด" />
+                            android:enabled="false"
+                            android:inputType="number"
+                            android:hint="ค่าส่วนลด" />
+
+                        <ImageView
+                            android:id="@+id/btEditDiscount"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/ic_ant_design_edit_filled" />
+
+                        <ImageView
+                            android:id="@+id/btSaveDiscount"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
                     </LinearLayout>
 
@@ -330,79 +365,34 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="จำนวน" />
 
                         <TextView
                             android:id="@+id/txSum"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:text="xxx" />
                     </LinearLayout>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
-                        android:layout_gravity="center"
+                    <Button
+                        android:id="@+id/btConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
                         android:layout_marginTop="20dp"
-                        android:background="@color/mediumgray"
-                        android:visibility="visible"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
-                        app:srcCompat="@drawable/ic_baseline_image_24" />
+                        android:background="@drawable/bg_menu"
+                        android:backgroundTint="@color/blue"
+                        android:text="ยืนยัน"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
-        <Button
-            android:id="@+id/btConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/bg_menu"
-            android:backgroundTint="@color/blue"
-            android:text="ยืนยัน"
-            android:textColor="@color/white"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/buttonAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/btCorrect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_menu"
-                android:backgroundTint="@color/blue"
-                android:text="ชำระเงินถูกต้อง"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_menu"
-                android:backgroundTint="@color/red"
-                android:text="ชำระเงินไม่ถูกต้อง"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-        </LinearLayout>
-
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

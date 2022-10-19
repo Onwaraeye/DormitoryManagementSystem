@@ -12,9 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dormitorymanagementsystem.Adapter.AdapteViewPepiar;
+import com.example.dormitorymanagementsystem.Adapter.AdapteViewRepiar;
 import com.example.dormitorymanagementsystem.Login;
-import com.example.dormitorymanagementsystem.Model.NewParcelModel;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +35,7 @@ public class RepairWorkFragment extends Fragment {
     private List<RepairModel> list = new ArrayList<>();
     private RepairModel repairModel;
     private RecyclerView recyclerView;
-    private AdapteViewPepiar adapter;
+    private AdapteViewRepiar adapter;
 
     private View view;
     private Context mContext;
@@ -73,7 +72,7 @@ public class RepairWorkFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (typeUser.equals("Admin")) {
                     Query query = myRef.orderByChild("status").equalTo("2");
-                    query.addValueEventListener(new ValueEventListener() {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             list.clear();
@@ -81,7 +80,7 @@ public class RepairWorkFragment extends Fragment {
                                 repairModel = ds.getValue(RepairModel.class);
                                 list.add(0, repairModel);
                             }
-                            adapter = new AdapteViewPepiar(mContext, list);
+                            adapter = new AdapteViewRepiar(mContext, list);
                             recyclerView.setAdapter(adapter);
                         }
 
@@ -92,7 +91,7 @@ public class RepairWorkFragment extends Fragment {
                 }
                 else if (typeUser.equals("Repairman")) {
                     Query query = myRef.orderByChild("repairman").equalTo(userID);
-                    query.addValueEventListener(new ValueEventListener() {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             list.clear();
@@ -103,7 +102,7 @@ public class RepairWorkFragment extends Fragment {
                                     list.add(0, repairModel);
                                 }
                             }
-                            adapter = new AdapteViewPepiar(mContext, list);
+                            adapter = new AdapteViewRepiar(mContext, list);
                             recyclerView.setAdapter(adapter);
                         }
 

@@ -1,10 +1,14 @@
 package com.example.dormitorymanagementsystem.Adapter;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -28,10 +32,24 @@ public class AdapterTabLayout extends FragmentPagerAdapter {
         return fragmentArrayList.size();
     }
 
-    public void addFragment(Fragment fragment,String title){
+   /* @Override
+    public int getItemPosition(@NonNull @NotNull Object object) {
+        return POSITION_NONE;
+    }*/
+
+    public void addFragment(Fragment fragment, String title){
         fragmentArrayList.add(fragment);
         fragmentTitle.add(title);
     }
+
+    /*public void addFragmentWithBundle(Fragment fragment,String month,String year ,String title){
+        Bundle bundle = new Bundle();
+        bundle.putString("monthCurrent",month);
+        bundle.putString("yearCurrent",year);
+        fragment.setArguments(bundle);
+        fragmentArrayList.add(fragment);
+        fragmentTitle.add(title);
+    }*/
 
     @Nullable
     @Override

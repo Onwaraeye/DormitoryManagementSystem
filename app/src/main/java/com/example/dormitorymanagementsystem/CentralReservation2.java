@@ -78,7 +78,7 @@ public class CentralReservation2 extends AppCompatActivity {
         }
         txCentral.setText(central);
 
-        EditText etNumroom = findViewById(R.id.etNumroom);
+        TextView etNumroom = findViewById(R.id.etNumroom);
         EditText etPhone = findViewById(R.id.etPhone);
 
         myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -108,16 +108,35 @@ public class CentralReservation2 extends AppCompatActivity {
                         String inputNumroom = etNumroom.getText().toString();
                         String inputPhone = etPhone.getText().toString();
 
-                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("value").setValue(value);
-                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("time").setValue(list);
-                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("numroom").setValue(inputNumroom);
-                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("phone").setValue(inputPhone);
-                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("timeShow").setValue(time);
+                        myRefCentral.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
+                                /*for (int i = 0 ; i<25 ; i++){
+                                    for (int j = 0 ; j<list.size() ; j++)
+                                    if (snapshot.child(title).child(year).child(month).child(day).child(userID).child("time").child(i+"").getValue(String.class).equals(list.get(j))){
+                                        Toast.makeText(CentralReservation2.this, "ไม่สามารถจองเวลาซ้ำได้", Toast.LENGTH_SHORT).show();
+                                    }else {*/
+                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("value").setValue(value);
+                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("time").setValue(list);
+                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("numroom").setValue(inputNumroom);
+                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("phone").setValue(inputPhone);
+                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("timeShow").setValue(time);
 
-                        Intent intent = new Intent(getApplicationContext(),Central.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                                        Intent intent = new Intent(getApplicationContext(),Central.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
+                                    //}
+                                //}
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
+
+
                     }
 
                     @Override

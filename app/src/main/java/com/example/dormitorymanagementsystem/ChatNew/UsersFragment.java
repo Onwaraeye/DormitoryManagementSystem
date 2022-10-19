@@ -112,7 +112,7 @@ public class UsersFragment extends Fragment {
         });
     }
 
-    private  void  searchUsers(String query){
+    private void searchUsers(String query){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.addValueEventListener(new ValueEventListener() {
             @Override

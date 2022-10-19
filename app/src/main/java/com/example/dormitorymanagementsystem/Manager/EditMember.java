@@ -32,9 +32,11 @@ public class EditMember extends AppCompatActivity {
     private List<String> list = new ArrayList<>();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Users");
+    private DatabaseReference myRefRoom = database.getReference("Room");
     private AdapterEditMember adapter;
     private RecyclerView recyclerView;
     private List<EditMemberModel> listNameMember = new ArrayList<>();
+    String owner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,34 +55,10 @@ public class EditMember extends AppCompatActivity {
         txRoom.setText(getRoom);
         TextView txMember = findViewById(R.id.txMember);
 
-        /*if (list.get(0).equals("0")){
-            txMember.setText("จำนวนสมาชิก 0 คน");
-        }else {
-            txMember.setText("จำนวนสมาชิก "+list.size()+" คน");
-        }*/
-
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRefRoom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                listNameMember.clear();
-                for (String userID : list){
-                    if (userID.equals("")){
-
-                    }else {
-                        if (snapshot.hasChild(userID)){
-                            final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
-                            final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
-                            final String name = fName+" "+lName;
-                            EditMemberModel editMemberModel = new EditMemberModel(userID,name,getRoom);
-                            listNameMember.add(editMemberModel);
-                            txMember.setText("จำนวนสมาชิก "+list.size()+" คน");
-                        }else {
-
-                        }
-                    }
-                }
-                adapter = new AdapterEditMember(EditMember.this,listNameMember);
-                recyclerView.setAdapter(adapter);
+                owner = snapshot.child(getRoom).child("Owner").getValue(String.class);
             }
 
             @Override
@@ -88,6 +66,34 @@ public class EditMember extends AppCompatActivity {
 
             }
         });
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                listNameMember.clear();
+                for (String userID : list) {
+                    if (!userID.equals("")) {
+                        if (snapshot.hasChild(userID)) {
+                            final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
+                            final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
+                            final String name = fName + " " + lName;
+                            EditMemberModel editMemberModel = new EditMemberModel(userID, name, getRoom,owner);
+                            listNameMember.add(editMemberModel);
+                            txMember.setText("จำนวนสมาชิก " + list.size() + " คน");
+
+                        }
+                    }
+                    adapter = new AdapterEditMember(EditMember.this, listNameMember);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
@@ -97,11 +103,11 @@ public class EditMember extends AppCompatActivity {
             }
         });
 
-        TextView menu_add = findViewById(R.id.menu_add);
+        ImageView menu_add = findViewById(R.id.menu_add);
         menu_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),EditAddMember.class);
+                Intent intent = new Intent(getApplicationContext(), EditAddMember.class);
                 intent.putExtra("room", getRoom);
                 startActivity(intent);
             }

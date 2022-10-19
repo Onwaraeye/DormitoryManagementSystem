@@ -10,18 +10,18 @@ public class BillModel implements Serializable {
     private String sum;
     private String status;
     private String imageUrl;
-
     private String elecafter;
     private String elecbefore;
     private String fee;
     private String waterafter;
     private String waterbefore;
+    private String internet;
 
 
     public BillModel() {
     }
 
-    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status, String imageUrl, String elecafter, String elecbefore, String fee, String waterafter, String waterbefore) {
+    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status, String imageUrl, String elecafter, String elecbefore, String fee, String waterafter, String waterbefore, String internet) {
         this.discount = discount;
         this.electricity = electricity;
         this.water = water;
@@ -34,16 +34,55 @@ public class BillModel implements Serializable {
         this.fee = fee;
         this.waterafter = waterafter;
         this.waterbefore = waterbefore;
+        this.internet = internet;
     }
 
-    public BillModel(String discount, String electricity, String water, String roomprice, String sum, String status, String imageUrl) {
-        this.discount = discount;
-        this.electricity = electricity;
-        this.water = water;
-        this.roomprice = roomprice;
-        this.sum = sum;
-        this.status = status;
-        this.imageUrl = imageUrl;
+    public String getInternet() {
+        return internet;
+    }
+
+    public void setInternet(String internet) {
+        this.internet = internet;
+    }
+
+    public String getElecafter() {
+        return elecafter;
+    }
+
+    public void setElecafter(String elecafter) {
+        this.elecafter = elecafter;
+    }
+
+    public String getElecbefore() {
+        return elecbefore;
+    }
+
+    public void setElecbefore(String elecbefore) {
+        this.elecbefore = elecbefore;
+    }
+
+    public String getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee = fee;
+    }
+
+    public String getWaterafter() {
+        return waterafter;
+    }
+
+    public void setWaterafter(String waterafter) {
+        this.waterafter = waterafter;
+    }
+
+    public String getWaterbefore() {
+        return waterbefore;
+    }
+
+    public void setWaterbefore(String waterbefore) {
+        this.waterbefore = waterbefore;
     }
 
     public String getDiscount() {
