@@ -9,8 +9,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
@@ -20,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +42,8 @@ public class ViewCentralUse2 extends AppCompatActivity {
     Context mContext;
 
     List<CentralModel> listCentral = new ArrayList<>();
+    List<String> list = new ArrayList<>();
+    String monthThai;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
         Intent intent = getIntent();
         String day = intent.getStringExtra("day");
         String month = intent.getStringExtra("month");
+        int mo = Integer.valueOf(month) + 1;
         String year = intent.getStringExtra("year");
         String date = intent.getStringExtra("date");
 
@@ -56,13 +62,14 @@ public class ViewCentralUse2 extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        myRefCentral.addValueEventListener(new ValueEventListener() {
+        myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                myRefUser.addValueEventListener(new ValueEventListener() {
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
+                myRefCentral.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
-                        listCentral.clear();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        /*listCentral.clear();
                         GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>() {
                         };
                         if (snapshot.child("fitness").hasChild(year)) {
@@ -108,8 +115,46 @@ public class ViewCentralUse2 extends AppCompatActivity {
                             }
                         }
                         adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
-                        recyclerView.setAdapter(adapterBookingDetails);
+                        recyclerView.setAdapter(adapterBookingDetails);*/
+
+                        try {
+                            list.clear();
+                            listCentral.clear();
+                            for (DataSnapshot dsTitle : snapshot.getChildren()) {
+                                //Log.e("dsTitle", dsTitle.getKey());
+                                String title = dsTitle.getKey();
+                                for (DataSnapshot ds : snapshot.child(dsTitle.getKey()).child(year).child(mo + "").child(day).getChildren()) {
+                                    list.add(ds.getKey());
+                                }
+                                //Log.e("listtime", list.toString());
+                                for (String t : list) {
+                                    for (DataSnapshot dataSnapshot : snapshot.child(dsTitle.getKey()).child(year).child(mo + "").child(day).child(t).getChildren()) {
+                                        String fname = snapshotUser.child(dataSnapshot.getKey()).child("firstname").getValue(String.class);
+                                        String lname = snapshotUser.child(dataSnapshot.getKey()).child("lastname").getValue(String.class);
+                                        String name = fname + " " + lname;
+                                        String sentTitle;
+                                        if (title != null && title.equals("fitness")) {
+                                            sentTitle = "พื้นที่ออกกำลังกาย";
+                                        } else {
+                                            sentTitle = "ห้องอเนกประสงค์";
+                                        }
+                                        String phone = dataSnapshot.child("phone").getValue(String.class);
+                                        CentralModel centralModel = new CentralModel(sentTitle, name, date, t, dataSnapshot.getKey(), phone);
+                                        listCentral.add(centralModel);
+                                        //Log.e("listCentral", listCentral.get(0).getTime());
+                                        adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
+                                        recyclerView.setAdapter(adapterBookingDetails);
+                                        //adapterBookingDetails.notifyDataSetChanged();
+                                    }
+                                }
+
+
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                     @Override
                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
@@ -117,6 +162,7 @@ public class ViewCentralUse2 extends AppCompatActivity {
                 });
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -172,5 +218,47 @@ public class ViewCentralUse2 extends AppCompatActivity {
                 break;
         }
         return cvTime;
+    }
+
+    public String getMonth(int month) {
+        switch (month) {
+            case 1:
+                monthThai = "มกราคม";
+                break;
+            case 2:
+                monthThai = "กุมภาพันธ์";
+                break;
+            case 3:
+                monthThai = "มีนาคม";
+                break;
+            case 4:
+                monthThai = "เมษายน";
+                break;
+            case 5:
+                monthThai = "พฤษภาคม";
+                break;
+            case 6:
+                monthThai = "มิถุนายน";
+                break;
+            case 7:
+                monthThai = "กรกฎาคม";
+                break;
+            case 8:
+                monthThai = "สิงหาคม";
+                break;
+            case 9:
+                monthThai = "กันยายน";
+                break;
+            case 10:
+                monthThai = "ตุลาคม";
+                break;
+            case 11:
+                monthThai = "พฤศจิกายน";
+                break;
+            case 12:
+                monthThai = "ธันวาคม";
+                break;
+        }
+        return monthThai;
     }
 }

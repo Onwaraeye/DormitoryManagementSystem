@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
 import com.example.dormitorymanagementsystem.Adapter.AdapterNameMember;
@@ -25,7 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +42,8 @@ public class CentralReservationFragment extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRefCentral = database.getReference("Central");
     List<CentralModel> listCentral = new ArrayList<>();
+    List<String> list = new ArrayList<>();
+    List<String> listTitle = new ArrayList<>();
 
     private Context mContext;
     RecyclerView recyclerView;
@@ -45,6 +51,7 @@ public class CentralReservationFragment extends Fragment {
 
     String monthThai = "";
     String userID = "";
+    String sentTitle = "";
 
     public CentralReservationFragment() {
 
@@ -68,21 +75,21 @@ public class CentralReservationFragment extends Fragment {
 
         String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
         String month = Calendar.getInstance().get(Calendar.MONTH) + "";
+        int mo = Integer.valueOf(month) + 1;
+
         String year = Calendar.getInstance().get(Calendar.YEAR) + "";
         int ye = Integer.valueOf(year)+543;
-        String date = day + " " + getMonth(Integer.parseInt(month)) + " " + ye;
+        //String date = day + " " + getMonth(mo) + " " + ye;
 
         mContext = getActivity().getApplication();
         recyclerView = view.findViewById(R.id.list_item);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        myRefCentral.addValueEventListener(new ValueEventListener() {
+        myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                listCentral.clear();
+                /*listCentral.clear();
                 GenericTypeIndicator<List<String>> genericTypeIndicator = new GenericTypeIndicator<List<String>>() {
                 };
                 String phone = snapshot.child("fitness").child(year).child(month).child(day).child(userID).child("phone").getValue(String.class);
@@ -121,7 +128,54 @@ public class CentralReservationFragment extends Fragment {
                     }
                 }
                 adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
-                recyclerView.setAdapter(adapterBookingDetails);
+                recyclerView.setAdapter(adapterBookingDetails);*/
+                //
+                try {
+
+                    for (DataSnapshot dsTitle : snapshot.getChildren()){
+                        Log.e("dsTitle", dsTitle.getKey());
+                        String title = dsTitle.getKey();
+                        list.clear();
+                        listCentral.clear();
+                        for (int d=Integer.parseInt(day); d<=31;d++){
+                            for (DataSnapshot ds : snapshot.child(dsTitle.getKey()).child(year).child(mo + "").child(d+"").getChildren()) {
+                                list.add(ds.getKey());
+                            }
+                            Log.e("listtime", list.toString());
+                            for (String t : list) {
+                                Query query = myRefCentral.child(dsTitle.getKey()).child(year).child(mo+"").child(d+"").child(t).orderByKey().equalTo(userID);
+                                String date = d + " " + getMonth(mo) + " " + ye;
+                                query.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            if (title!=null && title.equals("fitness")){
+                                                sentTitle = "พื้นที่ออกกำลังกาย";
+                                            }else {
+                                                sentTitle = "ห้องอเนกประสงค์";
+                                            }
+                                            String phone = dataSnapshot.child("phone").getValue(String.class);
+                                            CentralModel centralModel = new CentralModel(sentTitle, name, date, t,userID,phone);
+                                            listCentral.add(centralModel);
+                                            //Log.e("listCentral", listCentral.get(0).getTime());
+                                        }
+                                        adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
+                                        recyclerView.setAdapter(adapterBookingDetails);
+                                        //adapterBookingDetails.notifyDataSetChanged();
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+
+                    }
+                }catch (Exception e){
+                    Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -133,86 +187,86 @@ public class CentralReservationFragment extends Fragment {
 
     public String getMonth(int month) {
         switch (month) {
-            case 0:
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }
         return monthThai;
     }
 
-    public String convertTime(String time) {
+    /*public String convertTime(String time) {
         String cvTime = "";
         switch (time) {
-            case "0":
+            case "8":
                 cvTime = "08:00 - 09:00 น.";
                 break;
-            case "1":
+            case "9":
                 cvTime = "09:00 - 10:00 น.";
                 break;
-            case "2":
+            case "10":
                 cvTime = "10:00 - 11:00 น.";
                 break;
-            case "3":
+            case "11":
                 cvTime = "11:00 - 12:00 น.";
                 break;
-            case "4":
+            case "12":
                 cvTime = "12:00 - 13:00 น.";
                 break;
-            case "5":
+            case "13":
                 cvTime = "13:00 - 14:00 น.";
                 break;
-            case "6":
+            case "14":
                 cvTime = "14:00 - 15:00 น.";
                 break;
-            case "7":
+            case "15":
                 cvTime = "15:00 - 16:00 น.";
                 break;
-            case "8":
+            case "16":
                 cvTime = "16:00 - 17:00 น.";
                 break;
-            case "9":
+            case "17":
                 cvTime = "17:00 - 18:00 น.";
                 break;
-            case "10":
+            case "18":
                 cvTime = "18:00 - 19:00 น.";
                 break;
-            case "11":
+            case "19":
                 cvTime = "19:00 - 20:00 น.";
                 break;
         }
         return cvTime;
-    }
+    }*/
 }

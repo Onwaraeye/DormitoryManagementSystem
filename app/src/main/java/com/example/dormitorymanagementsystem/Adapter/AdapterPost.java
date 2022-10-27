@@ -37,6 +37,7 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
 
     private Context mContext;
     List<PostModel> list;
+    String monthThai;
 
 
     public AdapterPost(Context mContext, List<PostModel> list) {
@@ -58,10 +59,20 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
             String time = list.get(position).getTimestamp();
             String detail = list.get(position).getDetail();
             String imageUrl = list.get(position).getImageUrl();
-            String status = "0";
 
-            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yy" + " / " + "HH:mm");
-            String date = formatter.format(new Date(Long.parseLong(time)));
+            SimpleDateFormat dFormatter = new SimpleDateFormat("dd");
+            SimpleDateFormat mFormatter = new SimpleDateFormat("MM");
+            SimpleDateFormat yFormatter = new SimpleDateFormat("yy");
+            SimpleDateFormat tFormatter = new SimpleDateFormat("HH:mm");
+            String day = dFormatter.format(new Date(Long.parseLong(time)));
+            String month = mFormatter.format(new Date(Long.parseLong(time)));
+            String year = yFormatter.format(new Date(Long.parseLong(time)));
+            String times = tFormatter.format(new Date(Long.parseLong(time)));
+            int ye = Integer.valueOf(year)+43;
+            if (ye>=100){
+                ye -= 100;
+            }
+            String date = day+" "+getMonth(Integer.valueOf(month))+" "+ye+" "+times+" น.";
 
             holder.txTitle.setText(title);
             holder.txTime.setText(date);
@@ -109,6 +120,48 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
             btEdit = itemView.findViewById(R.id.bt_edit);
             imageView = itemView.findViewById(R.id.imageView);
         }
+    }
+
+    public String getMonth(int month) {
+        switch (month) {
+            case 1:
+                monthThai = "ม.ค.";
+                break;
+            case 2:
+                monthThai = "ก.พ.";
+                break;
+            case 3:
+                monthThai = "มี.ค.";
+                break;
+            case 4:
+                monthThai = "เม.ย.";
+                break;
+            case 5:
+                monthThai = "พ.ค.";
+                break;
+            case 6:
+                monthThai = "มิ.ย.";
+                break;
+            case 7:
+                monthThai = "ก.ค.";
+                break;
+            case 8:
+                monthThai = "ส.ค.";
+                break;
+            case 9:
+                monthThai = "ก.ย.";
+                break;
+            case 10:
+                monthThai = "ต.ค.";
+                break;
+            case 11:
+                monthThai = "พ.ย.";
+                break;
+            case 12:
+                monthThai = "ธ.ค.";
+                break;
+        }
+        return monthThai;
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.dormitorymanagementsystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.Adapter.AdapterBookingDetails;
+import com.example.dormitorymanagementsystem.Fragment.CentralReservationFragment;
 import com.example.dormitorymanagementsystem.Manager.Post;
 import com.example.dormitorymanagementsystem.Model.CentralModel;
 import com.google.firebase.database.DataSnapshot;
@@ -39,11 +42,13 @@ public class BookingDetails extends AppCompatActivity {
     private String monthThai = "";
     private String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
     private String month = Calendar.getInstance().get(Calendar.MONTH) + "";
+    int mo = Integer.valueOf(month) + 1;
     private String year = Calendar.getInstance().get(Calendar.YEAR) + "";
     private int yearThai = Integer.parseInt(year) + 543;
     private String date = day + " " + getMonth(Integer.parseInt(month)) + " " + yearThai;
     private String userID = "";
     private String nameCentral;
+    AdapterBookingDetails adapterBookingDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,7 @@ public class BookingDetails extends AppCompatActivity {
         setContentView(R.layout.activity_booking_details);
 
         mContext = getApplicationContext();
+
 
         String userType = Login.getGbTypeUser();
         userID = getIntent().getStringExtra("userID");
@@ -61,6 +67,7 @@ public class BookingDetails extends AppCompatActivity {
         String date = getIntent().getStringExtra("date");
         String time = getIntent().getStringExtra("time");
         String phone = getIntent().getStringExtra("phone");
+        String position = getIntent().getStringExtra("position");
 
         TextView txCentral = findViewById(R.id.txCentral);
         TextView txDate = findViewById(R.id.txDate);
@@ -80,6 +87,7 @@ public class BookingDetails extends AppCompatActivity {
             nameCentral = "tutoringRoom";
         }
 
+
         myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -94,7 +102,7 @@ public class BookingDetails extends AppCompatActivity {
                         txDate.setText(date);
                         txName.setText(name);
                         txNumroom.setText(numroom);
-                        txTime.setText(time);
+                        txTime.setText(convertTime(time));
                     }
 
                     @Override
@@ -121,7 +129,7 @@ public class BookingDetails extends AppCompatActivity {
         btCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogDelete();
+                showDialogDelete(time,position);
             }
         });
     }
@@ -168,7 +176,7 @@ public class BookingDetails extends AppCompatActivity {
         return monthThai;
     }
 
-    private void showDialogDelete() {
+    private void showDialogDelete(String time,String position) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(BookingDetails.this);
         dialog.setTitle("ลบ");
         dialog.setMessage("คุณแน่ใจที่จะลบหรือไม่");
@@ -178,10 +186,10 @@ public class BookingDetails extends AppCompatActivity {
                 myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.child(nameCentral).child(year).child(month).child(day).hasChild(userID)) {
-                            myRefCentral.child(nameCentral).child(year).child(month).child(day).child(userID).getRef().removeValue();
-                            /*Intent intent = new Intent(mContext, Central.class);
-                            startActivity(intent);*/
+
+
+                        if (snapshot.child(nameCentral).child(year).child(mo+"").child(day).child(time).hasChild(userID)) {
+                            myRefCentral.child(nameCentral).child(year).child(mo+"").child(day).child(time).child(userID).getRef().removeValue();
                             finish();
                         }
                     }
@@ -200,5 +208,48 @@ public class BookingDetails extends AppCompatActivity {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    public String convertTime(String time) {
+        String cvTime = "";
+        switch (time) {
+            case "8":
+                cvTime = "08:00 - 09:00 น.";
+                break;
+            case "9":
+                cvTime = "09:00 - 10:00 น.";
+                break;
+            case "10":
+                cvTime = "10:00 - 11:00 น.";
+                break;
+            case "11":
+                cvTime = "11:00 - 12:00 น.";
+                break;
+            case "12":
+                cvTime = "12:00 - 13:00 น.";
+                break;
+            case "13":
+                cvTime = "13:00 - 14:00 น.";
+                break;
+            case "14":
+                cvTime = "14:00 - 15:00 น.";
+                break;
+            case "15":
+                cvTime = "15:00 - 16:00 น.";
+                break;
+            case "16":
+                cvTime = "16:00 - 17:00 น.";
+                break;
+            case "17":
+                cvTime = "17:00 - 18:00 น.";
+                break;
+            case "18":
+                cvTime = "18:00 - 19:00 น.";
+                break;
+            case "19":
+                cvTime = "19:00 - 20:00 น.";
+                break;
+        }
+        return cvTime;
     }
 }

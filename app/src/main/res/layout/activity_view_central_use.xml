@@ -60,7 +60,6 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:drawableEnd="@drawable/ic_baseline_keyboard_arrow_down_24"
             android:text="เลือกวันที่" />
         <CalendarView
             android:id="@+id/calendarView1"

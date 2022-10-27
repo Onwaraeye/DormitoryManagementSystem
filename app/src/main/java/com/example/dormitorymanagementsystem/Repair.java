@@ -210,7 +210,7 @@ public class Repair extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                    intent.putExtra("hisUid","Mng01");
+                    intent.putExtra("hisUid","Mng");
                     startActivity(intent);
                     }
                 });
@@ -297,9 +297,9 @@ public class Repair extends AppCompatActivity {
                 btChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    /*Intent intent = new Intent(getApplicationContext(), Chat.class);
-                    intent.putExtra("userID","Msg01");
-                    startActivity(intent);*/
+                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                    intent.putExtra("hisUid",getRepairman);
+                    startActivity(intent);
                     }
                 });
                 btConfirmRepair.setText("แก้ไข");
@@ -379,6 +379,7 @@ public class Repair extends AppCompatActivity {
             }
         });
     }
+
 
     private void PickImage() {
         CropImage.activity().start(this);

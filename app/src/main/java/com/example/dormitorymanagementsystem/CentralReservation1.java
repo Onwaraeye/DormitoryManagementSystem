@@ -1,5 +1,6 @@
 package com.example.dormitorymanagementsystem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.TimePickerDialog;
@@ -15,16 +16,34 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CentralReservation1 extends AppCompatActivity {
 
     private Button getValue;
-    private CheckBox time8am_9am,time9am_10am,time10am_11am,time11am_12am,time12am_13am,time13am_14am,time14am_15am,time15am_16am,time16am_17am,time17am_18am,time18am_19am,time19am_20am;
+    private CheckBox time8, time9, time10, time11, time12, time13, time14, time15, time16, time17, time18, time19;
     private int value;
-    private String time = "",timeshow = "";
+    private String time = "", timeshow = "";
     private String monthThai;
+    List<String> listTime = new ArrayList<>();
+    List<String> listTimeAdd = new ArrayList<>();
+    List<String> list = new ArrayList<>();
+
+    String title;
+    String day;
+    String month;
+    String year;
+
+    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Central");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,150 +51,106 @@ public class CentralReservation1 extends AppCompatActivity {
         setContentView(R.layout.activity_central_reservation1);
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra("central");
-        String day = intent.getStringExtra("day");
-        String month = intent.getStringExtra("month");
-        String year = intent.getStringExtra("year");
-        int yearTh = Integer.parseInt(year)+543;
+        title = intent.getStringExtra("central");
+        Toast.makeText(this, title, Toast.LENGTH_SHORT).show();
+        day = intent.getStringExtra("day");
+        month = intent.getStringExtra("month");
+        int mo = Integer.valueOf(month) + 1;
+        year = intent.getStringExtra("year");
+        int yearTh = Integer.parseInt(year) + 543;
+        String userID = Login.getGbIdUser();
 
         TextView txDate = findViewById(R.id.txDate);
-        txDate.setText("วันที่ "+day+" "+getMonth(Integer.parseInt(month))+" "+yearTh);
+        txDate.setText("วันที่ " + day + " " + getMonth(mo) + " " + yearTh);
         TextView txCentral = findViewById(R.id.txCentral);
+        getValue = findViewById(R.id.btNext);
+        time8 = findViewById(R.id.time8am_9am);
+        time9 = findViewById(R.id.time9am_10am);
+        time10 = findViewById(R.id.time10am_11am);
+        time11 = findViewById(R.id.time11am_12am);
+        time12 = findViewById(R.id.time12am_13am);
+        time13 = findViewById(R.id.time13am_14am);
+        time14 = findViewById(R.id.time14am_15am);
+        time15 = findViewById(R.id.time15am_16am);
+        time16 = findViewById(R.id.time16am_17am);
+        time17 = findViewById(R.id.time17am_18am);
+        time18 = findViewById(R.id.time18am_19am);
+        time19 = findViewById(R.id.time19am_20am);
+
+
         String central = "";
-        if (title.equals("fitness")){
+        if (title.equals("fitness")) {
             central = "พื้นที่ออกกำลังกาย";
-        }else {
+        } else {
             central = "ห้องติวหนังสือ";
         }
         txCentral.setText(central);
 
-        TimePicker timePicker = findViewById(R.id.timePicker);
-        timePicker.setIs24HourView(false);
 
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-            }
-        };
-
-
-
-        time8am_9am = findViewById(R.id.time8am_9am);
-        time9am_10am = findViewById(R.id.time9am_10am);
-        time10am_11am = findViewById(R.id.time10am_11am);
-        time11am_12am = findViewById(R.id.time11am_12am);
-        time12am_13am = findViewById(R.id.time12am_13am);
-        time13am_14am = findViewById(R.id.time13am_14am);
-        time14am_15am = findViewById(R.id.time14am_15am);
-        time15am_16am = findViewById(R.id.time15am_16am);
-        time16am_17am = findViewById(R.id.time16am_17am);
-        time17am_18am = findViewById(R.id.time17am_18am);
-        time18am_19am = findViewById(R.id.time18am_19am);
-        time19am_20am = findViewById(R.id.time19am_20am);
-        List<String> listTime = new ArrayList<>();
-        List<String> listTimeAdd = new ArrayList<>();
-
-        getValue = findViewById(R.id.btNext);
-        getValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                value = 0;
-                if (time8am_9am.isChecked()){
-                    value += 1;
-                    time = time8am_9am.getText().toString();
-                    listTimeAdd.add("0");
-                    listTime.add(time);
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot ds : snapshot.child(title).child(year).child(mo + "").child(day).getChildren()) {
+                    list.add(ds.getKey());
+                    Log.e("centraltime", list.toString());
                 }
-                if (time9am_10am.isChecked()){
-                    value += 1;
-                    time = time9am_10am.getText().toString();
-                    listTimeAdd.add("1");
-                    listTime.add(time);
-                }
-                if (time10am_11am.isChecked()){
-                    value += 1;
-                    time = time10am_11am.getText().toString();
-                    listTimeAdd.add("2");
-                    listTime.add(time);
-                }
-                if (time11am_12am.isChecked()){
-                    value += 1;
-                    time = time11am_12am.getText().toString();
-                    listTimeAdd.add("3");
-                    listTime.add(time);
-                }
-                if (time12am_13am.isChecked()){
-                    value += 1;
-                    time = time12am_13am.getText().toString();
-                    listTimeAdd.add("4");
-                    listTime.add(time);
-                }
-                if (time13am_14am.isChecked()){
-                    value += 1;
-                    time = time13am_14am.getText().toString();
-                    listTimeAdd.add("5");
-                    listTime.add(time);
-                }
-                if (time14am_15am.isChecked()){
-                    value += 1;
-                    time = time14am_15am.getText().toString();
-                    listTimeAdd.add("6");
-                    listTime.add(time);
-                }
-                if (time15am_16am.isChecked()){
-                    value += 1;
-                    time = time15am_16am.getText().toString();
-                    listTimeAdd.add("7");
-                    listTime.add(time);
-                }
-                if (time16am_17am.isChecked()){
-                    value += 1;
-                    time = time16am_17am.getText().toString();
-                    listTimeAdd.add("8");
-                    listTime.add(time);
-                }
-                if (time17am_18am.isChecked()){
-                    value += 1;
-                    time = time17am_18am.getText().toString();
-                    listTimeAdd.add("9");
-                    listTime.add(time);
-                }
-                if (time18am_19am.isChecked()){
-                    value += 1;
-                    time = time18am_19am.getText().toString();
-                    listTimeAdd.add("10");
-                    listTime.add(time);
-                }
-                if (time19am_20am.isChecked()){
-                    value += 1;
-                    time = time19am_20am.getText().toString();
-                    listTimeAdd.add("11");
-                    listTime.add(time);
-                }
-                if (value>3){
-                    listTime.clear();
-                    Toast.makeText(getApplicationContext(),"ส่วนกลางนี้จองได้ไม่เกินคนละ 3 ชม.ต่อครั้ง",Toast.LENGTH_SHORT).show();
-                }else {
-                    if (value<1){
-                        Toast.makeText(getApplicationContext(),"กรุณาระบุเวลา",Toast.LENGTH_SHORT).show();
-                    }else {
-                        Intent intent = new Intent(getApplicationContext(),CentralReservation2.class);
-                        intent.putExtra("central",title+"");
-                        intent.putExtra("day",day+"");
-                        intent.putExtra("month",month+"");
-                        intent.putExtra("year",year+"");
-                        intent.putExtra("value",value+"");
-                        intent.putExtra("time",listTime+"");
-                        intent.putStringArrayListExtra("timeAdd",(ArrayList<String>) listTimeAdd);
-                        Log.e("time",listTime+"");
-                        startActivity(intent);
-                        listTime.clear();
+                Log.e("listtimesize", list.size()+"");
+                for (int i = 0; i < list.size(); i++) {
+                    String check = "time"+list.get(i);
+                    if (check.equals("time8")) {
+                        time8.setEnabled(false);
+                    }
+                    if (check.equals("time9")) {
+                        time9.setEnabled(false);
+                    }
+                    if (check.equals("time10")) {
+                        time10.setEnabled(false);
+                    }
+                    if (check.equals("time11")) {
+                        time11.setEnabled(false);
+                    }
+                    if (check.equals("time12")) {
+                        time12.setEnabled(false);
+                    }
+                    if (check.equals("time13")) {
+                        time13.setEnabled(false);
+                    }
+                    if (check.equals("time14")) {
+                        time14.setEnabled(false);
+                    }
+                    if (check.equals("time15")) {
+                        time15.setEnabled(false);
+                    }
+                    if (check.equals("time16")) {
+                        time16.setEnabled(false);
+                    }
+                    if (check.equals("time17")) {
+                        time17.setEnabled(false);
+                    }
+                    if (check.equals("time18")) {
+                        time18.setEnabled(false);
+                    }
+                    if (check.equals("time19")) {
+                        time19.setEnabled(false);
                     }
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         });
+
+
+        getValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkBok();
+            }
+        });
+
 
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
@@ -186,45 +161,146 @@ public class CentralReservation1 extends AppCompatActivity {
         });
     }
 
-    public String getMonth(int month){
-        switch(month) {
-            case 0:
+    private void checkBok() {
+
+            value = 0;
+            if (time8.isChecked()) {
+                value += 1;
+                time = time8.getText().toString();
+                listTimeAdd.add("8");
+                listTime.add(time);
+            }
+            if (time9.isChecked()) {
+                value += 1;
+                time = time9.getText().toString();
+                listTimeAdd.add("9");
+                listTime.add(time);
+            }
+            if (time10.isChecked()) {
+                value += 1;
+                time = time10.getText().toString();
+                listTimeAdd.add("10");
+                listTime.add(time);
+            }
+            if (time11.isChecked()) {
+                value += 1;
+                time = time11.getText().toString();
+                listTimeAdd.add("11");
+                listTime.add(time);
+            }
+            if (time12.isChecked()) {
+                value += 1;
+                time = time12.getText().toString();
+                listTimeAdd.add("12");
+                listTime.add(time);
+            }
+            if (time13.isChecked()) {
+                value += 1;
+                time = time13.getText().toString();
+                listTimeAdd.add("13");
+                listTime.add(time);
+            }
+            if (time14.isChecked()) {
+                value += 1;
+                time = time14.getText().toString();
+                listTimeAdd.add("14");
+                listTime.add(time);
+            }
+            if (time15.isChecked()) {
+                value += 1;
+                time = time15.getText().toString();
+                listTimeAdd.add("15");
+                listTime.add(time);
+            }
+            if (time16.isChecked()) {
+                value += 1;
+                time = time16.getText().toString();
+                listTimeAdd.add("16");
+                listTime.add(time);
+            }
+            if (time17.isChecked()) {
+                value += 1;
+                time = time17.getText().toString();
+                listTimeAdd.add("17");
+                listTime.add(time);
+            }
+            if (time18.isChecked()) {
+                value += 1;
+                time = time18.getText().toString();
+                listTimeAdd.add("18");
+                listTime.add(time);
+            }
+            if (time19.isChecked()) {
+                value += 1;
+                time = time19.getText().toString();
+                listTimeAdd.add("19");
+                listTime.add(time);
+            }
+            if (value > 3) {
+                listTime.clear();
+                Toast.makeText(getApplicationContext(), "ส่วนกลางนี้จองได้ไม่เกินคนละ 3 ชม.ต่อครั้ง", Toast.LENGTH_SHORT).show();
+            } else {
+                if (value < 1) {
+                    Toast.makeText(getApplicationContext(), "กรุณาระบุเวลา", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), CentralReservation2.class);
+                    intent.putExtra("central", title + "");
+                    intent.putExtra("day", day + "");
+                    intent.putExtra("month", month + "");
+                    intent.putExtra("year", year + "");
+                    intent.putExtra("value", value + "");
+                    intent.putExtra("time", listTime + "");
+                    intent.putStringArrayListExtra("timeAdd", (ArrayList<String>) listTimeAdd);
+                    Log.e("time", listTime + "");
+                    startActivity(intent);
+                    listTime.clear();
+                }
+            }
+    }
+
+    public String getMonth(int month) {
+        switch (month) {
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }
         return monthThai;
     }
+
+
+
+
 }

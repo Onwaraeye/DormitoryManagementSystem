@@ -7,6 +7,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,11 +38,12 @@ public class CentralReservation2 extends AppCompatActivity {
     private DatabaseReference myRef = database.getReference("Room");
     private DatabaseReference myRefUser = database.getReference("Users");
     private DatabaseReference myRefCentral = database.getReference("Central");
-    private String userID,title;
+    private String userID, title;
     private List<String> listBooking = new ArrayList<>();
     private List<String> listCentral = new ArrayList<>();
     private List<List<String>> myList = new ArrayList<>();
     private String monthThai;
+    List<String> listCheckUser = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +56,9 @@ public class CentralReservation2 extends AppCompatActivity {
         title = intent.getStringExtra("central");
         String day = intent.getStringExtra("day");
         String month = intent.getStringExtra("month");
+        int mo = Integer.valueOf(month) + 1;
         String year = intent.getStringExtra("year");
-        int yearTh = Integer.parseInt(year)+543;
+        int yearTh = Integer.parseInt(year) + 543;
         String value = intent.getStringExtra("value");
         String time = intent.getStringExtra("time");
 
@@ -65,84 +69,121 @@ public class CentralReservation2 extends AppCompatActivity {
         List<String> list = new ArrayList<>();
         list.addAll(set);
 
+        List<String> listCheck = new ArrayList<>();
+        List<String> listUser = new ArrayList<>();
+
+
         TextView txDate = findViewById(R.id.txDate);
-        txDate.setText("วันที่ "+day+" "+getMonth(Integer.parseInt(month))+" "+yearTh);
+        txDate.setText("วันที่ " + day + " " + getMonth(mo) + " " + yearTh);
         TextView txTime = findViewById(R.id.txTime);
         txTime.setText(time);
         TextView txCentral = findViewById(R.id.txCentral);
         String central = "";
-        if (title.equals("fitness")){
+        if (title.equals("fitness")) {
             central = "พื้นที่ออกกำลังกาย";
-        }else {
+        } else {
             central = "ห้องติวหนังสือ";
         }
         txCentral.setText(central);
 
         TextView etNumroom = findViewById(R.id.etNumroom);
         EditText etPhone = findViewById(R.id.etPhone);
+        Button btConfirm = findViewById(R.id.btConfirm);
 
-        myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        myRefUser.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.hasChild(userID)){
-                    String numroom = snapshot.child(userID).child("numroom").getValue(String.class);
-                    String phone = snapshot.child(userID).child("phone").getValue(String.class);
+            public void onDataChange(@NonNull DataSnapshot snapshotUser) {
+                try {
+                    String numroom = snapshotUser.child(userID).child("numroom").getValue(String.class);
+                    String phone = snapshotUser.child(userID).child("phone").getValue(String.class);
                     etNumroom.setText(numroom);
                     etPhone.setText(phone);
+
+                    btConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                    listCheck.clear();
+                                    listCheckUser.clear();
+                                    for (DataSnapshot ds : snapshot.child(title).child(year).child(mo + "").child(day).getChildren()) {
+                                        listCheck.add(ds.getKey());
+                                    }
+                                    for (String t : listCheck) {
+                                        for (DataSnapshot dataSnapshot : snapshot.child(title).child(year).child(mo + "").child(day).child(t).getChildren()) {
+                                            listCheckUser.add(dataSnapshot.getKey());
+                                        }
+                                    }
+                                    if (listCheckUser.size() != 0) {
+                                        listUser.clear();
+                                        for (int j = 0; j < listCheckUser.size(); j++) {
+                                            if (listCheckUser.get(j).equals(userID)) {
+                                                listUser.add(listCheckUser.get(j));
+                                            }
+                                        }
+                                        if (listUser.size() != 0 && listUser.get(0).equals(userID)) {
+                                            Toast.makeText(CentralReservation2.this, "ใช้สิทธิ์ครบแล้ว", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            String inputNumroom = etNumroom.getText().toString();
+                                            String inputPhone = etPhone.getText().toString();
+                                            try {
+                                                for (int i = 0; i < list.size(); i++) {
+                                                    Log.e("listCheck", list.toString());
+                                                    myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("value").setValue(value);
+                                                    myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("numroom").setValue(inputNumroom);
+                                                    myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("phone").setValue(inputPhone);
+                                                    myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("timeShow").setValue(time);
+                                                }
+                                                Intent intent = new Intent(getApplicationContext(), Central.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                                finish();
+                                            } catch (Exception e) {
+                                                Log.e("central", e.toString());
+                                            }
+                                        }
+                                    } else {
+                                        String inputNumroom = etNumroom.getText().toString();
+                                        String inputPhone = etPhone.getText().toString();
+
+                                        try {
+                                            for (int i = 0; i < list.size(); i++) {
+                                                Log.e("listCheck", list.toString());
+                                                myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("value").setValue(value);
+                                                myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("numroom").setValue(inputNumroom);
+                                                myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("phone").setValue(inputPhone);
+                                                myRefCentral.child(title).child(year).child(mo + "").child(day).child(list.get(i)).child(userID).child("timeShow").setValue(time);
+                                            }
+                                            Intent intent = new Intent(getApplicationContext(), Central.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            finish();
+                                        } catch (Exception e) {
+                                            Log.e("central", e.toString());
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                }
+                            });
+
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Toast.makeText(CentralReservation2.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-
-        Button btConfirm = findViewById(R.id.btConfirm);
-        btConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                        String inputNumroom = etNumroom.getText().toString();
-                        String inputPhone = etPhone.getText().toString();
-
-                        myRefCentral.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
-                                /*for (int i = 0 ; i<25 ; i++){
-                                    for (int j = 0 ; j<list.size() ; j++)
-                                    if (snapshot.child(title).child(year).child(month).child(day).child(userID).child("time").child(i+"").getValue(String.class).equals(list.get(j))){
-                                        Toast.makeText(CentralReservation2.this, "ไม่สามารถจองเวลาซ้ำได้", Toast.LENGTH_SHORT).show();
-                                    }else {*/
-                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("value").setValue(value);
-                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("time").setValue(list);
-                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("numroom").setValue(inputNumroom);
-                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("phone").setValue(inputPhone);
-                                        myRefCentral.child(title).child(year).child(month).child(day).child(userID).child("timeShow").setValue(time);
-
-                                        Intent intent = new Intent(getApplicationContext(),Central.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                        finish();
-                                    //}
-                                //}
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                            }
-                        });
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                    }
-                });
             }
         });
 
@@ -155,42 +196,42 @@ public class CentralReservation2 extends AppCompatActivity {
         });
     }
 
-    public String getMonth(int month){
-        switch(month) {
-            case 0:
+    public String getMonth(int month) {
+        switch (month) {
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }

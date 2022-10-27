@@ -35,6 +35,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
     String imageUrl;
     String userID = Login.getGbIdUser();
     String typeUser = Login.getGbTypeUser();
+    String monthThai;
 
 
 
@@ -65,8 +66,19 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
         String timeStamp = chatList.get(position).getTimestamp();
         String type = chatList.get(position).getType();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
-        String dateTime = formatter.format(new Date(Long.parseLong(timeStamp)));
+        SimpleDateFormat dFormatter = new SimpleDateFormat("dd");
+        SimpleDateFormat mFormatter = new SimpleDateFormat("MM");
+        SimpleDateFormat yFormatter = new SimpleDateFormat("yy");
+        SimpleDateFormat tFormatter = new SimpleDateFormat("HH:mm");
+        String day = dFormatter.format(new Date(Long.parseLong(timeStamp)));
+        String month = mFormatter.format(new Date(Long.parseLong(timeStamp)));
+        String year = yFormatter.format(new Date(Long.parseLong(timeStamp)));
+        String times = tFormatter.format(new Date(Long.parseLong(timeStamp)));
+        int ye = Integer.valueOf(year)+43;
+        if (ye>=100){
+            ye -= 100;
+        }
+        String dateTime = day+" "+getMonth(Integer.valueOf(month))+" "+ye+" "+times+"น.";
 
         if (type.equals("text")){
             holder.messageTv.setVisibility(View.VISIBLE);
@@ -91,9 +103,9 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
 
         if (position==chatList.size()-1){
             if (chatList.get(position).getIsSeen() == 1){
-                holder.isSeenTv.setText("Seen");
+                holder.isSeenTv.setText("อ่านแล้ว");
             }else {
-                holder.isSeenTv.setText("Delivered");
+                holder.isSeenTv.setText("ส่งแล้ว");
             }
         }else {
             holder.isSeenTv.setVisibility(View.GONE);
@@ -138,5 +150,47 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHoler>{
             isSeenTv = itemView.findViewById(R.id.isSeenTv);
             nameUser = itemView.findViewById(R.id.nameUser);
         }
+    }
+
+    public String getMonth(int month) {
+        switch (month) {
+            case 1:
+                monthThai = "ม.ค.";
+                break;
+            case 2:
+                monthThai = "ก.พ.";
+                break;
+            case 3:
+                monthThai = "มี.ค.";
+                break;
+            case 4:
+                monthThai = "เม.ย.";
+                break;
+            case 5:
+                monthThai = "พ.ค.";
+                break;
+            case 6:
+                monthThai = "มิ.ย.";
+                break;
+            case 7:
+                monthThai = "ก.ค.";
+                break;
+            case 8:
+                monthThai = "ส.ค.";
+                break;
+            case 9:
+                monthThai = "ก.ย.";
+                break;
+            case 10:
+                monthThai = "ต.ค.";
+                break;
+            case 11:
+                monthThai = "พ.ย.";
+                break;
+            case 12:
+                monthThai = "ธ.ค.";
+                break;
+        }
+        return monthThai;
     }
 }

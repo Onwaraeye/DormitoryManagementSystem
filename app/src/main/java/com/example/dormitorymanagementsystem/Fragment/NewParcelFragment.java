@@ -84,7 +84,7 @@ public class NewParcelFragment extends Fragment {
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 if (ds.child("status").getValue(String.class) != null && ds.child("status").getValue(String.class).equals("0")) {
                                     newParcelModel = ds.getValue(NewParcelModel.class);
-                                    list.add(newParcelModel);
+                                    list.add(0,newParcelModel);
                                 }
                             }
                             adapter = new AdapterNewParcel(mContext, list);
@@ -104,7 +104,7 @@ public class NewParcelFragment extends Fragment {
                             list.clear();
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 newParcelModel = ds.getValue(NewParcelModel.class);
-                                list.add(newParcelModel);
+                                list.add(0,newParcelModel);
                             }
                             adapter = new AdapterNewParcel(mContext, list);
                             recyclerView.setAdapter(adapter);

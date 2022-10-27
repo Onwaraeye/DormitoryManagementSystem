@@ -195,6 +195,7 @@ public class AttachPayment extends AppCompatActivity {
             } else {
                 buttonAdmin.setVisibility(View.GONE);
             }
+
             txStatus.setText("รอการตรวจสอบ");
             txStatus.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {

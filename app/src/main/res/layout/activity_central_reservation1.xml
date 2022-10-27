@@ -68,12 +68,6 @@
 
     </LinearLayout>
 
-    <TimePicker
-        android:id="@+id/timePicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -204,7 +198,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
         android:background="@drawable/bg_menu"
-        android:backgroundTint="#323E4D"
+        android:backgroundTint="@color/blue"
         android:text="ต่อไป"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent" />

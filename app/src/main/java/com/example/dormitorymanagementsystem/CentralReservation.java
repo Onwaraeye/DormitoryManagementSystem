@@ -45,6 +45,18 @@ public class CentralReservation extends AppCompatActivity {
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         month = Calendar.getInstance().get(Calendar.MONTH);
         year = Calendar.getInstance().get(Calendar.YEAR);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);//not sure this is needed
+        long endOfMonth = calendar.getTimeInMillis();
+        //may need to reinitialize calendar, not sure
+        calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        long startOfMonth = calendar.getTimeInMillis();
+        //calendarView.setMaxDate(endOfMonth);
+        calendarView.setMinDate(startOfMonth);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int y, int m, int d) {

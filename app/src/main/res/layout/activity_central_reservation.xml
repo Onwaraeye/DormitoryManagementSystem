@@ -71,7 +71,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-
             android:focusedMonthDateColor="#7E3B3B"
             android:selectedDateVerticalBar="@color/blue"
             android:selectedWeekBackgroundColor="@color/blue" />
@@ -85,7 +84,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
         android:background="@drawable/bg_menu"
-        android:backgroundTint="#323E4D"
+        android:backgroundTint="@color/blue"
         android:text="ต่อไป"
         android:textColor="@color/white" />
 
