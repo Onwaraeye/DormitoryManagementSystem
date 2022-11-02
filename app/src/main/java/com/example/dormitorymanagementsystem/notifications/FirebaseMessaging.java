@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -111,7 +112,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
+                .setSmallIcon(R.drawable.ic_iconproject2)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -146,7 +149,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
+                .setSmallIcon(R.drawable.ic_iconproject2)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -182,7 +187,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_bx_bxs_user_circle)
+                .setSmallIcon(R.drawable.ic_iconproject2)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -221,7 +228,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(Integer.parseInt(icon))
+                .setSmallIcon(R.drawable.ic_iconproject2)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))
                 .setContentText(body)
                 .setContentTitle(title)
                 .setAutoCancel(true)

@@ -161,7 +161,7 @@ public class AdapterMeterRecord extends RecyclerView.Adapter<AdapterMeterRecord.
                                                     if (Integer.parseInt(elecAfter) > Integer.parseInt(unitBefore)) {
                                                         Log.e("check", "2");
                                                         double sumEl = (Integer.parseInt(elecAfter) - Integer.parseInt(unitBefore)) * unitEl;
-                                                        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+                                                        DecimalFormat formatter = new DecimalFormat("###.00");
                                                         String formatted = formatter.format(sumEl);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("electricity").setValue(formatted);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("elecafter").setValue(elecAfter);
@@ -169,7 +169,7 @@ public class AdapterMeterRecord extends RecyclerView.Adapter<AdapterMeterRecord.
                                                     } else if (Integer.parseInt(elecAfter) < Integer.parseInt(unitBefore)) {
                                                         Log.e("check", "3");
                                                         double sumEl = ((9999 - Integer.parseInt(unitBefore)) + Integer.parseInt(elecAfter)) * unitEl;
-                                                        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+                                                        DecimalFormat formatter = new DecimalFormat("###.00");
                                                         String formatted = formatter.format(sumEl);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("electricity").setValue(formatted);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("elecafter").setValue(elecAfter);

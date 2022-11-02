@@ -37,8 +37,6 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,40 +125,10 @@ public class PersonalInformation extends AppCompatActivity {
                 finish();
             }
         });
-        imUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startCropActivity();
-                openImage();
-            }
-        });
 
     }
 
-    private void openImage(){
-        Intent intent = new Intent();
-        intent.setType("image/");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
-            imUrl = data.getData();
-            uploadImage();
-        }
-
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    private void uploadImage(){
+    /*private void uploadImage(){
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("กำลังอัพโหลด");
         pd.show();
@@ -186,5 +154,5 @@ public class PersonalInformation extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 }

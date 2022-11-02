@@ -1,18 +1,23 @@
 package com.example.dormitorymanagementsystem.ChatNew;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.Manager.InfoEditBank;
 import com.example.dormitorymanagementsystem.R;
+import com.example.dormitorymanagementsystem.Repair;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,11 +28,21 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
 
     Context context;
     List<ModelUser> userList;
+    String page;
     View view;
 
-    public AdapterUsers(Context context, List<ModelUser> userList) {
+    TextView etRepairman;
+    RecyclerView recyclerView;
+    LinearLayout repairPage;
+    String repairmanID;
+
+    View rootView;
+
+
+    public AdapterUsers(Context context, List<ModelUser> userList,String page) {
         this.context = context;
         this.userList = userList;
+        this.page = page;
     }
 
     @NonNull
@@ -35,6 +50,13 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
     @Override
     public Myholder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.row_user,parent,false);
+
+        if (page.equals("ViewRepairman")){
+            rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+            etRepairman = (TextView) rootView.findViewById(R.id.etRepairman);
+            recyclerView = (RecyclerView) rootView.findViewById(R.id.list_item);
+            repairPage = (LinearLayout) rootView.findViewById(R.id.repairPage);
+        }
 
         return new Myholder(view);
     }
@@ -65,15 +87,34 @@ public class AdapterUsers extends  RecyclerView.Adapter<AdapterUsers.Myholder> {
             Glide.with(context).load(userImage).fitCenter().centerCrop().into(holder.mAvatarIv);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("hisUid", hisUID);
-                context.startActivity(intent);
-            }
-        });
+        if (page.equals("UsersFragment")){
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("hisUid", hisUID);
+                    context.startActivity(intent);
+                }
+            });
+        }else {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etRepairman.setText(hisUID);
+                    recyclerView.setVisibility(View.GONE);
+                    repairPage.setVisibility(View.VISIBLE);
+
+
+                    /*Intent intent = new Intent(context, InfoEditBank.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("hisUid", hisUID);
+                    context.startActivity(intent);
+                    ((Activity)context).finish();*/
+                }
+            });
+        }
+
     }
 
     @Override

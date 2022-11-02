@@ -109,6 +109,7 @@ public class ChatListFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String theLastMessage = "default";
+                String typeMessage = "default";
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
                     if (chat == null) {
@@ -121,12 +122,14 @@ public class ChatListFragment extends Fragment {
                     }
                     if (chat.getReceiver().equals("Mng") && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals("Mng")) {
                         theLastMessage = chat.getMessage();
+                        typeMessage = chat.getType();
                     }
                     /*if (chat.getReceiver().equals(currentUser) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(currentUser)) {
                         theLastMessage = chat.getMessage();
                     }*/
                 }
                 adapterChatlist.setLastMessageMap(userId, theLastMessage);
+                adapterChatlist.setTypeMessageMap(userId, typeMessage);
                 adapterChatlist.notifyDataSetChanged();
             }
 

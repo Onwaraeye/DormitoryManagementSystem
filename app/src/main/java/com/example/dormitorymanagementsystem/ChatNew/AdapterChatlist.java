@@ -24,11 +24,13 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
     Context context;
     List<ModelUser> userList;
     private HashMap<String,String> lastMessageMap;
+    private HashMap<String,String> typeMessageMap;
 
     public AdapterChatlist(Context context, List<ModelUser> userList) {
         this.context = context;
         this.userList = userList;
         lastMessageMap = new HashMap<>();
+        typeMessageMap = new HashMap<>();
     }
 
     @NonNull
@@ -46,14 +48,24 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         String userName = userList.get(position).getFirstname()+" "+userList.get(position).getLastname();
         String lastMessage = lastMessageMap.get(hisUid);
         String userRoom = userList.get(position).getNumroom();
+        String typeMessage = typeMessageMap.get(hisUid);
 
         holder.nameTv.setText(userName);
         if (lastMessage==null || lastMessage.equals("default")){
             holder.lastMessageTv.setVisibility(View.GONE);
         }
         else {
-            holder.lastMessageTv.setVisibility(View.VISIBLE);
-            holder.lastMessageTv.setText(lastMessage);
+            if (typeMessage==null || typeMessage.equals("default")){
+                holder.lastMessageTv.setVisibility(View.GONE);
+            }else {
+                if (typeMessage.equals("image")){
+                    holder.lastMessageTv.setVisibility(View.VISIBLE);
+                    holder.lastMessageTv.setText("ส่งรูปภาพ");
+                }else {
+                    holder.lastMessageTv.setVisibility(View.VISIBLE);
+                    holder.lastMessageTv.setText(lastMessage);
+                }
+            }
         }
         if (userImage.isEmpty()){
             holder.profileIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
@@ -85,6 +97,10 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
 
     public  void setLastMessageMap(String userId, String lastMessage){
         lastMessageMap.put(userId, lastMessage);
+    }
+
+    public  void setTypeMessageMap(String userId, String typeMessage){
+        typeMessageMap.put(userId, typeMessage);
     }
 
     @Override

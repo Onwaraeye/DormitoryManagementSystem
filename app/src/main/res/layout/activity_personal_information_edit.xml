@@ -46,6 +46,53 @@
         android:layout_margin="20dp"
         android:orientation="vertical">
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imUser"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_bx_bxs_user_circle"
+            app:shapeAppearanceOverlay="@style/Circular"/>
+
+        <LinearLayout
+            android:id="@+id/attachLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cameraBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:drawableLeft="@drawable/ic_baseline_camera_alt_24"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/blue"
+                android:elevation="2dp"
+                android:padding="10dp"
+                android:text="ถ่ายรูป" />
+
+            <TextView
+                android:id="@+id/galleryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_menu"
+                android:backgroundTint="@color/gray"
+                android:drawableLeft="@drawable/ic_baseline_image_24"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/blue"
+                android:elevation="2dp"
+                android:padding="10dp"
+                android:text="เลือกรูป"
+                android:tint="@color/blue" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,7 +152,7 @@
             android:id="@+id/btConfirm"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:backgroundTint="#323E4D"
+            android:backgroundTint="@color/blue"
             android:background="@drawable/bg_menu"
             android:textColor="@color/white"
             android:layout_marginTop="10dp"

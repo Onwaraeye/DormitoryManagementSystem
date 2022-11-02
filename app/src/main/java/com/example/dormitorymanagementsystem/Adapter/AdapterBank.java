@@ -30,8 +30,6 @@ import java.util.List;
 
 public class AdapterBank extends RecyclerView.Adapter<AdapterBank.MyViewHolder> {
 
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
     private Context mContext;
     List<BankModel> list;
 

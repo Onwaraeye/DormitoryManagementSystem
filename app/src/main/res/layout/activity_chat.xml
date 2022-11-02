@@ -58,7 +58,16 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/attachBtn"
+            android:id="@+id/cameraBtn"
+            android:layout_width="30dp"
+            android:layout_height="30sp"
+            android:layout_marginStart="5dp"
+            android:tint="@color/blue"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
+
+        <ImageView
+            android:id="@+id/galleryBtn"
             android:layout_width="30dp"
             android:layout_height="30sp"
             android:layout_marginStart="5dp"

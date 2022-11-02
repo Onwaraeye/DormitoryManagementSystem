@@ -57,32 +57,37 @@ public class MeterElectricFragment extends Fragment {
             myRefRoom.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    listRoom.clear();
-                    for (DataSnapshot ds : snapshot.getChildren()){
-                        if (snapshot.hasChild(ds.getKey())){
-                            if(snapshot.child(ds.getKey()).getChildrenCount()==0){
-                                List<String> listnull = new ArrayList<>();
-                                listnull.add("0");
-                                RoomModel roomModel = new RoomModel(ds.getKey(),listnull);
-                                listRoom.add(roomModel);
-                            }else{
-                                List<String> listMember = new ArrayList<>();
-                                listMember.clear();
-                                for (int i=0 ; i<=3 ; i++){
-                                    String member = snapshot.child(ds.getKey()).child(String.valueOf(i)).getValue(String.class);
-                                    if (member == null){
+                    try {
+                        listRoom.clear();
+                        for (DataSnapshot ds : snapshot.getChildren()){
+                            if (snapshot.hasChild(ds.getKey())){
+                                if(snapshot.child(ds.getKey()).getChildrenCount()==0){
+                                    List<String> listnull = new ArrayList<>();
+                                    listnull.add("0");
+                                    RoomModel roomModel = new RoomModel(ds.getKey(),listnull);
+                                    listRoom.add(roomModel);
+                                }else{
+                                    List<String> listMember = new ArrayList<>();
+                                    listMember.clear();
+                                    for (int i=0 ; i<=3 ; i++){
+                                        String member = snapshot.child(ds.getKey()).child(i+"").getValue(String.class);
+                                        if (member == null){
 
-                                    }else {
-                                        listMember.add(member);
+                                        }else {
+                                            listMember.add(member);
+                                        }
                                     }
+                                    RoomModel roomModel = new RoomModel(ds.getKey(),listMember);
+                                    listRoom.add(roomModel);
                                 }
-                                RoomModel roomModel = new RoomModel(ds.getKey(),listMember);
-                                listRoom.add(roomModel);
                             }
                         }
+                        adapter = new AdapterMeterRecord(mContext,listRoom,yearCurrent+"",monthCurrent+"");
+                        recyclerView.setAdapter(adapter);
+                    }catch (Exception e){
+
                     }
-                    adapter = new AdapterMeterRecord(mContext,listRoom,yearCurrent+"",monthCurrent+"");
-                    recyclerView.setAdapter(adapter);
+
                 }
 
                 @Override

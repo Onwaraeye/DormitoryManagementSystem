@@ -10,7 +10,7 @@
     <color name="gray">#ECECEC</color>
     <color name="mediumgray">#DCDCDC</color>
     <color name="darkgray">#C4C4C4</color>
-    <color name="red">#EA294F</color>C24646
+    <color name="red">#e71d36</color>C24646/EA294F
     <color name="ligthpurple">#CBC0D3</color>
     <color name="darkergray">#6F6F6F</color>
     <color name="green">#79C366</color>79C36
@@ -21,4 +21,9 @@
     <color name="darkblue">#323E4D</color>
     <color name="yellow">#F7DB5D</color>
     <color name="sky">#83c5be</color>
+
+    <color name="menu">#FFFFFFFF</color>
+    <color name="bg">#ECECEC</color>
+    <color name="icon">#323E4D</color>
+    <color name="line">#C4C4C4</color>
 </resources>

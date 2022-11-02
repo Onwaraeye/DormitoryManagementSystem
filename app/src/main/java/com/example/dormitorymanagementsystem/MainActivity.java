@@ -37,8 +37,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,13 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        month = Calendar.getInstance().get(Calendar.MONTH);
+        month = Calendar.getInstance().get(Calendar.MONTH)+1;
         year = Calendar.getInstance().get(Calendar.YEAR);
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -217,40 +220,40 @@ public class MainActivity extends AppCompatActivity {
 
     public String getMonth(int month){
         switch(month) {
-            case 0:
+            case 1:
                 monthThai = "มกราคม";
                 break;
-            case 1:
+            case 2:
                 monthThai = "กุมภาพันธ์";
                 break;
-            case 2:
+            case 3:
                 monthThai = "มีนาคม";
                 break;
-            case 3:
+            case 4:
                 monthThai = "เมษายน";
                 break;
-            case 4:
+            case 5:
                 monthThai = "พฤษภาคม";
                 break;
-            case 5:
+            case 6:
                 monthThai = "มิถุนายน";
                 break;
-            case 6:
+            case 7:
                 monthThai = "กรกฎาคม";
                 break;
-            case 7:
+            case 8:
                 monthThai = "สิงหาคม";
                 break;
-            case 8:
+            case 9:
                 monthThai = "กันยายน";
                 break;
-            case 9:
+            case 10:
                 monthThai = "ตุลาคม";
                 break;
-            case 10:
+            case 11:
                 monthThai = "พฤศจิกายน";
                 break;
-            case 11:
+            case 12:
                 monthThai = "ธันวาคม";
                 break;
         }

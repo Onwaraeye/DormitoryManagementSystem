@@ -17,12 +17,17 @@ import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.MonthlyBill;
 import com.example.dormitorymanagementsystem.PersonalInformation;
 import com.example.dormitorymanagementsystem.R;
+import com.example.dormitorymanagementsystem.notifications.Data;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SettingFragment extends Fragment {
 
+    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+
     private LinearLayout menu_info,menu_logout,menu_change_pass;
     private View view;
-
+    String userID;
 
     public SettingFragment() {
 
@@ -38,6 +43,8 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, container, false);
+
+        userID = Login.getGbIdUser();
 
         menu_info = view.findViewById(R.id.menu_info);
         menu_info.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +76,7 @@ public class SettingFragment extends Fragment {
                 editor.putString("userFName", "");
                 editor.putString("userLName", "");
                 editor.putString("userType", "");
+                ref.child(userID).getRef().removeValue();
                 editor.apply();
 
                 Intent intent = new Intent(getActivity().getApplicationContext(), Login.class);

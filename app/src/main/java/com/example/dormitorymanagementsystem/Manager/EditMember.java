@@ -103,11 +103,29 @@ public class EditMember extends AppCompatActivity {
             }
         });
 
+        List<String> listMember = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    if (snapshot.child(ds.getKey()).child("numroom").getValue(String.class)!= null &&snapshot.child(ds.getKey()).child("numroom").getValue(String.class).isEmpty()){
+                        listMember.add(ds.getKey());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
         ImageView menu_add = findViewById(R.id.menu_add);
         menu_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), EditAddMember.class);
+                intent.putStringArrayListExtra("timeAdd", (ArrayList<String>) listMember);
                 intent.putExtra("room", getRoom);
                 startActivity(intent);
             }

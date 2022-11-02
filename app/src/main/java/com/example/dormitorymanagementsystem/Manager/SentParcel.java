@@ -1,26 +1,36 @@
 package com.example.dormitorymanagementsystem.Manager;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +49,7 @@ import com.example.dormitorymanagementsystem.notifications.Data;
 import com.example.dormitorymanagementsystem.notifications.Sender;
 import com.example.dormitorymanagementsystem.notifications.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -52,30 +63,41 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SentParcel extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRefParcel = database.getReference("Parcel").push();
+    private DatabaseReference myRefRoom = database.getReference("Room");
 
-    private int day,month,year;
+    private int day, month, year;
     String monthThai = "";
 
-    private static final int IMAGE_REQUEST = 1;
-    private Uri resultUri;
-    private ImageView image;
+    private static final int CAMERA_PERM_CODE = 101;
+    private static final int CAMERA_REQUEST_CODE = 102;
+    private static final int GALLERY_REQUEST_CODE = 103;
+    private ImageView imageView;
+
+    String room;
+    ArrayAdapter<String> adapter;
+
     String myUid = Login.getGbIdUser();
 
 
@@ -86,27 +108,48 @@ public class SentParcel extends AppCompatActivity {
 
         String fname = Login.getGbFNameUser();
         String lname = Login.getGbLNameUser();
-        String name = fname+" "+lname;
-        EditText etRoom = findViewById(R.id.etRoom);
+        String name = fname + " " + lname;
         EditText etFName = findViewById(R.id.etFName);
         EditText etLName = findViewById(R.id.etLName);
         TextView etDate = findViewById(R.id.txDate);
         Button btConfirm = findViewById(R.id.btConfirm);
-        image = findViewById(R.id.imageView);
+        TextView cameraBtn = findViewById(R.id.cameraBtn);
+        TextView galleryBtn = findViewById(R.id.galleryBtn);
+        imageView = findViewById(R.id.imageView);
+        Spinner spinner = findViewById(R.id.spinner);
+
+        ArrayList<String> timeAdd = getIntent().getStringArrayListExtra("timeAdd");
+        Set<String> set = new HashSet<String>(timeAdd);
+        List<String> listRoom = new ArrayList<>();
+        listRoom.addAll(set);
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listRoom);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                room = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         month = Calendar.getInstance().get(Calendar.MONTH);
-        year = Calendar.getInstance().get(Calendar.YEAR)+543;
-        etDate.setText(day+" "+getMonth(month)+" "+year);
+        year = Calendar.getInstance().get(Calendar.YEAR) + 543;
+        etDate.setText(day + " " + getMonth(month) + " " + year);
 
         btConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputetRoom = etRoom.getText().toString();
+                //String inputetRoom = etRoom.getText().toString();
                 String inputetFName = etFName.getText().toString();
                 String inputetLName = etLName.getText().toString();
+                imageView.setVisibility(View.GONE);
 
-                myRefParcel.child("numroom").setValue(inputetRoom);
+                myRefParcel.child("numroom").setValue(room);
                 myRefParcel.child("firstname").setValue(inputetFName);
                 myRefParcel.child("lastname").setValue(inputetLName);
                 myRefParcel.child("status").setValue("0");
@@ -114,35 +157,42 @@ public class SentParcel extends AppCompatActivity {
                 myRefParcel.child("nameImporter").setValue(name);
                 myRefParcel.child("nameReceiver").setValue("");
                 myRefParcel.child("timestampReceiver").setValue("");
-                uploadImage();
+                uploadImageToFirebase();
                 prepareNotification(
-                        ""+System.currentTimeMillis(),
+                        "" + System.currentTimeMillis(),
                         "พัสดุใหม่",
-                        "คุณ"+inputetFName+" "+inputetLName,
+                        "คุณ" + inputetFName + " " + inputetLName,
                         "ParcelNotification",
                         "POST",
-                        ""+inputetRoom);
-                etRoom.setText("");
+                        "" + room);
+                //etRoom.setText("");
                 etFName.setText("");
                 etLName.setText("");
                 int id = getResources().getIdentifier("@drawable/ic_baseline_image_24", "drawable", getPackageName());
-                image.setImageResource(id);
+                imageView.setImageResource(id);
 
             }
         });
-        image.setOnClickListener(new View.OnClickListener() {
+
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean pick=true;
-                if (pick==true){
-                    if (!checkCameraPermission()){
-                        requestCameraPermission();
-                    }else PickImage();
-                }else {
-                    if (!checkStoragePermission()){
-                        requestStoragePermission();
-                    }else PickImage();
-                }
+                askCameraPermissions();
+            }
+        });
+
+        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //askCameraPermissions();
             }
         });
 
@@ -157,18 +207,125 @@ public class SentParcel extends AppCompatActivity {
 
     }
 
-    private void prepareNotification(String pId, String title, String description, String notificationType,String notificationTopic,String room) {
+    private Uri contentUri;
+
+    private void askCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+        } else {
+            dispatchTakePictureIntent();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        String imageFileName = System.currentTimeMillis() + "";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName
+                , ".jpg"
+                , storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        Log.e("currentPhotoPath", currentPhotoPath + "");
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageView.setVisibility(View.VISIBLE);
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            File f = new File(currentPhotoPath);
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            contentUri = Uri.fromFile(f);
+            Log.e("contentUri", contentUri + "");
+            //imageView.setImageURI(contentUri);
+
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
+            //uploadImageToFilrebase();
+        }
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            contentUri = data.getData();
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            //uploadImageToFilrebase();
+        }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImageToFirebase() {
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
+        fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imageURL = uri.toString();
+                        Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                        myRefParcel.child("imageUrl").setValue(imageURL);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(SentParcel.this, "Upload Failled.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void prepareNotification(String pId, String title, String description, String notificationType, String notificationTopic, String room) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         Query query = ref.orderByChild("numroom").equalTo(room);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     DatabaseReference refTo = FirebaseDatabase.getInstance().getReference("Tokens");
                     refTo.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            if (snapshot.child(ds.getKey()).getKey().equals(ds.getKey())){
+                            if (snapshot.child(ds.getKey()).getKey().equals(ds.getKey())) {
                                 String NOTIFICATION_TOPIC = snapshot.child(ds.getKey()).child("token").getValue(String.class);
                                 String NOTIFICATION_TITLE = title;
                                 String NOTIFICATION_MESSAGE = description;
@@ -179,7 +336,7 @@ public class SentParcel extends AppCompatActivity {
 
                                 try {
                                     notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
-                                    notificationBodyJo.put("sender",myUid );
+                                    notificationBodyJo.put("sender", myUid);
                                     notificationBodyJo.put("pId", pId);
                                     notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
                                     notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
@@ -211,7 +368,7 @@ public class SentParcel extends AppCompatActivity {
     }
 
     private void sendParcelNotification(JSONObject notificationJo) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,"https://fcm.googleapis.com/fcm/send", notificationJo,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://fcm.googleapis.com/fcm/send", notificationJo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -222,10 +379,9 @@ public class SentParcel extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Toast.makeText(Post.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
-                        Log.e("FCM_RESPONSE",  error.toString()+" onResponseError "+ error.getMessage());
+                        Log.e("FCM_RESPONSE", error.toString() + " onResponseError " + error.getMessage());
                     }
-                })
-        {
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -237,8 +393,8 @@ public class SentParcel extends AppCompatActivity {
         Volley.newRequestQueue(SentParcel.this).add(jsonObjectRequest);
     }
 
-    public String getMonth(int month){
-        switch(month) {
+    public String getMonth(int month) {
+        switch (month) {
             case 0:
                 monthThai = "มกราคม";
                 break;
@@ -296,59 +452,42 @@ public class SentParcel extends AppCompatActivity {
 
     }*/
 
-    /*private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }*/
 
-    private void PickImage() {
-        CropImage.activity().start(this);
+
+    /*private void PickImage() {
+        //CropImage.activity().start(this);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //intent.setType("image/");
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        //startActivity(intent);
+        //resultUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,intent);
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        //startActivityForResult(intent, IMAGE_REQUEST);
     }
 
     private void requestStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
     }
 
     private void requestCameraPermission() {
-        requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
     }
 
     private boolean checkStoragePermission() {
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         return res2;
     }
 
     private boolean checkCameraPermission() {
-        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
+        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         return res1 && res2;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
-                /*try {
-                    InputStream stream = getContentResolver().openInputStream(resultUri);
-                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
-                    image.setImageBitmap(bitmap);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }*/
-                Glide.with(getApplicationContext()).load(resultUri).fitCenter().centerCrop().into(image);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
-    }
-
-    private void uploadImage(){
-        if (resultUri != null){
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis()+"");
+    private void uploadImage() {
+        if (resultUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis() + "");
 
             fileRef.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -357,13 +496,13 @@ public class SentParcel extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String imageURL = uri.toString();
-                            Toast.makeText(getApplicationContext(),"อัพโหลดสำเร็จ",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                             myRefParcel.child("imageUrl").setValue(imageURL);
                         }
                     });
                 }
             });
         }
-    }
+    }*/
 
 }

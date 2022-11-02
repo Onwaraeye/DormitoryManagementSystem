@@ -32,11 +32,14 @@ public class AdapterMeterWaterRecord extends RecyclerView.Adapter<AdapterMeterWa
 
     private DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Bills");
     private DatabaseReference refView = FirebaseDatabase.getInstance().getReference("View");
+    private DatabaseReference refTypeRoom = FirebaseDatabase.getInstance().getReference("TypeRooms");
+    private DatabaseReference refRoom = FirebaseDatabase.getInstance().getReference("Room");
 
     Context mContext;
     public static List<RoomModel> listRoom;
     private String year;
     private String month;
+
 
     //Button btSave;
 
@@ -70,6 +73,7 @@ public class AdapterMeterWaterRecord extends RecyclerView.Adapter<AdapterMeterWa
     @Override
     public void onBindViewHolder(@NonNull @NotNull AdapterMeterWaterRecord.MyViewHolder holder, int position) {
         try {
+
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -106,9 +110,34 @@ public class AdapterMeterWaterRecord extends RecyclerView.Adapter<AdapterMeterWa
                                         holder.btSave.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
+                                                refRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                        String typeRoom = snapshot.child(listRoom.get(position).getNumroom()).child("Type").getValue(String.class);
+                                                        refTypeRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                String priceRoom = snapshot.child(typeRoom).getValue(String.class);
+                                                                ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("roomprice").setValue(priceRoom);
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                    }
+                                                });
                                                 ref.child(year).child(mo + "").child(listRoom.get(position).getNumroom()).child("waterafter").setValue(elecAfter);
                                                 ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("waterbefore").setValue(elecAfter);
+
                                                 holder.txUnitBefore.setEnabled(false);
+
                                                 holder.btSave.setVisibility(View.GONE);
                                                 holder.btEdit.setVisibility(View.VISIBLE);
                                             }
@@ -158,6 +187,29 @@ public class AdapterMeterWaterRecord extends RecyclerView.Adapter<AdapterMeterWa
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("water").setValue(formatted);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("waterafter").setValue(elecAfter);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("waterbefore").setValue(unitBefore);
+                                                        refRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                String typeRoom = snapshot.child(listRoom.get(position).getNumroom()).child("Type").getValue(String.class);
+                                                                refTypeRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                        String priceRoom = snapshot.child(typeRoom).getValue(String.class);
+                                                                        ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("roomprice").setValue(priceRoom);
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                            }
+                                                        });
                                                     } else if (Integer.parseInt(elecAfter) < Integer.parseInt(unitBefore)) {
                                                         Log.e("check", "3");
                                                         double sumEl = ((9999 - Integer.parseInt(unitBefore)) + Integer.parseInt(elecAfter)) * unitEl;
@@ -166,6 +218,29 @@ public class AdapterMeterWaterRecord extends RecyclerView.Adapter<AdapterMeterWa
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("water").setValue(formatted);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("waterafter").setValue(elecAfter);
                                                         ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("waterbefore").setValue(unitBefore);
+                                                        refRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                String typeRoom = snapshot.child(listRoom.get(position).getNumroom()).child("Type").getValue(String.class);
+                                                                refTypeRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                        String priceRoom = snapshot.child(typeRoom).getValue(String.class);
+                                                                        ref.child(year).child(mo2 + "").child(listRoom.get(position).getNumroom()).child("roomprice").setValue(priceRoom);
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                            }
+                                                        });
                                                     }
                                                 }
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,7 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.MyViewHolder> 
             String detail = list.get(position).getDetail();
             String imageUrl = list.get(position).getImageUrl();
 
+            Log.e("time", time);
             SimpleDateFormat dFormatter = new SimpleDateFormat("dd");
             SimpleDateFormat mFormatter = new SimpleDateFormat("MM");
             SimpleDateFormat yFormatter = new SimpleDateFormat("yy");

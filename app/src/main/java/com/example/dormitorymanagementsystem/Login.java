@@ -101,7 +101,7 @@ public class Login extends AppCompatActivity {
         listRoom = new ArrayList<>();
 
         Button buttonAddData = findViewById(R.id.buttonAddData);
-        buttonAddData.setVisibility(View.VISIBLE);
+        buttonAddData.setVisibility(View.GONE);
         buttonAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +110,7 @@ public class Login extends AppCompatActivity {
 
                 //myRefadd.setValue(new User("Mng02","123456","05/05/2555","eye@gmail.com","ผู้ชาย","คุณ","มาร์ค","none","1234567891234","Admin","0812345678",""));
                 //uploadList();
-                uploadBill();
+                //uploadBill();
             }
         });
 
@@ -233,10 +233,10 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void uploadBill() {
+   /* public void uploadBill() {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRefadd = database.getReference("Bills/2022/10/102");
         myRefadd.setValue(new BillModel("0", "1400", "100", "4500", "6000", "0", "", "150", "100", "0", "150", "100","0"));
-    }
+    }*/
 }

@@ -3,16 +3,25 @@ package com.example.dormitorymanagementsystem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -23,8 +32,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.ChatNew.AdapterUsers;
 import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
+import com.example.dormitorymanagementsystem.ChatNew.ModelUser;
+import com.example.dormitorymanagementsystem.Manager.InfoEditBank;
+import com.example.dormitorymanagementsystem.Manager.SelectBank;
+import com.example.dormitorymanagementsystem.Manager.ViewRepairman;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -36,12 +51,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Repair extends AppCompatActivity {
 
@@ -49,6 +67,11 @@ public class Repair extends AppCompatActivity {
     DatabaseReference myRefUser = database.getReference("Users");
     DatabaseReference myRefRepair = database.getReference("Repair").push();
     DatabaseReference myRef = database.getReference("Repair");
+
+    AdapterUsers adapterUsers;
+    List<ModelUser> userList;
+    Context context;
+    RecyclerView recyclerView;
 
     private Context mContext;
     private String userID;
@@ -87,7 +110,7 @@ public class Repair extends AppCompatActivity {
         TextView txCost = findViewById(R.id.txCost);
         EditText etCost = findViewById(R.id.etCost);
         TextView txRepairman = findViewById(R.id.txRepairman);
-        EditText etRepairman = findViewById(R.id.etRepairman);
+        TextView etRepairman = findViewById(R.id.etRepairman);
         Button btConfirm = findViewById(R.id.btConfirm);
         Button btAdminConfirm = findViewById(R.id.btAdminConfirm);
         Button btAdminForwardWork = findViewById(R.id.btAdminForwardWork);
@@ -95,6 +118,16 @@ public class Repair extends AppCompatActivity {
         Button btConfirmRepair = findViewById(R.id.btConfirmRepair);
         LinearLayout repairman = findViewById(R.id.repairman);
         imageView = findViewById(R.id.imageView);
+        LinearLayout attachLayout = findViewById(R.id.attachLayout);
+        TextView cameraBtn = findViewById(R.id.cameraBtn);
+        TextView galleryBtn = findViewById(R.id.galleryBtn);
+        LinearLayout repairPage = findViewById(R.id.repairPage);
+
+        userList = new ArrayList<>();
+
+        recyclerView = findViewById(R.id.list_item);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         btConfirm.setVisibility(View.GONE);
         btAdminConfirm.setVisibility(View.GONE);
@@ -127,6 +160,23 @@ public class Repair extends AppCompatActivity {
                 txCost.setVisibility(View.GONE);
                 etRepairman.setVisibility(View.GONE);
                 txRepairman.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+
+                attachLayout.setVisibility(View.VISIBLE);
+                cameraBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        askCameraPermissions();
+                    }
+                });
+                galleryBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(intent, GALLERY_REQUEST_CODE);
+                    }
+                });
+
                 myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -141,21 +191,6 @@ public class Repair extends AppCompatActivity {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean pick=true;
-                        if (pick==true){
-                            if (!checkCameraPermission()){
-                                requestCameraPermission();
-                            }else PickImage();
-                        }else {
-                            if (!checkStoragePermission()){
-                                requestStoragePermission();
-                            }else PickImage();
-                        }
                     }
                 });
                 btConfirm.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +217,7 @@ public class Repair extends AppCompatActivity {
                             myRefRepair.child("status").setValue("0");
                             myRefRepair.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
                             myRefRepair.child("cost").setValue("0");
-                            uploadImage();
+                            uploadImageToFirebase();
                             finish();
                         }
                     }
@@ -201,7 +236,6 @@ public class Repair extends AppCompatActivity {
             etPhone.setEnabled(false);
             String name = Login.getGbFNameUser()+" "+Login.getGbLNameUser();
             etRepairman.setText(name);
-            etRepairman.setEnabled(false);
             Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
 
             if (getStatus.equals("2")){
@@ -255,11 +289,18 @@ public class Repair extends AppCompatActivity {
             etPhone.setEnabled(false);
             etCost.setText(getCost);
             etCost.setEnabled(false);
-            etRepairman.setEnabled(false);
 
             //0คือแจ้งมา
             if(getStatus.equals("0")){
-                etRepairman.setEnabled(true);
+                etRepairman.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getUsers();
+                        recyclerView.setVisibility(View.VISIBLE);
+                        repairPage.setVisibility(View.GONE);
+                    }
+                });
+
                 btAdminForwardWork.setVisibility(View.VISIBLE);
                 txCost.setVisibility(View.GONE);
                 etCost.setVisibility(View.GONE);
@@ -291,8 +332,6 @@ public class Repair extends AppCompatActivity {
                 txCost.setVisibility(View.GONE);
                 etCost.setVisibility(View.GONE);
                 repairman.setVisibility(View.VISIBLE);
-                etRepairman.setEnabled(true);
-
                 btChat.setText("คุยกับช่าง");
                 btChat.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -302,6 +341,15 @@ public class Repair extends AppCompatActivity {
                     startActivity(intent);
                     }
                 });
+                etRepairman.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getUsers();
+                        recyclerView.setVisibility(View.VISIBLE);
+                        repairPage.setVisibility(View.GONE);
+                    }
+                });
+
                 btConfirmRepair.setText("แก้ไข");
                 btConfirmRepair.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -312,7 +360,22 @@ public class Repair extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                                 for (DataSnapshot ds : snapshot.getChildren()) {
-                                    ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
+                                    myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                            if (snapshot.hasChild(etRepairman.getText().toString())){
+                                                ds.getRef().child("repairman").setValue(etRepairman.getText().toString());
+                                                Toast.makeText(Repair.this, "แก้ไขสำเร็จ", Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                Toast.makeText(Repair.this, "กรุณากรอกไอดีของช่าง", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -325,7 +388,6 @@ public class Repair extends AppCompatActivity {
             }
             //3คืองานที่ช่างทำสำเร็จ
             else if (getStatus.equals("3")){
-                etRepairman.setEnabled(false);
                 String timeUp = String.valueOf(System.currentTimeMillis());
                 btAdminConfirm.setVisibility(View.VISIBLE);
                 btAdminConfirm.setOnClickListener(new View.OnClickListener() {
@@ -380,52 +442,138 @@ public class Repair extends AppCompatActivity {
         });
     }
 
+    private static final int CAMERA_PERM_CODE = 101;
+    private static final int CAMERA_REQUEST_CODE = 102;
+    private static final int GALLERY_REQUEST_CODE = 103;
+    private Uri contentUri;
 
-    private void PickImage() {
-        CropImage.activity().start(this);
+    private void askCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+        } else {
+            dispatchTakePictureIntent();
+        }
     }
 
-    private void requestStoragePermission() {
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
-    private void requestCameraPermission() {
-        requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        String imageFileName = System.currentTimeMillis()+"";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName
+                , ".jpg"
+                , storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        Log.e("currentPhotoPath", currentPhotoPath+"");
+        return image;
     }
 
-    private boolean checkStoragePermission() {
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
-        return res2;
-    }
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
 
-    private boolean checkCameraPermission() {
-        boolean res1 = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED;
-        return res1 && res2;
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
-                /*try {
-                    InputStream stream = getContentResolver().openInputStream(resultUri);
-                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
-                    image.setImageBitmap(bitmap);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }*/
-                Glide.with(getApplication()).load(resultUri).fitCenter().centerCrop().into(imageView);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            File f = new File(currentPhotoPath);
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            contentUri = Uri.fromFile(f);
+            Log.e("contentUri", contentUri+"");
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
+            //uploadImageToFilrebase();
+        }
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            contentUri = data.getData();
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            //uploadImageToFilrebase();
         }
     }
 
-    private void uploadImage(){
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImageToFirebase() {
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsRepair").child(System.currentTimeMillis()+"."+getFileExtension(contentUri));
+        fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imageURL = uri.toString();
+                        Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                        myRefRepair.child("imageUrl").setValue(imageURL);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Upload Failled.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getUsers(){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                userList.clear();
+                for (DataSnapshot ds: snapshot.getChildren()){
+                    ModelUser modelUser = ds.getValue(ModelUser.class);
+                    if (modelUser.getRole() != null && modelUser.getRole().equals("Repairman")){
+                        userList.add(modelUser);
+                    }
+                    adapterUsers = new AdapterUsers(Repair.this, userList,"ViewRepairman");
+                    recyclerView.setAdapter(adapterUsers);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    /*private void uploadImage(){
         ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("กำลังอัพโหลด");
         pd.show();
@@ -448,5 +596,5 @@ public class Repair extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 }

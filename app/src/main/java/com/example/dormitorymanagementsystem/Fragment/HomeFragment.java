@@ -40,6 +40,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeFragment extends Fragment {
 
 
@@ -91,7 +94,7 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String imageURL = snapshot.child(userID).child("pictureUserUrl").getValue(String.class);
                 if (imageURL.isEmpty()){
-                    int id = getResources().getIdentifier("@drawable/ic_bx_bxs_user_circle", "drawable", getActivity().getPackageName());
+                    int id = getResources().getIdentifier("@drawable/ic_bx_bxs_user_home", "drawable", getActivity().getPackageName());
                     imUser.setImageResource(id);
                 }else {
                     Glide.with(getActivity().getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imUser);

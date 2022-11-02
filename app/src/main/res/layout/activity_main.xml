@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        app:itemTextColor="@color/icon"
+        app:itemIconTint="@color/icon"
+        android:background="@color/menu"
         app:menu="@menu/menu"/>
 </RelativeLayout>

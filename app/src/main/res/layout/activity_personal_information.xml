@@ -56,7 +56,6 @@
             app:srcCompat="@drawable/ic_bx_bxs_user_circle"
             app:shapeAppearanceOverlay="@style/Circular"/>
 
-
         <TextView
             android:id="@+id/txHeadName"
             android:layout_width="match_parent"

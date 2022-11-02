@@ -97,10 +97,10 @@ public class UsersFragment extends Fragment {
                 userList.clear();
                 for (DataSnapshot ds: snapshot.getChildren()){
                     ModelUser modelUser = ds.getValue(ModelUser.class);
-                    if (!modelUser.getRole().equals("Admin")){
+                    if (modelUser.getRole()!=null && !modelUser.getRole().equals("Admin")){
                         userList.add(modelUser);
                     }
-                    adapterUsers = new AdapterUsers(context, userList);
+                    adapterUsers = new AdapterUsers(context, userList,"UsersFragment");
                     recyclerView.setAdapter(adapterUsers);
                 }
             }
@@ -127,7 +127,7 @@ public class UsersFragment extends Fragment {
                             userList.add(modelUser);
                         }
                     }
-                    adapterUsers = new AdapterUsers(context, userList);
+                    adapterUsers = new AdapterUsers(context, userList,"UsersFragment");
                     adapterUsers.notifyDataSetChanged();
                     recyclerView.setAdapter(adapterUsers);
                 }

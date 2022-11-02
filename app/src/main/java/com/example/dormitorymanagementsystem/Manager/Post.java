@@ -3,13 +3,21 @@ package com.example.dormitorymanagementsystem.Manager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -34,6 +42,7 @@ import com.example.dormitorymanagementsystem.Model.ImageURL;
 import com.example.dormitorymanagementsystem.R;
 import com.example.dormitorymanagementsystem.notifications.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +60,8 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,11 +104,13 @@ public class Post extends AppCompatActivity {
         LinearLayout linearLayoutEdit = findViewById(R.id.linearLayoutEdit);
         Button bt_edit = findViewById(R.id.bt_edit);
         Button bt_del = findViewById(R.id.bt_del);
+        LinearLayout attachLayout = findViewById(R.id.attachLayout);
+        TextView cameraBtn = findViewById(R.id.cameraBtn);
+        TextView galleryBtn = findViewById(R.id.galleryBtn);
 
         etTitle.setText(getTitle);
         etDetail.setText(getDetail);
         Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
-
 
         if (getStatus.equals("1")) {
             btConfirm.setVisibility(View.GONE);
@@ -112,7 +125,7 @@ public class Post extends AppCompatActivity {
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 ds.getRef().child("title").setValue(etTitle.getText().toString());
                                 ds.getRef().child("detail").setValue(etDetail.getText().toString());
-                                uploadImage();
+                                uploadImageToFirebase();
                                 finish();
                             }
                         }
@@ -130,6 +143,7 @@ public class Post extends AppCompatActivity {
                 }
             });
         } else {
+            imageView.setVisibility(View.GONE);
             btConfirm.setVisibility(View.VISIBLE);
             linearLayoutEdit.setVisibility(View.GONE);
             btConfirm.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +156,7 @@ public class Post extends AppCompatActivity {
                     myRefPost.child(pTimestamps).child("detail").setValue(inputDetail);
                     myRefPost.child(pTimestamps).child("timestamp").setValue(pTimestamps);
                     myRefPost.child(pTimestamps).child("uid").setValue(uid);
-                    uploadImage();
+                    uploadImageToFirebase();
                     prepareNotification(
                             ""+pTimestamps,
                             name+" เพิ่มโพสใหม่",
@@ -154,12 +168,21 @@ public class Post extends AppCompatActivity {
             });
         }
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        attachLayout.setVisibility(View.VISIBLE);
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openImage();
+                askCameraPermissions();
             }
         });
+        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
+
         ImageView arrow_back = findViewById(R.id.ic_arrow_back);
         arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,21 +192,85 @@ public class Post extends AppCompatActivity {
         });
     }
 
-    private void openImage() {
-        Intent intent = new Intent();
-        intent.setType("image/");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
+    private static final int CAMERA_PERM_CODE = 101;
+    private static final int CAMERA_REQUEST_CODE = 102;
+    private static final int GALLERY_REQUEST_CODE = 103;
+    private Uri contentUri;
+
+    private void askCameraPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+        } else {
+            dispatchTakePictureIntent();
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
-            imUri = data.getData();
-            Glide.with(getApplicationContext()).load(imUri).fitCenter().centerCrop().into(imageView);
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            } else {
+                Toast.makeText(this, "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
 
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        String imageFileName = System.currentTimeMillis()+"";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName
+                , ".jpg"
+                , storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        Log.e("currentPhotoPath", currentPhotoPath+"");
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            File f = new File(currentPhotoPath);
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            contentUri = Uri.fromFile(f);
+            Log.e("contentUri", contentUri+"");
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            mediaScanIntent.setData(contentUri);
+            this.sendBroadcast(mediaScanIntent);
+            //uploadImageToFirebase();
+        }
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            contentUri = data.getData();
+            imageView.setVisibility(View.VISIBLE);
+            Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
+            //uploadImageToFirebase();
+        }
     }
 
     private String getFileExtension(Uri uri) {
@@ -192,7 +279,49 @@ public class Post extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage() {
+    private void uploadImageToFirebase() {
+        if (contentUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsPost").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
+            fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageURL = uri.toString();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                            if (getStatus.equals("1")) {
+                                Query query = myRefPost.orderByChild("timestamp").equalTo(getTime);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            ds.getRef().child("imageUrl").setValue(imageURL);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                                myRefPost.child(pTimestamps).child("imageUrl").setValue(imageURL);
+                            }
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull @NotNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Upload Failled.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /*private void uploadImage() {
 
         if (imUri != null) {
             StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsPost").child(System.currentTimeMillis() + "." + getFileExtension(imUri));
@@ -228,7 +357,7 @@ public class Post extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 
     private void showDialogDelete() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(Post.this);
