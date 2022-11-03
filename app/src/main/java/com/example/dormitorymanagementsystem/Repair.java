@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.dormitorymanagementsystem.ChatNew.AdapterUsers;
 import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.ChatNew.ModelUser;
@@ -78,7 +79,9 @@ public class Repair extends AppCompatActivity {
 
     private static final int IMAGE_REQUEST = 1;
     private Uri resultUri;
-    private ImageView imageView;
+
+    private ImageView imageView, imageViewZoom;
+    LinearLayout linearLayout;
 
 
     @Override
@@ -122,6 +125,9 @@ public class Repair extends AppCompatActivity {
         TextView cameraBtn = findViewById(R.id.cameraBtn);
         TextView galleryBtn = findViewById(R.id.galleryBtn);
         LinearLayout repairPage = findViewById(R.id.repairPage);
+        imageView = findViewById(R.id.imageView);
+        imageViewZoom = findViewById(R.id.imageViewZoom);
+        linearLayout = findViewById(R.id.linearLayout);
 
         userList = new ArrayList<>();
 
@@ -136,6 +142,13 @@ public class Repair extends AppCompatActivity {
 
         txTime.setText(getDate);
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ZoomImage(getImage);
+            }
+        });
+
         //ส่วนของUser
         if (typeUser.equals("User")) {
             if (getStatus != null){
@@ -148,6 +161,7 @@ public class Repair extends AppCompatActivity {
                 etPhone.setEnabled(false);
                 btConfirm.setVisibility(View.GONE);
                 Glide.with(getApplicationContext()).load(getImage).fitCenter().centerCrop().into(imageView);
+
                 etCost.setVisibility(View.GONE);
                 txCost.setVisibility(View.GONE);
                 etRepairman.setVisibility(View.GONE);
@@ -438,6 +452,19 @@ public class Repair extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+    }
+
+    private void ZoomImage(String imageURL) {
+        linearLayout.setVisibility(View.GONE);
+        imageViewZoom.setVisibility(View.VISIBLE);
+        Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().into(imageViewZoom);
+        imageViewZoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageViewZoom.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
         });
     }

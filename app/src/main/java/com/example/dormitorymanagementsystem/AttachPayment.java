@@ -60,11 +60,14 @@ public class AttachPayment extends AppCompatActivity {
 
     private Uri resultUri;
     private ImageView imageView, imageViewZoom;
+    LinearLayout linearLayout;
 
     private String year = "";
     private String room = "";
     private String monthThai = "";
     private String yearThai = "";
+
+
 
 
     @Override
@@ -82,7 +85,7 @@ public class AttachPayment extends AppCompatActivity {
 
         String[] dateBill = date.split(" ");
         yearThai = dateBill[1];
-        int yearCv = Integer.parseInt(yearThai)-543;
+        int yearCv = Integer.parseInt(yearThai) - 543;
         year = String.valueOf(yearCv);
         monthThai = dateBill[0];
         if (typeUser.equals("User")) {
@@ -105,7 +108,7 @@ public class AttachPayment extends AppCompatActivity {
         TextView txWaterUnit = findViewById(R.id.txWaterUnit);
         imageView = findViewById(R.id.imageView);
         imageViewZoom = findViewById(R.id.imageViewZoom);
-        LinearLayout linearLayout3 = findViewById(R.id.linearLayout3);
+        linearLayout = findViewById(R.id.linearLayout);
         Button btConfirm = findViewById(R.id.btConfirm);
         LinearLayout attachLayout = findViewById(R.id.attachLayout);
         TextView cameraBtn = findViewById(R.id.cameraBtn);
@@ -114,30 +117,30 @@ public class AttachPayment extends AppCompatActivity {
         int unitElecAfter = Integer.parseInt(billModel.getElecafter());
         int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
         int sumEl = 0;
-        if (unitElecAfter>unitElecBefore){
-            sumEl = (unitElecAfter-unitElecBefore);
-        }else if (unitElecAfter<unitElecBefore){
-            sumEl = ((9999-unitElecBefore)+unitElecAfter);
+        if (unitElecAfter > unitElecBefore) {
+            sumEl = (unitElecAfter - unitElecBefore);
+        } else if (unitElecAfter < unitElecBefore) {
+            sumEl = ((9999 - unitElecBefore) + unitElecAfter);
         }
-        txElecUnit.setText("ค่าไฟ\n("+unitElecBefore+" - "+unitElecAfter+" = "+sumEl+" หน่วย)");
+        txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
 
         int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
         int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
         int sumWt = 0;
-        if (unitWaterAfter>unitWaterBefore){
-            sumWt = (unitWaterAfter-unitWaterBefore);
-        }else if (unitWaterAfter<unitWaterBefore){
-            sumWt = ((9999-unitWaterBefore)+unitWaterAfter);
+        if (unitWaterAfter > unitWaterBefore) {
+            sumWt = (unitWaterAfter - unitWaterBefore);
+        } else if (unitWaterAfter < unitWaterBefore) {
+            sumWt = ((9999 - unitWaterBefore) + unitWaterAfter);
         }
-        txWaterUnit.setText("ค่าน้ำ\n("+unitWaterBefore+" - "+unitWaterAfter+" = "+sumWt+" หน่วย)");
+        txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
 
-        txRoomPrice.setText(billModel.getRoomprice()+" บาท");
-        txElectricity.setText(billModel.getElectricity()+" บาท");
-        txWater.setText(billModel.getWater()+" บาท");
-        txDiscount.setText(billModel.getDiscount()+" บาท");
-        txSum.setText(billModel.getSum()+" บาท");
-        txFee.setText(billModel.getFee()+" บาท");
-        txInternet.setText(billModel.getInternet()+" บาท");
+        txRoomPrice.setText(billModel.getRoomprice() + " บาท");
+        txElectricity.setText(billModel.getElectricity() + " บาท");
+        txWater.setText(billModel.getWater() + " บาท");
+        txDiscount.setText(billModel.getDiscount() + " บาท");
+        txSum.setText(billModel.getSum() + " บาท");
+        txFee.setText(billModel.getFee() + " บาท");
+        txInternet.setText(billModel.getInternet() + " บาท");
 
         txRoom.setText(room);
         txDate.setText(date);
@@ -220,19 +223,11 @@ public class AttachPayment extends AppCompatActivity {
                     } else {
                         Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imageView);
                         btConfirm.setVisibility(View.GONE);
+
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                linearLayout3.setVisibility(View.GONE);
-                                imageViewZoom.setVisibility(View.VISIBLE);
-                                Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().into(imageViewZoom);
-                                imageViewZoom.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        imageViewZoom.setVisibility(View.GONE);
-                                        linearLayout3.setVisibility(View.VISIBLE);
-                                    }
-                                });
+                                ZoomImage(imageURL);
                             }
                         });
                     }
@@ -249,6 +244,12 @@ public class AttachPayment extends AppCompatActivity {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String imageURL = snapshot.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").getValue(String.class);
                     Glide.with(getApplicationContext()).load(imageURL).fitCenter().centerCrop().into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ZoomImage(imageURL);
+                        }
+                    });
                     txStatus.setText("ชำระแล้ว");
                     txStatus.setTextColor(ContextCompat.getColor(mContext, R.color.green));
                     btConfirm.setVisibility(View.GONE);
@@ -266,6 +267,19 @@ public class AttachPayment extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+    }
+
+    private void ZoomImage(String imageURL) {
+        linearLayout.setVisibility(View.GONE);
+        imageViewZoom.setVisibility(View.VISIBLE);
+        Glide.with(getApplicationContext()).load(imageURL).apply(new RequestOptions().override(600, 600)).fitCenter().into(imageViewZoom);
+        imageViewZoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageViewZoom.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -319,6 +333,7 @@ public class AttachPayment extends AppCompatActivity {
         return month;
     }
 
+
     private static final int CAMERA_PERM_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
     private static final int GALLERY_REQUEST_CODE = 103;
@@ -326,7 +341,7 @@ public class AttachPayment extends AppCompatActivity {
 
     private void askCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
         } else {
             dispatchTakePictureIntent();
         }
@@ -347,13 +362,13 @@ public class AttachPayment extends AppCompatActivity {
     String currentPhotoPath;
 
     private File createImageFile() throws IOException {
-        String imageFileName = System.currentTimeMillis()+"";
+        String imageFileName = System.currentTimeMillis() + "";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName
                 , ".jpg"
                 , storageDir);
         currentPhotoPath = image.getAbsolutePath();
-        Log.e("currentPhotoPath", currentPhotoPath+"");
+        Log.e("currentPhotoPath", currentPhotoPath + "");
         return image;
     }
 
@@ -385,7 +400,7 @@ public class AttachPayment extends AppCompatActivity {
             File f = new File(currentPhotoPath);
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             contentUri = Uri.fromFile(f);
-            Log.e("contentUri", contentUri+"");
+            Log.e("contentUri", contentUri + "");
             imageView.setVisibility(View.VISIBLE);
             Glide.with(getApplication()).load(contentUri).fitCenter().centerCrop().into(imageView);
             mediaScanIntent.setData(contentUri);
@@ -407,7 +422,7 @@ public class AttachPayment extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase() {
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis()+"."+getFileExtension(contentUri));
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
         fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

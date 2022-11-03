@@ -13,7 +13,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:tint="#323E4D"
+        android:tint="@color/darkblue"
         android:src="@drawable/ic_logodekhor" />
 
     <EditText
@@ -21,8 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:textColor="@color/darkblue"
         android:ems="10"
         android:paddingLeft="10dp"
+        android:backgroundTint="@color/blue"
         android:hint="Username"
         android:inputType="textEmailAddress" />
 
@@ -32,6 +34,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:paddingLeft="10dp"
+        android:textColor="@color/darkblue"
+        android:backgroundTint="@color/blue"
         android:hint="Password"
         android:inputType="textPassword" />
 
@@ -39,8 +43,8 @@
         android:id="@+id/btLogin"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:backgroundTint="#323E4D"
-        android:background="@drawable/bg_menu"
+        android:backgroundTint="@color/blue"
+        android:background="@drawable/bg_rad10"
         android:textColor="@color/white"
         android:layout_marginVertical="25dp"
         android:text="เข้าสู่ระบบ" />

@@ -36,10 +36,12 @@
         android:id="@+id/etUnitAfter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#83c5be"
+        android:background="@color/meterRecord"
         android:layout_weight="1"
         android:ems="10"
         android:gravity="center"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:fontFamily="@font/fc_minimal_regular"
         android:textSize="20sp"
         android:hint="หน่วยล่าสุด"
@@ -55,7 +57,6 @@
             android:id="@+id/btSave"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:tint="@color/darkergray"
             android:visibility="visible"
             android:src="@drawable/ic_baseline_save_alt_24" />
 
@@ -64,7 +65,6 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:visibility="gone"
-            android:tint="@color/darkergray"
             android:src="@drawable/ic_ant_design_edit_filled" />
     </LinearLayout>
 

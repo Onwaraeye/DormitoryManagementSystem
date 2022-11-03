@@ -33,7 +33,7 @@
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:layout_marginStart="10dp"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/white"
             app:srcCompat="@drawable/ic_baseline_image_24" />
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:padding="10dp"
             android:text="hisms" />
 

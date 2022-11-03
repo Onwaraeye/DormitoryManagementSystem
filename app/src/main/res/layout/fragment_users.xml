@@ -10,7 +10,7 @@
     <SearchView
         android:id="@+id/action_search"
         android:layoutDirection="rtl"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:backgroundTint="@color/mediumgray"
         android:layout_margin="10dp"
         android:layout_width="match_parent"

@@ -58,6 +58,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical" >
 
                 <LinearLayout
@@ -65,6 +66,16 @@
                     android:layout_height="match_parent"
                     android:layout_margin="25dp"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center"
+                        android:textSize="22sp"
+                        android:text="รายละเอียด"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -82,6 +93,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="609" />
 
@@ -110,6 +122,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="end"
+                            android:textStyle="bold"
                             android:text="รอบบิล" />
                     </LinearLayout>
 
@@ -135,6 +148,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="ยังไม่ได้ชำระ" />
                     </LinearLayout>
@@ -161,6 +175,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="xxx" />
                     </LinearLayout>
@@ -188,6 +203,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="xxx" />
                     </LinearLayout>
@@ -215,6 +231,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="xxx" />
                     </LinearLayout>
@@ -240,8 +257,12 @@
                             android:id="@+id/etFee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="2"
                             android:gravity="end"
+                            android:background="@drawable/bg_rad5"
+                            android:backgroundTint="@drawable/selector_edit_text_bg"
+                            android:paddingEnd="10dp"
+                            android:textStyle="bold"
                             android:inputType="number"
                             android:enabled="false"
                             android:hint="ค่าส่วนกลาง" />
@@ -251,6 +272,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
+                            android:tint="@color/icon"
                             app:srcCompat="@drawable/ic_ant_design_edit_filled" />
 
                         <ImageView
@@ -258,6 +280,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
+                            android:tint="@color/icon"
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
@@ -285,8 +308,12 @@
                             android:id="@+id/etInternet"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="2"
                             android:gravity="end"
+                            android:background="@drawable/bg_rad5"
+                            android:backgroundTint="@drawable/selector_edit_text_bg"
+                            android:paddingEnd="10dp"
+                            android:textStyle="bold"
                             android:enabled="false"
                             android:inputType="number"
                             android:hint="ค่าอินเตอร์เน็ต" />
@@ -296,6 +323,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
+                            android:tint="@color/icon"
                             app:srcCompat="@drawable/ic_ant_design_edit_filled" />
 
                         <ImageView
@@ -304,6 +332,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:visibility="gone"
+                            android:tint="@color/icon"
                             app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
                     </LinearLayout>
@@ -330,7 +359,11 @@
                             android:id="@+id/etDiscount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:background="@drawable/bg_rad5"
+                            android:backgroundTint="@drawable/selector_edit_text_bg"
+                            android:paddingEnd="10dp"
+                            android:textStyle="bold"
+                            android:layout_weight="2"
                             android:gravity="end"
                             android:enabled="false"
                             android:inputType="number"
@@ -341,6 +374,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_gravity="center"
+                            android:tint="@color/icon"
                             app:srcCompat="@drawable/ic_ant_design_edit_filled" />
 
                         <ImageView
@@ -349,6 +383,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:visibility="gone"
+                            android:tint="@color/icon"
                             app:srcCompat="@drawable/ic_baseline_save_alt_24" />
 
                     </LinearLayout>
@@ -356,25 +391,33 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
+                        android:layout_gravity="center"
                         android:layout_marginVertical="5dp"
                         android:background="@color/darkgray" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:gravity="center"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="จำนวน" />
+                            android:textStyle="bold"
+                            android:textSize="22sp"
+                            android:text="ยอดรวม" />
 
                         <TextView
                             android:id="@+id/txSum"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textSize="32dp"
+                            android:textColor="@color/icon"
+                            android:textStyle="bold"
                             android:gravity="end"
                             android:text="xxx" />
                     </LinearLayout>
@@ -384,7 +427,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
-                        android:background="@drawable/bg_menu"
+                        android:background="@drawable/bg_rad10"
                         android:backgroundTint="@color/blue"
                         android:text="ยืนยัน"
                         android:textColor="@color/white" />

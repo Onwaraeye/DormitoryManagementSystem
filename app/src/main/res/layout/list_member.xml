@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_white_rad5_stroke"
+        android:background="@drawable/bg_rad5_stroke"
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView

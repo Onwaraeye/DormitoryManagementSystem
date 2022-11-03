@@ -78,8 +78,7 @@ public class EditAddMember extends AppCompatActivity {
                     myRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            long addchild = snapshot.child(numroom).getChildrenCount()+1;
-                            if (snapshot.child(numroom).getChildrenCount() >= 5){
+                            if (snapshot.child(numroom).getChildrenCount() > 5){
                                 Toast.makeText(getApplicationContext(), "มีสมาชิกได้ไม่เกิน 3 คน", Toast.LENGTH_SHORT).show();
                             }else {
                                 if (snapshot.child(numroom).child("1").getValue(String.class) == null){
@@ -88,10 +87,10 @@ public class EditAddMember extends AppCompatActivity {
                                     if(snapshot.child(numroom).child("1").getValue(String.class).equals("")){
                                         myRef.child(numroom).child("1").setValue(inputUser);
                                     }else {
-                                        if (snapshot.child(numroom).child("2").getValue(String.class) == null){
+                                        if (snapshot.child(numroom).child("2").getValue(String.class) == null || snapshot.child(numroom).child("2").getValue(String.class).equals("")){
                                             myRef.child(numroom).child("2").setValue(inputUser);
                                         }else {
-                                            myRef.child(numroom).child(addchild + "").setValue(inputUser);
+                                            myRef.child(numroom).child("3").setValue(inputUser);
                                         }
                                     }
                                 }

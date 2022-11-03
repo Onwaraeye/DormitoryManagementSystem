@@ -71,9 +71,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:focusedMonthDateColor="#7E3B3B"
-            android:selectedDateVerticalBar="@color/blue"
-            android:selectedWeekBackgroundColor="@color/blue" />
+            android:dateTextAppearance="@style/CalenderViewDateCustomText"
+            android:theme="@style/CalenderViewCustom"
+            android:weekDayTextAppearance="@style/CalenderViewWeekCustomText" />
 
     </LinearLayout>
 
@@ -83,7 +83,7 @@
         android:layout_height="40dp"
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:backgroundTint="@color/blue"
         android:text="ต่อไป"
         android:textColor="@color/white" />

@@ -18,6 +18,7 @@ import com.example.dormitorymanagementsystem.Adapter.AdapteBill;
 import com.example.dormitorymanagementsystem.Adapter.AdapteViewBill;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.BillModel;
+import com.example.dormitorymanagementsystem.Model.EditMemberModel;
 import com.example.dormitorymanagementsystem.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,10 +41,12 @@ public class ViewBills extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference("Bills");
+    private DatabaseReference myRefRoom = database.getReference("Room");
     private List<BillModel> list = new ArrayList<>();
     private RecyclerView recyclerView;
     private AdapteViewBill adapter;
     List<String> listRoom;
+    List<String> listRoomAll;
 
     private Context mContext;
     private String monthThai = "";
@@ -65,6 +68,7 @@ public class ViewBills extends AppCompatActivity {
 
 
         listRoom = new ArrayList<>();
+        listRoomAll = new ArrayList<>();
 
         int yr = yearCurrent + 543;
         txMonth = findViewById(R.id.txMonth);
@@ -112,12 +116,11 @@ public class ViewBills extends AppCompatActivity {
             }
         });
     }
-
     public void getListData(String month, String year, String date) {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                list.clear();
+                /*list.clear();
                 listRoom.clear();
                 for (DataSnapshot dataSnapshot : snapshot.child(year + "").child(month).getChildren()) {
                     BillModel billModel = new BillModel();
@@ -127,7 +130,46 @@ public class ViewBills extends AppCompatActivity {
                     listRoom.add(room);
                 }
                 adapter = new AdapteViewBill(mContext, list, listRoom, date);
-                recyclerView.setAdapter(adapter);
+                recyclerView.setAdapter(adapter);*/
+
+                myRefRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshotRoom) {
+                        list.clear();
+                        listRoom.clear();
+                        listRoomAll.clear();
+                        for (DataSnapshot ds : snapshotRoom.getChildren()) {
+                            listRoomAll.add(ds.getKey());
+                        }
+                        for (String room : listRoomAll) {
+                            String discount = snapshot.child(year + "").child(month).child(room).child("discount").getValue(String.class);
+                            String electricity = snapshot.child(year + "").child(month).child(room).child("electricity").getValue(String.class);
+                            String water = snapshot.child(year + "").child(month).child(room).child("water").getValue(String.class);
+                            String roomprice = snapshot.child(year + "").child(month).child(room).child("roomprice").getValue(String.class);
+                            String sum = snapshot.child(year + "").child(month).child(room).child("sum").getValue(String.class);
+                            String status = snapshot.child(year + "").child(month).child(room).child("status").getValue(String.class);
+                            String imageUrl = snapshot.child(year + "").child(month).child(room).child("imageUrl").getValue(String.class);
+                            String elecafter = snapshot.child(year + "").child(month).child(room).child("elecafter").getValue(String.class);
+                            String elecbefore = snapshot.child(year + "").child(month).child(room).child("elecbefore").getValue(String.class);
+                            String fee = snapshot.child(year + "").child(month).child(room).child("fee").getValue(String.class);
+                            String waterafter = snapshot.child(year + "").child(month).child(room).child("waterafter").getValue(String.class);
+                            String waterbefore = snapshot.child(year + "").child(month).child(room).child("waterbefore").getValue(String.class);
+                            String internet = snapshot.child(year + "").child(month).child(room).child("internet").getValue(String.class);
+                            BillModel billModel = new BillModel(discount,electricity,water,roomprice,sum,status,imageUrl,elecafter,elecbefore,fee,waterafter,waterbefore,internet);
+                            list.add(billModel);
+                            listRoom.add(room);
+                        }
+                        adapter = new AdapteViewBill(mContext, list, listRoom, date);
+                        recyclerView.setAdapter(adapter);
+                    }
+
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+
             }
 
             @Override

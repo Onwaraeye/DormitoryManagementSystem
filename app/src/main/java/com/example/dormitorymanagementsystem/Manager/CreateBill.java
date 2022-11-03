@@ -2,7 +2,9 @@ package com.example.dormitorymanagementsystem.Manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.text.Editable;
@@ -107,25 +109,45 @@ public class CreateBill extends AppCompatActivity {
                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                                 txRoomPrice.setText(DoubleToString(Double.parseDouble(datapriceRoom)) + " บาท");
                                 if (snapshot.hasChild("discount")) {
+                                    discount = Double.parseDouble(snapshot.child("discount").getValue(String.class));
                                     etDiscount.setText(snapshot.child("discount").getValue(String.class));
                                 } else if (snapshot.child("discount").getValue() == null || Double.parseDouble(snapshot.child("discount").getValue(String.class)) == 0) {
                                     etDiscount.setText("0");
                                 }
                                 if (snapshot.hasChild("fee")) {
+                                    fee = Double.parseDouble(snapshot.child("fee").getValue(String.class));
                                     etFee.setText(snapshot.child("fee").getValue(String.class));
                                 } else if (snapshot.child("fee").getValue() == null || Double.parseDouble(snapshot.child("fee").getValue(String.class)) == 0) {
                                     etFee.setText("0");
                                 }
                                 if (snapshot.hasChild("internet")) {
+                                    internet = Double.parseDouble(snapshot.child("internet").getValue(String.class));
                                     etInternet.setText(snapshot.child("internet").getValue(String.class));
                                 } else if (snapshot.child("internet").getValue() == null || Double.parseDouble(snapshot.child("internet").getValue(String.class)) == 0) {
                                     etInternet.setText("0");
                                 }
 
-                                try {
+                                //try {
+                                if (unitWaterAf == null && unitElecAf == null ){
+                                    txWaterUnit.setText("ค่าน้ำ\nยังไม่ได้จดหน่วยน้ำ");
+                                    txWater.setText("0 บาท");
+                                    txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
+                                    txElecUnit.setText("ค่าไฟ\nยังไม่ได้จดหน่วยไฟ");
+                                    txElectricity.setText("0 บาท");
+                                    txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
+                                    sum = priceRoom + fee + internet - discount;
+                                    txSum.setText(DoubleToString(sum) + " บาท");
+                                    btConfirm.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟและหน่วยน้ำ", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }else {
                                     if (unitWaterAf == null || unitWaterBe == null) {
                                         txWaterUnit.setText("ค่าน้ำ\nยังไม่ได้จดหน่วยน้ำ");
                                         txWater.setText("0 บาท");
+                                        txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
                                         int unitElecAfter = Integer.parseInt(billModel.getElecafter());
                                         int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
                                         int sumEl = 0;
@@ -136,19 +158,22 @@ public class CreateBill extends AppCompatActivity {
                                         }
                                         txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
                                         String dataelectricity = snapshot.child("electricity").getValue(String.class);
-                                        String tempelectricity = dataelectricity.replace(",", "");
+                                        //String tempelectricity = dataelectricity.replace(",", "");
                                         txElectricity.setText(dataelectricity + " บาท");
+                                        sum = priceRoom +Double.parseDouble(dataelectricity)+ fee + internet - discount;
+                                        txSum.setText(DoubleToString(sum) + " บาท");
 
                                         btConfirm.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยน้ำก่อน", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยน้ำ", Toast.LENGTH_SHORT).show();
                                             }
                                         });
 
                                     }else if (unitElecAf == null || unitElecBe == null) {
                                         txElecUnit.setText("ค่าไฟ\nยังไม่ได้จดหน่วยไฟ");
                                         txElectricity.setText("0 บาท");
+                                        txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
                                         int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
                                         int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
                                         int sumWt = 0;
@@ -159,17 +184,19 @@ public class CreateBill extends AppCompatActivity {
                                         }
                                         txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
                                         String datawater = snapshot.child("water").getValue(String.class);
-                                        String tempwater = datawater.replace(",", "");
+                                        //String tempwater = datawater.replace(",", "");
                                         txWater.setText(datawater + " บาท");
+                                        sum = priceRoom +Double.parseDouble(datawater)+ fee + internet - discount;
+                                        txSum.setText(DoubleToString(sum) + " บาท");
 
                                         btConfirm.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟก่อน", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟ", Toast.LENGTH_SHORT).show();
                                             }
                                         });
 
-                                    } else {
+                                    }else {
                                         int unitElecAfter = Integer.parseInt(billModel.getElecafter());
                                         int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
                                         int sumEl = 0;
@@ -201,7 +228,7 @@ public class CreateBill extends AppCompatActivity {
                                         txElectricity.setText(DoubleToString(electricity) + " บาท");
                                         txWater.setText(DoubleToString(water) + " บาท");
 
-                                        sum = priceRoom + electricity + water;
+                                        sum = priceRoom + electricity + water+ fee + internet - discount;
 
                                         txSum.setText(DoubleToString(sum) + " บาท");
 
@@ -215,6 +242,7 @@ public class CreateBill extends AppCompatActivity {
                                                 }
                                             });
                                         }
+
                                         btSaveFee.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
@@ -222,8 +250,7 @@ public class CreateBill extends AppCompatActivity {
                                                 btEditFee.setVisibility(View.VISIBLE);
                                                 btSaveFee.setVisibility(View.GONE);
                                                 fee = Double.parseDouble(etFee.getText().toString());
-                                                sumTotal += fee;
-                                                sum=sum+sumTotal;
+                                                sum = priceRoom + electricity + water+ fee + internet - discount;
                                                 txSum.setText(DoubleToString(sum) + " บาท");
                                             }
                                         });
@@ -246,8 +273,7 @@ public class CreateBill extends AppCompatActivity {
                                                 btEditInternet.setVisibility(View.VISIBLE);
                                                 btSaveInternet.setVisibility(View.GONE);
                                                 internet = Double.parseDouble(etInternet.getText().toString());
-                                                sumTotal += internet;
-                                                sum=sum+sumTotal;
+                                                sum = priceRoom + electricity + water+ fee + internet - discount;
                                                 txSum.setText(DoubleToString(sum) + " บาท");
                                             }
                                         });
@@ -269,31 +295,31 @@ public class CreateBill extends AppCompatActivity {
                                                 btEditDiscount.setVisibility(View.VISIBLE);
                                                 btSaveDiscount.setVisibility(View.GONE);
                                                 discount = Double.parseDouble(etDiscount.getText().toString());
-                                                sumTotal -= discount;
-                                                sum=sum+sumTotal;
+                                                sum = priceRoom + electricity + water+ fee + internet - discount;
                                                 txSum.setText(DoubleToString(sum) + " บาท");
 
                                             }
                                         });
-
 
                                         btConfirm.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 Toast.makeText(CreateBill.this, "สำเร็จ", Toast.LENGTH_SHORT).show();
                                                 refBill.child("roomprice").setValue(datapriceRoom);
-                                                refBill.child("discount").setValue(discount);
-                                                refBill.child("fee").setValue(fee);
-                                                refBill.child("internet").setValue(internet);
-                                                refBill.child("sum").setValue(sum);
+                                                refBill.child("discount").setValue(DoubleToString(discount));
+                                                refBill.child("fee").setValue(DoubleToString(fee));
+                                                refBill.child("internet").setValue(DoubleToString(internet));
+                                                refBill.child("sum").setValue(sum+"");
                                                 refBill.child("status").setValue("0");
                                                 finish();
                                             }
                                         });
                                     }
-                                }catch (Exception e){
-                                    Toast.makeText(CreateBill.this, ""+e.toString(), Toast.LENGTH_SHORT).show();
                                 }
+
+                                /*}catch (Exception e){
+                                    Toast.makeText(CreateBill.this, ""+e.toString(), Toast.LENGTH_SHORT).show();
+                                }*/
 
 
                             }

@@ -40,15 +40,12 @@ public class BookingDetails extends AppCompatActivity {
     DatabaseReference myRefCentral = database.getReference("Central");
 
     private String monthThai = "";
-    private String day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "";
-    private String month = Calendar.getInstance().get(Calendar.MONTH) + "";
-    int mo = Integer.valueOf(month) + 1;
-    private String year = Calendar.getInstance().get(Calendar.YEAR) + "";
-    private int yearThai = Integer.parseInt(year) + 543;
-    private String date = day + " " + getMonth(Integer.parseInt(month)) + " " + yearThai;
+    String day;
+    String month;
+    String year;
+    private int yearThai;
     private String userID = "";
     private String nameCentral;
-    AdapterBookingDetails adapterBookingDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +54,11 @@ public class BookingDetails extends AppCompatActivity {
 
         mContext = getApplicationContext();
 
+        day = getIntent().getStringExtra("day");
+        month = getIntent().getStringExtra("month");
+        year = getIntent().getStringExtra("year");
 
+        yearThai = Integer.parseInt(year) + 543;
         String userType = Login.getGbTypeUser();
         userID = getIntent().getStringExtra("userID");
 
@@ -65,6 +66,7 @@ public class BookingDetails extends AppCompatActivity {
         String image = getIntent().getStringExtra("image");
         String name = getIntent().getStringExtra("name");
         String date = getIntent().getStringExtra("date");
+
         String time = getIntent().getStringExtra("time");
         String phone = getIntent().getStringExtra("phone");
         String position = getIntent().getStringExtra("position");
@@ -129,7 +131,7 @@ public class BookingDetails extends AppCompatActivity {
         btCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogDelete(time,position);
+                showDialogDelete(time);
             }
         });
     }
@@ -176,7 +178,7 @@ public class BookingDetails extends AppCompatActivity {
         return monthThai;
     }
 
-    private void showDialogDelete(String time,String position) {
+    private void showDialogDelete(String time) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(BookingDetails.this);
         dialog.setTitle("ลบ");
         dialog.setMessage("คุณแน่ใจที่จะลบหรือไม่");
@@ -187,9 +189,8 @@ public class BookingDetails extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-
-                        if (snapshot.child(nameCentral).child(year).child(mo+"").child(day).child(time).hasChild(userID)) {
-                            myRefCentral.child(nameCentral).child(year).child(mo+"").child(day).child(time).child(userID).getRef().removeValue();
+                        if (snapshot.child(nameCentral).child(year).child(month).child(day).child(time).hasChild(userID)) {
+                            myRefCentral.child(nameCentral).child(year).child(month).child(day).child(time).child(userID).getRef().removeValue();
                             finish();
                         }
                     }

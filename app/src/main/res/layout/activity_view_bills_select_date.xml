@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:backgroundTint="@color/white"
         android:layout_margin="10dp"
         android:orientation="vertical">
@@ -71,7 +71,7 @@
             android:id="@+id/btConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/blue"
             android:textColor="@color/white"
             android:layout_margin="10dp"

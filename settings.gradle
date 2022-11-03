@@ -1,2 +1,3 @@
 rootProject.name = "DormitoryManagementSystem"
 include ':app'
+include ':app',':rackmonthPicker'

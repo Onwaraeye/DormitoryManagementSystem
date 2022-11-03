@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/mediumgray"
             android:orientation="vertical">
 
@@ -72,7 +72,7 @@
             android:layout_marginTop="20dp"
             android:layout_height="40dp"
             android:backgroundTint="@color/blue"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:textColor="@color/white"
             android:text="บันทึก" />
     </LinearLayout>

@@ -45,6 +45,11 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
             holder.txCentral.setText(list.get(position).getCentral());
             holder.txName.setText(list.get(position).getName());
             holder.txDate.setText(list.get(position).getDate());
+            String[] date = list.get(position).getDate().split(" ");
+            String day = date[0];
+            String month = date[1];
+            String year = date[2];
+            int ye = Integer.valueOf(year)-543;
             holder.txTime.setText(convertTime(list.get(position).getTime()));
             String imageFitness = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/fitness.jpg?alt=media&token=65a9ae5b-209d-421a-b3f7-99ed0ce886d9";
             String imageTutoringRoom = "https://firebasestorage.googleapis.com/v0/b/dekhordemo-23dde.appspot.com/o/tutoringroom.jpg?alt=media&token=3213b984-1fc9-4d08-8140-3a8682c14529";
@@ -61,6 +66,9 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
                     intent.putExtra("central",list.get(position).getCentral());
                     intent.putExtra("name", list.get(position).getName());
                     intent.putExtra("date", list.get(position).getDate());
+                    intent.putExtra("day", day);
+                    intent.putExtra("month", getMonth(month));
+                    intent.putExtra("year", ye+"");
                     intent.putExtra("time", list.get(position).getTime());
                     intent.putExtra("phone", list.get(position).getPhone());
                     intent.putExtra("userID", list.get(position).getUserID());
@@ -141,5 +149,48 @@ public class AdapterBookingDetails extends RecyclerView.Adapter<AdapterBookingDe
                 break;
         }
         return cvTime;
+    }
+
+    public String getMonth(String monthThai) {
+        String month = "";
+        switch (monthThai) {
+            case "มกราคม":
+                month = "1";
+                break;
+            case "กุมภาพันธ์":
+                month = "2";
+                break;
+            case "มีนาคม":
+                month = "3";
+                break;
+            case "เมษายน":
+                month = "4";
+                break;
+            case "พฤษภาคม":
+                month = "5";
+                break;
+            case "มิถุนายน":
+                month = "6";
+                break;
+            case "กรกฎาคม":
+                month = "7";
+                break;
+            case "สิงหาคม":
+                month = "8";
+                break;
+            case "กันยายน":
+                month = "9";
+                break;
+            case "ตุลาคม":
+                month = "10";
+                break;
+            case "พฤศจิกายน":
+                month = "11";
+                break;
+            case "ธันวาคม":
+                month = "12";
+                break;
+        }
+        return month;
     }
 }

@@ -22,7 +22,6 @@
         <activity android:name=".ChatNew.ContactActivity" />
         <activity android:name=".Manager.ViewCentralUse2" />
         <activity android:name=".Manager.ViewBills" />
-        <activity android:name=".Manager.ViewBillsSelectDate" />
         <activity android:name=".CentralReservation1" />
         <activity android:name=".Manager.InfoEditContact" />
         <activity android:name=".Manager.InfoEditBank" />

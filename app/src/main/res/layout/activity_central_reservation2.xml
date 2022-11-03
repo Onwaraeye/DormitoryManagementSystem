@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20sp"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:padding="20dp"
         android:orientation="vertical">
 
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:ems="10"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/mediumgray"
             android:layout_marginTop="5dp"
             android:paddingHorizontal="10dp"
@@ -118,7 +118,7 @@
             android:layout_marginTop="30dp"
             android:layout_height="40dp"
             android:backgroundTint="@color/blue"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:textColor="@color/white"
             android:text="ยืนยัน" />
     </LinearLayout>

@@ -86,7 +86,7 @@ public class CentralReservationFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        myRefCentral.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRefCentral.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 /*listCentral.clear();
@@ -131,13 +131,12 @@ public class CentralReservationFragment extends Fragment {
                 recyclerView.setAdapter(adapterBookingDetails);*/
                 //
                 try {
-
                     for (DataSnapshot dsTitle : snapshot.getChildren()){
                         Log.e("dsTitle", dsTitle.getKey());
                         String title = dsTitle.getKey();
                         list.clear();
                         listCentral.clear();
-                        for (int d=Integer.parseInt(day); d<=31;d++){
+                        for (int d=Integer.parseInt(day); d<31;d++){
                             for (DataSnapshot ds : snapshot.child(dsTitle.getKey()).child(year).child(mo + "").child(d+"").getChildren()) {
                                 list.add(ds.getKey());
                             }
@@ -157,7 +156,7 @@ public class CentralReservationFragment extends Fragment {
                                             String phone = dataSnapshot.child("phone").getValue(String.class);
                                             CentralModel centralModel = new CentralModel(sentTitle, name, date, t,userID,phone);
                                             listCentral.add(centralModel);
-                                            //Log.e("listCentral", listCentral.get(0).getTime());
+                                            Log.e("listCentral", dataSnapshot.getKey());
                                         }
                                         adapterBookingDetails = new AdapterBookingDetails(mContext, listCentral);
                                         recyclerView.setAdapter(adapterBookingDetails);

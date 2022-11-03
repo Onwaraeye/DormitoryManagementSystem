@@ -50,7 +50,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/white"
             android:orientation="vertical"
             android:padding="10dp">
@@ -73,7 +73,8 @@
                     android:id="@+id/btMonth"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:background="@color/darkgray"
+                    android:background="@color/blue"
+                    android:tint="@color/white"
                     app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
 
                 <TextView
@@ -102,7 +103,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_menu"
+                    android:background="@drawable/bg_rad10"
                     android:backgroundTint="@color/white"
                     android:orientation="vertical"
                     android:padding="10dp">
@@ -155,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_menu"
+                    android:background="@drawable/bg_rad10"
                     android:backgroundTint="@color/white"
                     android:orientation="vertical"
                     android:padding="10dp">

@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class CentralReservation1 extends AppCompatActivity {
@@ -38,6 +39,7 @@ public class CentralReservation1 extends AppCompatActivity {
     List<String> listTimeAdd = new ArrayList<>();
     List<String> list = new ArrayList<>();
 
+    String checkUse="";
     String title;
     String day;
     String month;
@@ -49,6 +51,9 @@ public class CentralReservation1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_central_reservation1);
+
+        int dayCurrent = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int monthCurrent = Calendar.getInstance().get(Calendar.MONTH)+1;
 
         Intent intent = getIntent();
         title = intent.getStringExtra("central");
@@ -87,9 +92,23 @@ public class CentralReservation1 extends AppCompatActivity {
         txCentral.setText(central);
 
 
+
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+                for (int m = monthCurrent; m <= 12; m++) {
+                    for (int d = dayCurrent; d <= 31; d++) {
+                        for (int h = 0; h <= 24; h++) {
+                            if (snapshot.child(title).child(year).child(m+"").child(d+"").child(h+"").hasChild(userID)){
+                                checkUse = "Limit";
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 list.clear();
                 for (DataSnapshot ds : snapshot.child(title).child(year).child(mo + "").child(day).getChildren()) {
                     list.add(ds.getKey());
@@ -238,6 +257,7 @@ public class CentralReservation1 extends AppCompatActivity {
             }
             if (value > 3) {
                 listTime.clear();
+                listTimeAdd.clear();
                 Toast.makeText(getApplicationContext(), "ส่วนกลางนี้จองได้ไม่เกินคนละ 3 ชม.ต่อครั้ง", Toast.LENGTH_SHORT).show();
             } else {
                 if (value < 1) {
@@ -250,10 +270,12 @@ public class CentralReservation1 extends AppCompatActivity {
                     intent.putExtra("year", year + "");
                     intent.putExtra("value", value + "");
                     intent.putExtra("time", listTime + "");
+                    intent.putExtra("check",checkUse);
                     intent.putStringArrayListExtra("timeAdd", (ArrayList<String>) listTimeAdd);
                     Log.e("time", listTime + "");
                     startActivity(intent);
                     listTime.clear();
+                    listTimeAdd.clear();
                 }
             }
     }

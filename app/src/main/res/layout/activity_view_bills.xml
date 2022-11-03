@@ -51,18 +51,21 @@
 
         <ImageButton
             android:id="@+id/btMonthPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_white_rad5"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@color/blue"
+            android:tint="@color/menu"
             android:padding="5dp"
             app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
 
         <TextView
             android:id="@+id/txMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:background="@color/white"
             android:gravity="center"
+            android:paddingHorizontal="10dp"
             android:text="TextView"
             android:textSize="24sp" />
 

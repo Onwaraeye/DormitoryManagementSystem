@@ -84,7 +84,7 @@
                 android:id="@+id/time8am_9am"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="08:00-09:00 น." />
 
@@ -93,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="09:00-10:00 น." />
 
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="10:00-11:00 น." />
 
@@ -111,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="11:00-12:00 น." />
 
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="12:00-13:00 น." />
 
@@ -129,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="13:00-14:00 น." />
 
@@ -138,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="14:00-15:00 น." />
 
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="15:00-16:00 น." />
 
@@ -156,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="16:00-17:00 น." />
 
@@ -165,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="17:00-18:00 น." />
 
@@ -174,7 +174,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="18:00-19:00 น." />
 
@@ -183,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/bg_white_rad5_stroke"
+                android:background="@drawable/bg_rad5_stroke"
                 android:buttonTint="@color/blue"
                 android:text="19:00 - 20:00 น." />
         </LinearLayout>
@@ -197,7 +197,7 @@
         android:layout_height="40dp"
         android:layout_gravity="bottom"
         android:layout_margin="10dp"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:backgroundTint="@color/blue"
         android:text="ต่อไป"
         android:textColor="@color/white"

@@ -22,28 +22,37 @@
         android:orientation="horizontal">
 
         <TextView
-            android:background="@color/darkgray"
+            android:background="@color/blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/menu"
+            android:textStyle="bold"
             android:gravity="center"
+            android:padding="2dp"
             android:layout_weight="1"
             android:text="ห้อง" />
 
         <TextView
-            android:background="@color/darkgray"
+            android:background="@color/blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
+            android:textColor="@color/menu"
+            android:textStyle="bold"
+            android:padding="2dp"
             android:gravity="center"
             android:layout_weight="1"
             android:text="หน่วยก่อนหน้า" />
 
         <TextView
-            android:background="@color/darkgray"
+            android:background="@color/blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
+            android:textColor="@color/menu"
+            android:textStyle="bold"
             android:gravity="center"
+            android:padding="2dp"
             android:layout_weight="1"
             android:text="หน่วยล่าสุด" />
 

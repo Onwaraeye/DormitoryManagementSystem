@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.RepairModel;
 import com.example.dormitorymanagementsystem.R;
@@ -72,6 +74,8 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
             }
             String date = day+" "+getMonth(Integer.valueOf(month))+" "+ye+" "+times+" น.";
 
+            Glide.with(mContext).load(image).fitCenter().centerCrop().into(holder.imageView);
+
             if (status.equals("1")) {
                 String timestampComplete = list.get(position).getTimestampComplete();
                 if (timestampComplete != null) {
@@ -99,7 +103,7 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
                 String dateForward = dayFW+" "+getMonth(Integer.valueOf(monthFW))+" "+yeFW+" "+timesFW+" น.";
                 if (timestampForward != null) {
                     if (typeUser.equals("User")) {
-                        holder.txTime.setText("");
+                        holder.txTime.setVisibility(View.GONE);
                     } else {
                         holder.txTime.setText("มอบหมายเมื่อ "+dateForward);
                     }
@@ -117,13 +121,13 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
                 String dateRepair = dayRP+" "+getMonth(Integer.valueOf(monthRP))+" "+yeRP+" "+timesRP+" น.";
                 if (timestampRepair != null) {
                     if (typeUser.equals("User")) {
-                        holder.txTime.setText("");
+                        holder.txTime.setVisibility(View.GONE);
                     } else {
                         holder.txTime.setText("ซ่อมเสร็จเมื่อ " + dateRepair);
                     }
                 }
             } else {
-                holder.txTime.setText("");
+                holder.txTime.setVisibility(View.GONE);
             }
 
             if (status.equals("3") && typeUser.equals("Repairman")) {
@@ -137,11 +141,8 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
             }
 
             holder.txDetail.setText(date);
-            if (typeUser.equals("User")){
-                holder.txRoom.setText("");
-            }else {
-                holder.txRoom.setText("ห้อง "+room);
-            }
+            holder.txRoom.setText("ห้อง "+room);
+
 
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -175,6 +176,7 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
 
         TextView txTitle, txTime, txDetail, txRoom;
         LinearLayout linearLayout;
+        ImageView imageView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -184,6 +186,7 @@ public class AdapteViewRepiar extends RecyclerView.Adapter<AdapteViewRepiar.MyVi
             txDetail = itemView.findViewById(R.id.txDetail);
             txRoom = itemView.findViewById(R.id.txRoom);
             linearLayout = itemView.findViewById(R.id.linearLayout);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 

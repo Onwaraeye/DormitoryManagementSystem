@@ -28,8 +28,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imUser"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             app:shapeAppearanceOverlay="@style/Circular"
             android:src="@drawable/ic_bx_bxs_user_home" />
@@ -39,7 +39,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_menu"
+        android:background="@drawable/bg_rad10"
         android:backgroundTint="@color/bg"
         android:orientation="vertical">
 
@@ -72,7 +72,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -97,7 +97,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -155,7 +155,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -188,7 +188,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -213,7 +213,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -247,7 +247,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -272,7 +272,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -304,7 +304,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -330,7 +330,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -364,7 +364,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -390,7 +390,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -426,7 +426,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -452,7 +452,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -485,7 +485,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -510,7 +510,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -544,7 +544,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -569,7 +569,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp"
@@ -603,7 +603,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -628,7 +628,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_menu"
+                            android:background="@drawable/bg_rad10"
                             android:backgroundTint="@color/menu"
                             android:orientation="vertical"
                             android:padding="10dp">

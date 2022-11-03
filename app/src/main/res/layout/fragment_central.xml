@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:paddingVertical="30dp"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:gravity="center"
             android:text="พื้นที่ออกกำลังกาย" />
 
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:paddingVertical="30dp"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:gravity="center"
             android:text="ห้องอเนกประสงค์" />
     </LinearLayout>

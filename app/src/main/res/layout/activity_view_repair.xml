@@ -51,12 +51,12 @@
         app:tabMode="auto">
 
         <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="1" />
 
         <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="2" />
     </com.google.android.material.tabs.TabLayout>
@@ -64,7 +64,8 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpRepair"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_weight="1"/>
 
     <LinearLayout
@@ -78,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/bg_menu"
+            android:background="@drawable/bg_rad10"
             android:backgroundTint="@color/blue"
             android:textColor="@color/white"
             android:textStyle="bold"
