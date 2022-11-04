@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dormitorymanagementsystem.ChatNew.AdapterChatlist;
 import com.example.dormitorymanagementsystem.Fragment.AnnounceFragment;
 import com.example.dormitorymanagementsystem.Fragment.HomeFragment;
 import com.example.dormitorymanagementsystem.Fragment.SettingFragment;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private String monthThai = "";
 
     private BottomNavigationView bottomNavigationView;
+
+    String isSeen;
 
 
     @Override

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.service.autofill.Dataset;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +111,7 @@ public class ChatListFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String theLastMessage = "default";
                 String typeMessage = "default";
+                int isSeenMessage = 1;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
                     if (chat == null) {
@@ -123,6 +125,7 @@ public class ChatListFragment extends Fragment {
                     if (chat.getReceiver().equals("Mng") && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals("Mng")) {
                         theLastMessage = chat.getMessage();
                         typeMessage = chat.getType();
+                        isSeenMessage = chat.getIsSeen();
                     }
                     /*if (chat.getReceiver().equals(currentUser) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(currentUser)) {
                         theLastMessage = chat.getMessage();
@@ -130,6 +133,7 @@ public class ChatListFragment extends Fragment {
                 }
                 adapterChatlist.setLastMessageMap(userId, theLastMessage);
                 adapterChatlist.setTypeMessageMap(userId, typeMessage);
+                adapterChatlist.setIsSeenMessageMap(userId, isSeenMessage+"");
                 adapterChatlist.notifyDataSetChanged();
             }
 

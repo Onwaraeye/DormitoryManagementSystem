@@ -2,6 +2,7 @@ package com.example.dormitorymanagementsystem.ChatNew;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.dormitorymanagementsystem.MainActivity;
 import com.example.dormitorymanagementsystem.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,12 +27,16 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
     List<ModelUser> userList;
     private HashMap<String,String> lastMessageMap;
     private HashMap<String,String> typeMessageMap;
+    private HashMap<String,String> isSeenMessageMap;
+
+
 
     public AdapterChatlist(Context context, List<ModelUser> userList) {
         this.context = context;
         this.userList = userList;
         lastMessageMap = new HashMap<>();
         typeMessageMap = new HashMap<>();
+        isSeenMessageMap = new HashMap<>();
     }
 
     @NonNull
@@ -49,12 +55,12 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         String lastMessage = lastMessageMap.get(hisUid);
         String userRoom = userList.get(position).getNumroom();
         String typeMessage = typeMessageMap.get(hisUid);
+        String isSeenMessage = isSeenMessageMap.get(hisUid);
 
         holder.nameTv.setText(userName);
         if (lastMessage==null || lastMessage.equals("default")){
             holder.lastMessageTv.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             if (typeMessage==null || typeMessage.equals("default")){
                 holder.lastMessageTv.setVisibility(View.GONE);
             }else {
@@ -66,7 +72,15 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
                     holder.lastMessageTv.setText(lastMessage);
                 }
             }
+
         }
+        if (isSeenMessage != null && isSeenMessage.equals("0")){
+            holder.isSeenBadge.setVisibility(View.VISIBLE);
+        }else {
+            holder.isSeenBadge.setVisibility(View.INVISIBLE);
+        }
+
+
         if (userImage.isEmpty()){
             holder.profileIv.setImageResource(R.drawable.ic_bx_bxs_user_circle);
         }
@@ -103,6 +117,10 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         typeMessageMap.put(userId, typeMessage);
     }
 
+    public  void setIsSeenMessageMap(String userId, String isSeenMessage){
+        isSeenMessageMap.put(userId, isSeenMessage);
+    }
+
     @Override
     public int getItemCount() {
         return userList.size();
@@ -112,6 +130,7 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
 
         ImageView profileIv;
         TextView nameTv,lastMessageTv,mRoomTv;
+        View isSeenBadge;
 
         public MyHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -120,6 +139,7 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
             nameTv = itemView.findViewById(R.id.nameTv);
             lastMessageTv = itemView.findViewById(R.id.lastMessageTv);
             mRoomTv = itemView.findViewById(R.id.roomTv);
+            isSeenBadge = itemView.findViewById(R.id.isSeenBadge);
         }
     }
 }
