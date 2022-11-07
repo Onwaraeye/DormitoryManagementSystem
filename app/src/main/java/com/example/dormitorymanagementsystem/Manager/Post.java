@@ -39,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.ChatNew.ChatActivity;
 import com.example.dormitorymanagementsystem.Login;
 import com.example.dormitorymanagementsystem.Model.ImageURL;
+import com.example.dormitorymanagementsystem.ParcelDetail;
 import com.example.dormitorymanagementsystem.R;
 import com.example.dormitorymanagementsystem.notifications.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -70,14 +71,13 @@ public class Post extends AppCompatActivity {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRefPost = database.getReference("Posts");
 
-    private static final int IMAGE_REQUEST = 1;
-    private Uri imUri;
     private ImageView imageView;
     private String getStatus;
     private String getTime;
     private String uid = Login.getGbIdUser();
     private String name = Login.getGbFNameUser() +" "+Login.getGbLNameUser();
     String pTimestamps = "";
+    String getImage;
 
     private RequestQueue requestQueue;
 
@@ -93,7 +93,7 @@ public class Post extends AppCompatActivity {
         Intent intent = getIntent();
         String getTitle = intent.getStringExtra("titlePost");
         String getDetail = intent.getStringExtra("detailPost");
-        String getImage = intent.getStringExtra("imageUrl");
+        getImage = intent.getStringExtra("imageUrl");
         getTime = intent.getStringExtra("time");
         getStatus = intent.getStringExtra("status");
 
@@ -306,7 +306,6 @@ public class Post extends AppCompatActivity {
                                     }
                                 });
                             } else {
-                                Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
                                 myRefPost.child(pTimestamps).child("imageUrl").setValue(imageURL);
                             }
                         }
@@ -366,11 +365,29 @@ public class Post extends AppCompatActivity {
         dialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (getImage!=null){
+                    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                    StorageReference photoRef = firebaseStorage.getReferenceFromUrl(getImage);
+                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // File deleted successfully
+                            Log.d("TAGDelete", "onSuccess: deleted file");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Uh-oh, an error occurred!
+                            Log.d("TAGDelete", "onFailure: did not delete file");
+                        }
+                    });
+                }
                 Query query = myRefPost.orderByChild("timestamp").equalTo(getTime);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         for (DataSnapshot ds : snapshot.getChildren()) {
+                            Toast.makeText(Post.this, "ลบสำเร็จ", Toast.LENGTH_SHORT).show();
                             ds.getRef().removeValue();
                             finish();
                         }

@@ -22,6 +22,7 @@
 
     <color name="meterRecord">#778da9</color>
     <color name="menu">#FFFFFFFF</color>
+    <color name="bg_menu">#435D7D</color>
     <color name="bg">#ECECEC</color>
     <color name="icon">#323E4D</color>
     <color name="line">#C4C4C4</color>

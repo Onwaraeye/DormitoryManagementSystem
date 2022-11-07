@@ -15,6 +15,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -69,7 +70,7 @@ import java.util.Map;
 public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ImageView sendBtn, cameraBtn,galleryBtn;
+    ImageView sendBtn, cameraBtn, galleryBtn;
     TextView nameTv, roomTv;
     EditText messageEt;
 
@@ -84,7 +85,7 @@ public class ChatActivity extends AppCompatActivity {
     String hisImage;
     String imageAdmin;
     String typeUser = Login.getGbTypeUser();
-    String nameUser = Login.getGbFNameUser()+" "+Login.getGbLNameUser();
+    String nameUser = Login.getGbFNameUser() + " " + Login.getGbLNameUser();
 
     private RequestQueue requestQueue;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -93,9 +94,6 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference myRefChat = database.getReference("Chats").push();
 
     private int notify = 0;
-
-    private static final int IMAGE_REQUEST = 1;
-    private Uri resultUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +107,7 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         cameraBtn = findViewById(R.id.cameraBtn);
         galleryBtn = findViewById(R.id.galleryBtn);
+        ImageView imageView = findViewById(R.id.imageView);
 
         requestQueue = Volley.newRequestQueue(ChatActivity.this);
 
@@ -123,7 +122,6 @@ public class ChatActivity extends AppCompatActivity {
 
         myUid = Login.getGbIdUser();
 
-        //if (typeUser.equals("User"))
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Contact");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -153,15 +151,23 @@ public class ChatActivity extends AppCompatActivity {
                             nameTv.setText("นิติบุลคล");
                         } else if (role.equals("Repairman")) {
                             roomTv.setText("ช่างซ่อม");
+                            nameTv.setText(name);
                         }
                     } else {
                         roomTv.setText("ห้อง " + room);
                         nameTv.setText(name);
                     }
-                    if (role != null && role.equals("Admin")){
+                    if (role != null && role.equals("Admin")) {
                         hisImage = imageAdmin;
-                    }else {
+                    } else {
                         hisImage = ds.child("pictureUserUrl").getValue(String.class);
+                    }
+                    if (hisImage != null) {
+                        if (hisImage.isEmpty()) {
+                            imageView.setImageResource(R.drawable.ic_bx_bxs_user_home);
+                        } else {
+                            Glide.with(ChatActivity.this).load(hisImage).fitCenter().centerCrop().into(imageView);
+                        }
                     }
                 }
             }
@@ -219,13 +225,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if (typeUser.equals("Admin")){
+                    if (typeUser.equals("Admin")) {
                         if (chat.getReceiver().equals("Mng") && chat.getSender().equals(hisUid)) {
                             HashMap<String, Object> hasSeenHashMap = new HashMap<>();
                             hasSeenHashMap.put("isSeen", 1);
                             ds.getRef().updateChildren(hasSeenHashMap);
                         }
-                    }else {
+                    } else {
                         if (chat.getReceiver().equals(myUid) && chat.getSender().equals("Mng")) {
                             HashMap<String, Object> hasSeenHashMap = new HashMap<>();
                             hasSeenHashMap.put("isSeen", 1);
@@ -251,11 +257,11 @@ public class ChatActivity extends AppCompatActivity {
                 chatList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if (typeUser.equals("Admin")){
+                    if (typeUser.equals("Admin")) {
                         if (chat.getReceiver().equals("Mng") && chat.getSender().equals(hisUid) || chat.getReceiver().equals(hisUid) && chat.getSender().equals("Mng")) {
                             chatList.add(chat);
                         }
-                    }else {
+                    } else {
                         if (chat.getReceiver().equals(myUid) && chat.getSender().equals("Mng") || chat.getReceiver().equals("Mng") && chat.getSender().equals(myUid)) {
                             chatList.add(chat);
                         }
@@ -293,7 +299,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         /*hashMap.put("sender", myUid);
         hashMap.put("receiver", hisUid);*/
-        hashMap.put("nameUser",nameUser);
+        hashMap.put("nameUser", nameUser);
         hashMap.put("message", message);
         hashMap.put("timestamp", timestamp);
         hashMap.put("isSeen", 0);
@@ -393,14 +399,14 @@ public class ChatActivity extends AppCompatActivity {
         if (typeUser.equals("Admin")) {
             hashMap.put("sender", "Mng");
             hashMap.put("receiver", hisUid);
-            hashMap.put("admin",myUid);
+            hashMap.put("admin", myUid);
         } else {
             hashMap.put("sender", myUid);
             hashMap.put("receiver", "Mng");
         }
         /*hashMap.put("sender", myUid);
         hashMap.put("receiver", hisUid);*/
-        hashMap.put("nameUser",nameUser);
+        hashMap.put("nameUser", nameUser);
         hashMap.put("message", message);
         hashMap.put("timestamp", timestamp);
         hashMap.put("isSeen", 0);
@@ -428,7 +434,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void senNotification(String hisUid, String name, String message) {
         DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
-        if (typeUser.equals("Admin")){
+        if (typeUser.equals("Admin")) {
             Query query = allToken.orderByKey().equalTo(hisUid);
             query.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -476,7 +482,7 @@ public class ChatActivity extends AppCompatActivity {
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
             });
-        }else {
+        } else {
             Query query = allToken.orderByChild("role").equalTo("Admin");
             query.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -542,7 +548,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void askCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
         } else {
             dispatchTakePictureIntent();
         }
@@ -563,13 +569,13 @@ public class ChatActivity extends AppCompatActivity {
     String currentPhotoPath;
 
     private File createImageFile() throws IOException {
-        String imageFileName = System.currentTimeMillis()+"";
+        String imageFileName = System.currentTimeMillis() + "";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName
                 , ".jpg"
                 , storageDir);
         currentPhotoPath = image.getAbsolutePath();
-        Log.e("currentPhotoPath", currentPhotoPath+"");
+        Log.e("currentPhotoPath", currentPhotoPath + "");
         return image;
     }
 
@@ -601,7 +607,7 @@ public class ChatActivity extends AppCompatActivity {
             File f = new File(currentPhotoPath);
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             contentUri = Uri.fromFile(f);
-            Log.e("contentUri", contentUri+"");
+            Log.e("contentUri", contentUri + "");
             mediaScanIntent.setData(contentUri);
             this.sendBroadcast(mediaScanIntent);
             uploadImageToFirebase();
@@ -619,7 +625,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase() {
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis()+"."+getFileExtension(contentUri));
+        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsChats").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
         fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

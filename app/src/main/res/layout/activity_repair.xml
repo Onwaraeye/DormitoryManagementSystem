@@ -261,7 +261,7 @@
                         android:layout_height="40dp"
                         android:layout_marginTop="20sp"
                         android:background="@drawable/bg_rad10"
-                        android:backgroundTint="#323E4D"
+                        android:backgroundTint="@color/blue"
                         android:text="ยืนยัน"
                         android:textColor="@color/white" />
 

@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
-    String isSeen;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +94,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        prepareNotification(
-                ""+System.currentTimeMillis(),
-                "แจ้งเตือนบิล",
-                "เดือน"+getMonth(month),
-                "BillNotification",
-                "POST");
-
+        if (!typeUser.equals("Repairman")){
+            prepareNotification(
+                    ""+System.currentTimeMillis(),
+                    "แจ้งเตือนบิล",
+                    "เดือน"+getMonth(month),
+                    "BillNotification",
+                    "POST");
+        }
     }
 
     @Override
@@ -121,59 +120,63 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 Log.e("Data", "onChildChanged");
-                if (snapshot.child(""+month).child(room).child("status").getValue(String.class) != null && snapshot.child(""+month).child(room).child("status").getValue(String.class).equals("0")){
-                    Log.e("Data", "DataBill");
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-                    Query query = ref.orderByChild("numroom").equalTo(room);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
-                            Log.e("Data", "DataUser");
-                            for (DataSnapshot ds : snapshotUser.getChildren()){
-                                DatabaseReference refTo = FirebaseDatabase.getInstance().getReference("Tokens");
-                                refTo.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshotTo) {
-                                        Log.e("Data", "DataToken"+ds.getKey());
-                                        if (snapshotTo.child(ds.getKey()).getKey().equals(userID)){
-                                            String NOTIFICATION_TOPIC = snapshotTo.child(ds.getKey()).child("token").getValue(String.class);
-                                            String NOTIFICATION_TITLE = title;
-                                            String NOTIFICATION_MESSAGE = description;
-                                            String NOTIFICATION_TYPE = notificationType;
+                try {
+                    if (snapshot.child(""+month).child(room+"").child("status").getValue(String.class) != null && snapshot.child(""+month).child(room+"").child("status").getValue(String.class).equals("0")){
+                        Log.e("Data", "DataBill");
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+                        Query query = ref.orderByChild("numroom").equalTo(room);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshotUser) {
+                                Log.e("Data", "DataUser");
+                                for (DataSnapshot ds : snapshotUser.getChildren()){
+                                    DatabaseReference refTo = FirebaseDatabase.getInstance().getReference("Tokens");
+                                    refTo.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshotTo) {
+                                            Log.e("Data", "DataToken"+ds.getKey());
+                                            if (snapshotTo.child(ds.getKey()).getKey().equals(userID)){
+                                                String NOTIFICATION_TOPIC = snapshotTo.child(ds.getKey()).child("token").getValue(String.class);
+                                                String NOTIFICATION_TITLE = title;
+                                                String NOTIFICATION_MESSAGE = description;
+                                                String NOTIFICATION_TYPE = notificationType;
 
-                                            JSONObject notificationJo = new JSONObject();
-                                            JSONObject notificationBodyJo = new JSONObject();
+                                                JSONObject notificationJo = new JSONObject();
+                                                JSONObject notificationBodyJo = new JSONObject();
 
-                                            try {
-                                                notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
-                                                notificationBodyJo.put("pId", pId);
-                                                notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
-                                                notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
+                                                try {
+                                                    notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+                                                    notificationBodyJo.put("pId", pId);
+                                                    notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
+                                                    notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
 
-                                                notificationJo.put("to", NOTIFICATION_TOPIC);
-                                                notificationJo.put("data", notificationBodyJo);
+                                                    notificationJo.put("to", NOTIFICATION_TOPIC);
+                                                    notificationJo.put("data", notificationBodyJo);
 
-                                            } catch (Exception e) {
-                                                //Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                } catch (Exception e) {
+                                                    //Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                                Log.e("notibill",notificationJo.toString());
+                                                sendBillNotification(notificationJo);
                                             }
-                                            Log.e("notibill",notificationJo.toString());
-                                            sendBillNotification(notificationJo);
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                }catch (Exception e){
+                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 

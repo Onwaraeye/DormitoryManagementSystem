@@ -20,29 +20,31 @@
             app:srcCompat="@drawable/ic_carbon_user_avatar"
             app:shapeAppearanceOverlay="@style/Circular"/>
 
-        <TextView
-            android:id="@+id/textName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/fc_minimal_regular"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="ชื่อ นามสกุล" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txOwn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:gravity="end"
-            android:fontFamily="@font/fc_minimal_regular"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:layout_marginEnd="10dp"
-            android:text="เจ้าของห้อง" />
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:text="ชื่อ นามสกุล"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txOwn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:text="เจ้าของห้อง"
+                android:textColor="@color/darkergray"
+                android:textSize="20sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

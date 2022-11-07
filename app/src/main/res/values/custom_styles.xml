@@ -12,6 +12,9 @@
         <item name="cornerSizeTopLeft">10%</item>
         <item name="cornerSizeBottomLeft">10%</item>
     </style>
+    <style name="CornerSize5Percent" parent="">
+        <item name="cornerSize">5%</item>
+    </style>
     <style name="CustomTabText" parent="TextAppearance.Design.Tab">
         <item name="android:fontFamily">@font/fc_minimal_regular</item>
         <item name="android:textSize">20sp</item>

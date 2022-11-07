@@ -258,7 +258,7 @@ public class Repair extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                    intent.putExtra("hisUid","Mng");
+                    intent.putExtra("hisUid","Mng01");
                     startActivity(intent);
                     }
                 });

@@ -42,7 +42,7 @@ public class ViewRepair extends AppCompatActivity {
             adapterTabLayout.addFragment(new RepairSuccessful(),"ตรวจสอบงาน");
             adapterTabLayout.addFragment(new HistoryRepairFragment(),"ประวัติการซ่อม");
         }else if (typeUser.equals("Repairman")){
-            adapterTabLayout.addFragment(new RepairWorkFragment(),"งานที่ได้รับการแจ้งซ่อม'");
+            adapterTabLayout.addFragment(new RepairWorkFragment(),"งานที่ได้รับการแจ้งซ่อม");
             adapterTabLayout.addFragment(new HistoryRepairFragment(),"ประวัติการซ่อม");
         }else {
             adapterTabLayout.addFragment(new NewRepairFragment(),"ปัจจุบัน");

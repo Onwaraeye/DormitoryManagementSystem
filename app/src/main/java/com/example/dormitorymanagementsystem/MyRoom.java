@@ -37,7 +37,7 @@ public class MyRoom extends AppCompatActivity {
     AdapterNameMember adapterNameMember;
     List<String> listName = new ArrayList<>();
     List<String> listImage = new ArrayList<>();
-    List<String> list = new ArrayList<>();
+    List<String> listRole = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +74,7 @@ public class MyRoom extends AppCompatActivity {
                     }else {
                         txMember.setText("0");
                     }
-                    String owner = snapshot.child(numroom).child("Owner").getValue(String.class);
+                    //String owner = snapshot.child(numroom).child("Owner").getValue(String.class);
 
                     myRefUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -86,13 +86,15 @@ public class MyRoom extends AppCompatActivity {
                                     final String image = snapshot.child(listMember.get(i)).child("pictureUserUrl").getValue(String.class);
                                     final String fName = snapshot.child(listMember.get(i)).child("firstname").getValue(String.class);
                                     final String lName = snapshot.child(listMember.get(i)).child("lastname").getValue(String.class);
+                                    final String roleRoom = snapshot.child(listMember.get(i)).child("roleRoom").getValue(String.class);
                                     final String name = fName+" "+lName;
                                     Log.e("nameMyRoom",listMember.get(i));
+                                    listRole.add(roleRoom);
                                     listName.add(name);
                                     listImage.add(image);
                                 }
                             }
-                            adapterNameMember = new AdapterNameMember(mContext,listName,owner,listImage,listMember);
+                            adapterNameMember = new AdapterNameMember(mContext,listName,listRole,listImage,listMember);
                             recyclerView.setAdapter(adapterNameMember);
                         }
                         @Override

@@ -20,11 +20,11 @@ public class AdapterNameMember extends RecyclerView.Adapter<AdapterNameMember.Ad
 
     private Context mContext;
     private List<String> list;
-    private String owner;
+    private List<String> owner;
     private List<String> listImage;
     private List<String> listMember;
 
-    public AdapterNameMember(Context mContext, List<String> list, String owner, List<String> listImage, List<String> listMember) {
+    public AdapterNameMember(Context mContext, List<String> list, List<String> owner, List<String> listImage, List<String> listMember) {
         this.mContext = mContext;
         this.list = list;
         this.owner = owner;
@@ -43,8 +43,10 @@ public class AdapterNameMember extends RecyclerView.Adapter<AdapterNameMember.Ad
     public void onBindViewHolder(@NonNull AdapterNameMember.AdapterNameMemberHolder holder, int position) {
         try {
             holder.text_name.setText(list.get(position));
-            if (listMember.get(position).equals(owner)){
-                holder.txOwn.setVisibility(View.VISIBLE);
+            if (owner.get(position).equals("owner")){
+                holder.txOwn.setText("ผู้เช่า");
+            }else {
+                holder.txOwn.setText("ผู้อยู่อาศัย");
             }
             if (!listImage.get(position).isEmpty()){
                 Glide.with(mContext).load(listImage.get(position)).fitCenter().centerCrop().into(holder.image);

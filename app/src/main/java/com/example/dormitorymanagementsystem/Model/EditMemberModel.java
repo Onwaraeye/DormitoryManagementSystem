@@ -5,12 +5,22 @@ public class EditMemberModel {
     private String name;
     private String room;
     private String owner;
+    private String image;
 
-    public EditMemberModel(String userId, String name, String room, String owner) {
+    public EditMemberModel(String userId, String name, String room, String owner, String image) {
         this.userId = userId;
         this.name = name;
         this.room = room;
         this.owner = owner;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getOwner() {

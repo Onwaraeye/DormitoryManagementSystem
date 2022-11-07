@@ -4,17 +4,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dormitorymanagementsystem.MainActivity;
+import com.example.dormitorymanagementsystem.Manager.EditAddMember;
 import com.example.dormitorymanagementsystem.Manager.EditMember;
 import com.example.dormitorymanagementsystem.Model.EditMemberModel;
 import com.example.dormitorymanagementsystem.R;
@@ -27,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.AdapterEditMemberHolder> {
@@ -53,14 +59,31 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
     public void onBindViewHolder(@NonNull AdapterEditMember.AdapterEditMemberHolder holder, int position) {
         try {
             holder.text_name.setText(list.get(position).getName());
-            if (list.get(position).getOwner().equals(list.get(position).getUserId())){
-                holder.txOwn.setVisibility(View.VISIBLE);
+            if (list.get(position).getOwner().equals("owner")){
+                holder.txOwn.setText("ผู้เช่า");
+            } else{
+                holder.txOwn.setText("ผู้อยู่อาศัย");
+            }
+            if (!list.get(position).getImage().isEmpty()){
+                Glide.with(mContext).load(list.get(position).getImage()).fitCenter().centerCrop().into(holder.imageView);
+            }else {
+                Glide.with(mContext).load(R.drawable.ic_carbon_user_avatar).fitCenter().into(holder.imageView);
             }
             holder.bt_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showDialogDelete(list.get(position).getUserId(),list.get(position).getRoom(),position);
-
+                }
+            });
+            holder.bt_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, EditAddMember.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("from", "edit");
+                    intent.putExtra("userID", list.get(position).getUserId());
+                    intent.putExtra("role", list.get(position).getOwner());
+                    mContext.startActivity(intent);
                 }
             });
 
@@ -74,7 +97,8 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
 
     public class AdapterEditMemberHolder extends RecyclerView.ViewHolder {
 
-        TextView text_name,bt_del,txOwn;
+        TextView text_name,bt_del,txOwn,bt_edit;
+        ImageView imageView;
 
         public AdapterEditMemberHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,6 +106,8 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
             text_name = itemView.findViewById(R.id.textName);
             txOwn = itemView.findViewById(R.id.txOwn);
             bt_del = itemView.findViewById(R.id.bt_del);
+            imageView = itemView.findViewById(R.id.imageView);
+            bt_edit = itemView.findViewById(R.id.bt_edit);
         }
     }
 
@@ -102,9 +128,16 @@ public class AdapterEditMember extends RecyclerView.Adapter<AdapterEditMember.Ad
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                         for (DataSnapshot ds : snapshot.getChildren()){
-                            if (ds.getValue().equals(id)){
-                                ds.getRef().removeValue();
-                                delete(position);
+                            try {
+                                if (ds.getValue().equals(id)){
+                                    ds.getRef().removeValue();
+                                    // delete(position);
+                                    list.remove(position);
+                                    notifyDataSetChanged();
+                                    Toast.makeText(mContext, "ลบสำเร็จ", Toast.LENGTH_SHORT).show();
+                                }
+                            }catch (Exception e){
+
                             }
                         }
                     }

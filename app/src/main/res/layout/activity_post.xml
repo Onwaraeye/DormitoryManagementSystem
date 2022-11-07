@@ -168,7 +168,7 @@
                 android:background="@drawable/bg_rad10"
                 android:textColor="@color/white"
                 android:layout_weight="1"
-                android:text="แก้ไข" />
+                android:text="ยืนยัน" />
 
             <Button
                 android:id="@+id/bt_del"

@@ -36,7 +36,6 @@ public class EditMember extends AppCompatActivity {
     private AdapterEditMember adapter;
     private RecyclerView recyclerView;
     private List<EditMemberModel> listNameMember = new ArrayList<>();
-    String owner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,37 +54,37 @@ public class EditMember extends AppCompatActivity {
         txRoom.setText(getRoom);
         TextView txMember = findViewById(R.id.txMember);
 
-        myRefRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                owner = snapshot.child(getRoom).child("Owner").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                listNameMember.clear();
-                for (String userID : list) {
-                    if (!userID.equals("")) {
-                        if (snapshot.hasChild(userID)) {
-                            final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
-                            final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
-                            final String name = fName + " " + lName;
-                            EditMemberModel editMemberModel = new EditMemberModel(userID, name, getRoom,owner);
-                            listNameMember.add(editMemberModel);
-                            txMember.setText("จำนวนสมาชิก " + list.size() + " คน");
-
+                myRefRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshotRoom) {
+                        listNameMember.clear();
+                        for (String userID : list) {
+                            if (!userID.equals("")) {
+                                if (snapshot.hasChild(userID)) {
+                                    final String fName = snapshot.child(userID).child("firstname").getValue(String.class);
+                                    final String lName = snapshot.child(userID).child("lastname").getValue(String.class);
+                                    final String name = fName + " " + lName;
+                                    String roleRoom = snapshot.child(userID).child("roleRoom").getValue(String.class);
+                                    String imageUser = snapshot.child(userID).child("pictureUserUrl").getValue(String.class);
+                                    EditMemberModel editMemberModel = new EditMemberModel(userID, name, getRoom,roleRoom,imageUser);
+                                    listNameMember.add(editMemberModel);
+                                    txMember.setText("จำนวนสมาชิก " + list.size() + " คน");
+                                }
+                            }
+                            adapter = new AdapterEditMember(EditMember.this, listNameMember);
+                            adapter.notifyDataSetChanged();
+                            recyclerView.setAdapter(adapter);
                         }
                     }
-                    adapter = new AdapterEditMember(EditMember.this, listNameMember);
-                    recyclerView.setAdapter(adapter);
-                }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
             }
 
             @Override
@@ -104,7 +103,6 @@ public class EditMember extends AppCompatActivity {
         });
 
         List<String> listMember = new ArrayList<>();
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -127,6 +125,7 @@ public class EditMember extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), EditAddMember.class);
                 intent.putStringArrayListExtra("timeAdd", (ArrayList<String>) listMember);
                 intent.putExtra("room", getRoom);
+                intent.putExtra("from","");
                 startActivity(intent);
             }
         });

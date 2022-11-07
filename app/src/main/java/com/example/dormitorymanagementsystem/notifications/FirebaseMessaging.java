@@ -109,12 +109,13 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, MonthlyBill.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_iconproject2)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.iconproject))
+                /*.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))*/
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -146,12 +147,13 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, Parcel.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_iconproject2)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.iconproject))
+                /*.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))*/
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -184,12 +186,13 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("postFromNotification","postFromNotification");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "" + ADMIN_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_iconproject2)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.iconproject))
+                /*.setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))*/
                 .setContentTitle(pTitle)
                 .setContentText(pDescription)
                 .setContentIntent(pIntent);
@@ -224,13 +227,14 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         bundle.putString("hisUid", user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+        //PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_MUTABLE);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_iconproject2)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
-                        R.drawable.iconproject))
+               /* .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),
+                        R.drawable.iconproject))*/
                 .setContentText(body)
                 .setContentTitle(title)
                 .setAutoCancel(true)
@@ -258,7 +262,8 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         bundle.putString("hisUid", user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_MUTABLE);
+        //PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 

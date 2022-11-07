@@ -85,6 +85,7 @@ public class SentParcel extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRefParcel = database.getReference("Parcel").push();
+    private DatabaseReference myRef = database.getReference("Parcel");
     private DatabaseReference myRefRoom = database.getReference("Room");
 
     private int day, month, year;
@@ -96,7 +97,11 @@ public class SentParcel extends AppCompatActivity {
     private ImageView imageView;
 
     String room;
+    String from, getTime;
     ArrayAdapter<String> adapter;
+
+    String inputetFName;
+    String inputetLName;
 
     String myUid = Login.getGbIdUser();
 
@@ -117,6 +122,13 @@ public class SentParcel extends AppCompatActivity {
         TextView galleryBtn = findViewById(R.id.galleryBtn);
         imageView = findViewById(R.id.imageView);
         Spinner spinner = findViewById(R.id.spinner);
+
+        from = getIntent().getStringExtra("from");
+        String getFname = getIntent().getStringExtra("fname");
+        String getLname = getIntent().getStringExtra("lname");
+        String numroom = getIntent().getStringExtra("room");
+        String image = getIntent().getStringExtra("image");
+        getTime = getIntent().getStringExtra("timestamp");
 
         ArrayList<String> timeAdd = getIntent().getStringArrayListExtra("timeAdd");
         Set<String> set = new HashSet<String>(timeAdd);
@@ -141,38 +153,85 @@ public class SentParcel extends AppCompatActivity {
         year = Calendar.getInstance().get(Calendar.YEAR) + 543;
         etDate.setText(day + " " + getMonth(month) + " " + year);
 
-        btConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //String inputetRoom = etRoom.getText().toString();
-                String inputetFName = etFName.getText().toString();
-                String inputetLName = etLName.getText().toString();
-                imageView.setVisibility(View.GONE);
 
-                myRefParcel.child("numroom").setValue(room);
-                myRefParcel.child("firstname").setValue(inputetFName);
-                myRefParcel.child("lastname").setValue(inputetLName);
-                myRefParcel.child("status").setValue("0");
-                myRefParcel.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
-                myRefParcel.child("nameImporter").setValue(name);
-                myRefParcel.child("nameReceiver").setValue("");
-                myRefParcel.child("timestampReceiver").setValue("");
-                uploadImageToFirebase();
-                prepareNotification(
-                        "" + System.currentTimeMillis(),
-                        "พัสดุใหม่",
-                        "คุณ" + inputetFName + " " + inputetLName,
-                        "ParcelNotification",
-                        "POST",
-                        "" + room);
-                //etRoom.setText("");
-                etFName.setText("");
-                etLName.setText("");
-                int id = getResources().getIdentifier("@drawable/ic_baseline_image_24", "drawable", getPackageName());
-                imageView.setImageResource(id);
+        if (from != null && from.equals("edit")) {
+            etFName.setText(getFname);
+            etLName.setText(getLname);
+            room = numroom;
+            Glide.with(getApplicationContext()).load(image).fitCenter().centerCrop().into(imageView);
+            imageView.setVisibility(View.VISIBLE);
+            spinner.setSelection(adapter.getPosition(room));
 
-            }
-        });
+            btConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            inputetFName = etFName.getText().toString();
+                            inputetLName = etLName.getText().toString();
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                ds.getRef().child("numroom").setValue(room);
+                                ds.getRef().child("firstname").setValue(inputetFName);
+                                ds.getRef().child("lastname").setValue(inputetLName);
+                                ds.getRef().child("status").setValue("0");
+                                ds.getRef().child("nameImporter").setValue(name);
+                                ds.getRef().child("nameReceiver").setValue("");
+                                ds.getRef().child("timestampReceiver").setValue("");
+                                uploadImageToFirebase();
+                                prepareNotification(
+                                        "" + System.currentTimeMillis(),
+                                        "พัสดุใหม่",
+                                        "คุณ" + getFname + " " + getLname,
+                                        "ParcelNotification",
+                                        "POST",
+                                        "" + room);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            });
+
+
+        } else {
+            btConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    inputetFName = etFName.getText().toString();
+                    inputetLName = etLName.getText().toString();
+                    imageView.setVisibility(View.GONE);
+                    myRefParcel.child("numroom").setValue(room);
+                    myRefParcel.child("firstname").setValue(inputetFName);
+                    myRefParcel.child("lastname").setValue(inputetLName);
+                    myRefParcel.child("status").setValue("0");
+                    myRefParcel.child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                    myRefParcel.child("nameImporter").setValue(name);
+                    myRefParcel.child("nameReceiver").setValue("");
+                    myRefParcel.child("timestampReceiver").setValue("");
+                    uploadImageToFirebase();
+                    prepareNotification(
+                            "" + System.currentTimeMillis(),
+                            "พัสดุใหม่",
+                            "คุณ" + inputetFName + " " + inputetLName,
+                            "ParcelNotification",
+                            "POST",
+                            "" + room);
+                    //etRoom.setText("");
+                    etFName.setText("");
+                    etLName.setText("");
+                    int id = getResources().getIdentifier("@drawable/ic_baseline_image_24", "drawable", getPackageName());
+                    imageView.setImageResource(id);
+
+                }
+            });
+        }
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,36 +352,59 @@ public class SentParcel extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase() {
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
-        fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String imageURL = uri.toString();
-                        Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
-                        myRefParcel.child("imageUrl").setValue(imageURL);
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull @NotNull Exception e) {
-                Toast.makeText(SentParcel.this, "Upload Failled.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (contentUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsParcel").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
+            fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageURL = uri.toString();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                            if (from != null && from.equals("edit")) {
+                                Log.e("getTime", getTime);
+                                Query query = myRef.orderByChild("timestamp").equalTo(getTime);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds : snapshot.getChildren()) {
+                                            Log.e("imageUrl2", imageURL);
+                                            ds.getRef().child("imageUrl").setValue(imageURL);
+                                            ds.getRef().child("timestamp").setValue(String.valueOf(System.currentTimeMillis()));
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
+                            } else {
+                                myRefParcel.child("imageUrl").setValue(imageURL);
+                            }
+                        }
+
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull @NotNull Exception e) {
+                    Toast.makeText(SentParcel.this, "Upload Failled.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void prepareNotification(String pId, String title, String description, String notificationType, String notificationTopic, String room) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         Query query = ref.orderByChild("numroom").equalTo(room);
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     DatabaseReference refTo = FirebaseDatabase.getInstance().getReference("Tokens");
-                    refTo.addValueEventListener(new ValueEventListener() {
+                    refTo.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             if (snapshot.child(ds.getKey()).getKey().equals(ds.getKey())) {

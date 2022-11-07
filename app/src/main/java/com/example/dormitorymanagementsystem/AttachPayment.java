@@ -68,8 +68,6 @@ public class AttachPayment extends AppCompatActivity {
     private String yearThai = "";
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,11 +132,11 @@ public class AttachPayment extends AppCompatActivity {
         }
         txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
 
-        txRoomPrice.setText(billModel.getRoomprice() + " บาท");
+        txRoomPrice.setText(DoubleToString(Double.parseDouble(billModel.getRoomprice())) + " บาท");
         txElectricity.setText(billModel.getElectricity() + " บาท");
         txWater.setText(billModel.getWater() + " บาท");
         txDiscount.setText(billModel.getDiscount() + " บาท");
-        txSum.setText(billModel.getSum() + " บาท");
+        txSum.setText(DoubleToString(Double.parseDouble(billModel.getSum())) + " บาท");
         txFee.setText(billModel.getFee() + " บาท");
         txInternet.setText(billModel.getInternet() + " บาท");
 
@@ -171,9 +169,13 @@ public class AttachPayment extends AppCompatActivity {
             btConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    myRef.child(year).child(getMonth(monthThai)).child(room).child("status").setValue("1");
-                    uploadImageToFirebase();
-                    finish();
+                    if (contentUri == null){
+                        Toast.makeText(mContext, "กรุณาแนบรูป", Toast.LENGTH_SHORT).show();
+                    }else {
+                        myRef.child(year).child(getMonth(monthThai)).child(room).child("status").setValue("1");
+                        uploadImageToFirebase();
+                        finish();
+                    }
                 }
             });
         } else if (status.equals("1")) {
@@ -422,25 +424,26 @@ public class AttachPayment extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase() {
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
-        fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        String imageURL = uri.toString();
-                        Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
-                        myRef.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").setValue(imageURL);
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull @NotNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Upload Failled.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (contentUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploadsSlips").child(System.currentTimeMillis() + "." + getFileExtension(contentUri));
+            fileRef.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageURL = uri.toString();
+                            Toast.makeText(getApplicationContext(), "อัพโหลดสำเร็จ", Toast.LENGTH_SHORT).show();
+                            myRef.child(year).child(getMonth(monthThai)).child(room).child("imageUrl").setValue(imageURL);
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull @NotNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Upload Failled.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
-
 }

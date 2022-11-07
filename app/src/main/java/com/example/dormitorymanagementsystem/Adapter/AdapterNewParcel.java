@@ -85,6 +85,7 @@ public class AdapterNewParcel extends RecyclerView.Adapter<AdapterNewParcel.MyVi
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("parcel",(NewParcelModel) newParcelModel);
                         intent.putExtra("date", date);
+                        intent.putExtra("timestamp",timestamp);
                         mContext.startActivity(intent);
                     }
                 });
@@ -102,7 +103,7 @@ public class AdapterNewParcel extends RecyclerView.Adapter<AdapterNewParcel.MyVi
                 String monthRe = mFormatter.format(new Date(Long.parseLong(timestampReceiver)));
                 String yearRe = yFormatter.format(new Date(Long.parseLong(timestampReceiver)));
                 String timeRe = tFormatter.format(new Date(Long.parseLong(timestampReceiver)));
-                int moRe = Integer.valueOf(monthRe)+1;
+                int moRe = Integer.valueOf(monthRe);
                 int yeRe = Integer.valueOf(yearRe)+43;
                 if (ye>=100){
                     yeRe -= 100;

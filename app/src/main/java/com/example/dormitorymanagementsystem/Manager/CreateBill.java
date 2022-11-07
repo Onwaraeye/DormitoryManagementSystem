@@ -39,7 +39,7 @@ public class CreateBill extends AppCompatActivity {
     private String year = "";
     private String room = "";
     private double sum = 0;
-    private double sumTotal=0;
+    private double sumTotal = 0;
     private double fee = 0;
     private double internet = 0;
     private double discount = 0;
@@ -127,199 +127,198 @@ public class CreateBill extends AppCompatActivity {
                                     etInternet.setText("0");
                                 }
 
-                                //try {
-                                if (unitWaterAf == null && unitElecAf == null ){
-                                    txWaterUnit.setText("ค่าน้ำ\nยังไม่ได้จดหน่วยน้ำ");
-                                    txWater.setText("0 บาท");
-                                    txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
-                                    txElecUnit.setText("ค่าไฟ\nยังไม่ได้จดหน่วยไฟ");
-                                    txElectricity.setText("0 บาท");
-                                    txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
-                                    sum = priceRoom + fee + internet - discount;
-                                    txSum.setText(DoubleToString(sum) + " บาท");
-                                    btConfirm.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟและหน่วยน้ำ", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }else {
-                                    if (unitWaterAf == null || unitWaterBe == null) {
+                                try {
+                                    if (unitWaterAf == null && unitElecAf == null) {
                                         txWaterUnit.setText("ค่าน้ำ\nยังไม่ได้จดหน่วยน้ำ");
                                         txWater.setText("0 บาท");
-                                        txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
-                                        int unitElecAfter = Integer.parseInt(billModel.getElecafter());
-                                        int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
-                                        int sumEl = 0;
-                                        if (unitElecAfter > unitElecBefore) {
-                                            sumEl = (unitElecAfter - unitElecBefore);
-                                        } else if (unitElecAfter < unitElecBefore) {
-                                            sumEl = ((9999 - unitElecBefore) + unitElecAfter);
-                                        }
-                                        txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
-                                        String dataelectricity = snapshot.child("electricity").getValue(String.class);
-                                        //String tempelectricity = dataelectricity.replace(",", "");
-                                        txElectricity.setText(dataelectricity + " บาท");
-                                        sum = priceRoom +Double.parseDouble(dataelectricity)+ fee + internet - discount;
-                                        txSum.setText(DoubleToString(sum) + " บาท");
-
-                                        btConfirm.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยน้ำ", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-
-                                    }else if (unitElecAf == null || unitElecBe == null) {
+                                        txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this, R.color.red));
                                         txElecUnit.setText("ค่าไฟ\nยังไม่ได้จดหน่วยไฟ");
                                         txElectricity.setText("0 บาท");
-                                        txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this,R.color.red));
-                                        int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
-                                        int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
-                                        int sumWt = 0;
-                                        if (unitWaterAfter > unitWaterBefore) {
-                                            sumWt = (unitWaterAfter - unitWaterBefore);
-                                        } else if (unitWaterAfter < unitWaterBefore) {
-                                            sumWt = ((9999 - unitWaterBefore) + unitWaterAfter);
-                                        }
-                                        txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
-                                        String datawater = snapshot.child("water").getValue(String.class);
-                                        //String tempwater = datawater.replace(",", "");
-                                        txWater.setText(datawater + " บาท");
-                                        sum = priceRoom +Double.parseDouble(datawater)+ fee + internet - discount;
+                                        txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this, R.color.red));
+                                        sum = priceRoom + fee + internet - discount;
                                         txSum.setText(DoubleToString(sum) + " บาท");
-
                                         btConfirm.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟ", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟและหน่วยน้ำ", Toast.LENGTH_SHORT).show();
                                             }
                                         });
+                                    } else {
+                                        if (unitWaterAf == null || unitWaterBe == null) {
+                                            txWaterUnit.setText("ค่าน้ำ\nยังไม่ได้จดหน่วยน้ำ");
+                                            txWater.setText("0 บาท");
+                                            txWaterUnit.setTextColor(ContextCompat.getColor(CreateBill.this, R.color.red));
+                                            int unitElecAfter = Integer.parseInt(billModel.getElecafter());
+                                            int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
+                                            int sumEl = 0;
+                                            if (unitElecAfter > unitElecBefore) {
+                                                sumEl = (unitElecAfter - unitElecBefore);
+                                            } else if (unitElecAfter < unitElecBefore) {
+                                                sumEl = ((9999 - unitElecBefore) + unitElecAfter);
+                                            }
+                                            txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
+                                            String dataelectricity = snapshot.child("electricity").getValue(String.class);
+                                            //String tempelectricity = dataelectricity.replace(",", "");
+                                            txElectricity.setText(dataelectricity + " บาท");
+                                            sum = priceRoom + Double.parseDouble(dataelectricity) + fee + internet - discount;
+                                            txSum.setText(DoubleToString(sum) + " บาท");
 
-                                    }else {
-                                        int unitElecAfter = Integer.parseInt(billModel.getElecafter());
-                                        int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
-                                        int sumEl = 0;
-                                        if (unitElecAfter > unitElecBefore) {
-                                            sumEl = (unitElecAfter - unitElecBefore);
-                                        } else if (unitElecAfter < unitElecBefore) {
-                                            sumEl = ((9999 - unitElecBefore) + unitElecAfter);
-                                        }
-                                        txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
-
-                                        int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
-                                        int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
-                                        int sumWt = 0;
-                                        if (unitWaterAfter > unitWaterBefore) {
-                                            sumWt = (unitWaterAfter - unitWaterBefore);
-                                        } else if (unitWaterAfter < unitWaterBefore) {
-                                            sumWt = ((9999 - unitWaterBefore) + unitWaterAfter);
-                                        }
-                                        txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
-
-                                        String dataelectricity = snapshot.child("electricity").getValue(String.class);
-                                        //String tempelectricity = dataelectricity.replace(",", "");
-                                        double electricity = Double.parseDouble(dataelectricity);
-
-                                        String datawater = snapshot.child("water").getValue(String.class);
-                                        //String tempwater = datawater.replace(",", "");
-                                        double water = Double.parseDouble(datawater);
-
-                                        txElectricity.setText(DoubleToString(electricity) + " บาท");
-                                        txWater.setText(DoubleToString(water) + " บาท");
-
-                                        sum = priceRoom + electricity + water+ fee + internet - discount;
-
-                                        txSum.setText(DoubleToString(sum) + " บาท");
-
-                                        if (btEditFee.getVisibility() == View.VISIBLE) {
-                                            btEditFee.setOnClickListener(new View.OnClickListener() {
+                                            btConfirm.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    etFee.setEnabled(true);
-                                                    btEditFee.setVisibility(View.GONE);
-                                                    btSaveFee.setVisibility(View.VISIBLE);
+                                                    Toast.makeText(CreateBill.this, "กรุณาจดหน่วยน้ำ", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+                                        } else if (unitElecAf == null || unitElecBe == null) {
+                                            txElecUnit.setText("ค่าไฟ\nยังไม่ได้จดหน่วยไฟ");
+                                            txElectricity.setText("0 บาท");
+                                            txElecUnit.setTextColor(ContextCompat.getColor(CreateBill.this, R.color.red));
+                                            int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
+                                            int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
+                                            int sumWt = 0;
+                                            if (unitWaterAfter > unitWaterBefore) {
+                                                sumWt = (unitWaterAfter - unitWaterBefore);
+                                            } else if (unitWaterAfter < unitWaterBefore) {
+                                                sumWt = ((9999 - unitWaterBefore) + unitWaterAfter);
+                                            }
+                                            txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
+                                            String datawater = snapshot.child("water").getValue(String.class);
+                                            //String tempwater = datawater.replace(",", "");
+                                            txWater.setText(datawater + " บาท");
+                                            sum = priceRoom + Double.parseDouble(datawater) + fee + internet - discount;
+                                            txSum.setText(DoubleToString(sum) + " บาท");
+
+                                            btConfirm.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Toast.makeText(CreateBill.this, "กรุณาจดหน่วยไฟ", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+                                        } else {
+                                            int unitElecAfter = Integer.parseInt(billModel.getElecafter());
+                                            int unitElecBefore = Integer.parseInt(billModel.getElecbefore());
+                                            int sumEl = 0;
+                                            if (unitElecAfter > unitElecBefore) {
+                                                sumEl = (unitElecAfter - unitElecBefore);
+                                            } else if (unitElecAfter < unitElecBefore) {
+                                                sumEl = ((9999 - unitElecBefore) + unitElecAfter);
+                                            }
+                                            txElecUnit.setText("ค่าไฟ\n(" + unitElecBefore + " - " + unitElecAfter + " = " + sumEl + " หน่วย)");
+
+                                            int unitWaterAfter = Integer.parseInt(billModel.getWaterafter());
+                                            int unitWaterBefore = Integer.parseInt(billModel.getWaterbefore());
+                                            int sumWt = 0;
+                                            if (unitWaterAfter > unitWaterBefore) {
+                                                sumWt = (unitWaterAfter - unitWaterBefore);
+                                            } else if (unitWaterAfter < unitWaterBefore) {
+                                                sumWt = ((9999 - unitWaterBefore) + unitWaterAfter);
+                                            }
+                                            txWaterUnit.setText("ค่าน้ำ\n(" + unitWaterBefore + " - " + unitWaterAfter + " = " + sumWt + " หน่วย)");
+
+                                            String dataelectricity = snapshot.child("electricity").getValue(String.class);
+                                            //String tempelectricity = dataelectricity.replace(",", "");
+                                            double electricity = Double.parseDouble(dataelectricity);
+
+                                            String datawater = snapshot.child("water").getValue(String.class);
+                                            //String tempwater = datawater.replace(",", "");
+                                            double water = Double.parseDouble(datawater);
+
+                                            txElectricity.setText(DoubleToString(electricity) + " บาท");
+                                            txWater.setText(DoubleToString(water) + " บาท");
+
+                                            sum = priceRoom + electricity + water + fee + internet - discount;
+
+                                            txSum.setText(DoubleToString(sum) + " บาท");
+
+                                            if (btEditFee.getVisibility() == View.VISIBLE) {
+                                                btEditFee.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        etFee.setEnabled(true);
+                                                        btEditFee.setVisibility(View.GONE);
+                                                        btSaveFee.setVisibility(View.VISIBLE);
+                                                    }
+                                                });
+                                            }
+
+                                            btSaveFee.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    etFee.setEnabled(false);
+                                                    btEditFee.setVisibility(View.VISIBLE);
+                                                    btSaveFee.setVisibility(View.GONE);
+                                                    fee = Double.parseDouble(etFee.getText().toString());
+                                                    sum = priceRoom + electricity + water + fee + internet - discount;
+                                                    txSum.setText(DoubleToString(sum) + " บาท");
+                                                }
+                                            });
+
+                                            if (btEditInternet.getVisibility() == View.VISIBLE) {
+                                                btEditInternet.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        etInternet.setEnabled(true);
+                                                        btEditInternet.setVisibility(View.GONE);
+                                                        btSaveInternet.setVisibility(View.VISIBLE);
+                                                    }
+                                                });
+                                            }
+
+                                            btSaveInternet.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    etInternet.setEnabled(false);
+                                                    btEditInternet.setVisibility(View.VISIBLE);
+                                                    btSaveInternet.setVisibility(View.GONE);
+                                                    internet = Double.parseDouble(etInternet.getText().toString());
+                                                    sum = priceRoom + electricity + water + fee + internet - discount;
+                                                    txSum.setText(DoubleToString(sum) + " บาท");
+                                                }
+                                            });
+
+                                            if (btEditDiscount.getVisibility() == View.VISIBLE) {
+                                                btEditDiscount.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        etDiscount.setEnabled(true);
+                                                        btEditDiscount.setVisibility(View.GONE);
+                                                        btSaveDiscount.setVisibility(View.VISIBLE);
+                                                    }
+                                                });
+                                            }
+                                            btSaveDiscount.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    etDiscount.setEnabled(false);
+                                                    btEditDiscount.setVisibility(View.VISIBLE);
+                                                    btSaveDiscount.setVisibility(View.GONE);
+                                                    discount = Double.parseDouble(etDiscount.getText().toString());
+                                                    sum = priceRoom + electricity + water + fee + internet - discount;
+                                                    txSum.setText(DoubleToString(sum) + " บาท");
+
+                                                }
+                                            });
+
+                                            btConfirm.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Toast.makeText(CreateBill.this, "สำเร็จ", Toast.LENGTH_SHORT).show();
+                                                    refBill.child("roomprice").setValue(datapriceRoom);
+                                                    refBill.child("discount").setValue(DoubleToString(discount));
+                                                    refBill.child("fee").setValue(DoubleToString(fee));
+                                                    refBill.child("internet").setValue(DoubleToString(internet));
+                                                    refBill.child("sum").setValue(sum + "");
+                                                    refBill.child("status").setValue("0");
+                                                    finish();
                                                 }
                                             });
                                         }
-
-                                        btSaveFee.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                etFee.setEnabled(false);
-                                                btEditFee.setVisibility(View.VISIBLE);
-                                                btSaveFee.setVisibility(View.GONE);
-                                                fee = Double.parseDouble(etFee.getText().toString());
-                                                sum = priceRoom + electricity + water+ fee + internet - discount;
-                                                txSum.setText(DoubleToString(sum) + " บาท");
-                                            }
-                                        });
-
-                                        if (btEditInternet.getVisibility() == View.VISIBLE) {
-                                            btEditInternet.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    etInternet.setEnabled(true);
-                                                    btEditInternet.setVisibility(View.GONE);
-                                                    btSaveInternet.setVisibility(View.VISIBLE);
-                                                }
-                                            });
-                                        }
-
-                                        btSaveInternet.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                etInternet.setEnabled(false);
-                                                btEditInternet.setVisibility(View.VISIBLE);
-                                                btSaveInternet.setVisibility(View.GONE);
-                                                internet = Double.parseDouble(etInternet.getText().toString());
-                                                sum = priceRoom + electricity + water+ fee + internet - discount;
-                                                txSum.setText(DoubleToString(sum) + " บาท");
-                                            }
-                                        });
-
-                                        if (btEditDiscount.getVisibility() == View.VISIBLE) {
-                                            btEditDiscount.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    etDiscount.setEnabled(true);
-                                                    btEditDiscount.setVisibility(View.GONE);
-                                                    btSaveDiscount.setVisibility(View.VISIBLE);
-                                                }
-                                            });
-                                        }
-                                        btSaveDiscount.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                etDiscount.setEnabled(false);
-                                                btEditDiscount.setVisibility(View.VISIBLE);
-                                                btSaveDiscount.setVisibility(View.GONE);
-                                                discount = Double.parseDouble(etDiscount.getText().toString());
-                                                sum = priceRoom + electricity + water+ fee + internet - discount;
-                                                txSum.setText(DoubleToString(sum) + " บาท");
-
-                                            }
-                                        });
-
-                                        btConfirm.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Toast.makeText(CreateBill.this, "สำเร็จ", Toast.LENGTH_SHORT).show();
-                                                refBill.child("roomprice").setValue(datapriceRoom);
-                                                refBill.child("discount").setValue(DoubleToString(discount));
-                                                refBill.child("fee").setValue(DoubleToString(fee));
-                                                refBill.child("internet").setValue(DoubleToString(internet));
-                                                refBill.child("sum").setValue(sum+"");
-                                                refBill.child("status").setValue("0");
-                                                finish();
-                                            }
-                                        });
                                     }
+                                } catch (Exception e) {
+                                    Toast.makeText(CreateBill.this, "" + e.toString(), Toast.LENGTH_SHORT).show();
                                 }
-
-                                /*}catch (Exception e){
-                                    Toast.makeText(CreateBill.this, ""+e.toString(), Toast.LENGTH_SHORT).show();
-                                }*/
 
 
                             }

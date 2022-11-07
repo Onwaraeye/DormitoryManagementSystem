@@ -70,6 +70,17 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        TextView txRole = view.findViewById(R.id.txRole);
+        if (getType!=null){
+            if (getType.equals("User")){
+                txRole.setText("สมาชิก");
+            } else if (getType.equals("Admin")) {
+                txRole.setText("นิติบุคคล");
+            }else {
+                txRole.setText("ช่างซ่อม");
+            }
+        }
+
         TextView txNameDormitory = view.findViewById(R.id.txNameDormitory);
         myRefContact.addValueEventListener(new ValueEventListener() {
             @Override

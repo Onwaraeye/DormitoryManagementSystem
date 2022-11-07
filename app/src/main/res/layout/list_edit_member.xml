@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,36 +11,52 @@
         android:background="@drawable/bg_rad5_stroke"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView5"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageView"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_carbon_user_avatar"
-            android:layout_margin="5dp" />
-
-        <TextView
-            android:id="@+id/textName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/fc_minimal_regular"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="ชื่อ นามสกุล" />
+            android:layout_margin="10dp"
+            app:srcCompat="@drawable/ic_carbon_user_avatar"
+            app:shapeAppearanceOverlay="@style/Circular"/>
 
-        <TextView
-            android:id="@+id/txOwn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:gravity="start"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:text="ชื่อ นามสกุล"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txOwn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_minimal_regular"
+                android:gravity="start"
+                android:textColor="@color/darkergray"
+                android:text="xxx"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:fontFamily="@font/fc_minimal_regular"
             android:textSize="20sp"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
-            android:visibility="invisible"
-            android:text="( เจ้าของห้อง )" />
+            android:paddingHorizontal="10dp"
+            android:text="แก้ไข" />
 
         <TextView
             android:id="@+id/bt_del"
@@ -50,8 +67,7 @@
             android:fontFamily="@font/fc_minimal_regular"
             android:textSize="20sp"
             android:textColor="@color/red"
-            android:paddingEnd="20dp"
-            android:paddingStart="20dp"
+            android:paddingHorizontal="10dp"
             android:text="ลบ" />
 
     </LinearLayout>

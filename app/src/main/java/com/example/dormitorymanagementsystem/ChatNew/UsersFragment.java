@@ -61,9 +61,9 @@ public class UsersFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!TextUtils.isEmpty(query.trim())){
+                if (!TextUtils.isEmpty(query.trim())) {
                     searchUsers(query);
-                }else {
+                } else {
                     getAllUsers();
                 }
                 return false;
@@ -72,9 +72,9 @@ public class UsersFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                if (!TextUtils.isEmpty(newText.trim())){
+                if (!TextUtils.isEmpty(newText.trim())) {
                     searchUsers(newText);
-                }else {
+                } else {
                     getAllUsers();
                 }
 
@@ -89,18 +89,18 @@ public class UsersFragment extends Fragment {
         return view;
     }
 
-    private  void  getAllUsers(){
+    private void getAllUsers() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 userList.clear();
-                for (DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelUser modelUser = ds.getValue(ModelUser.class);
-                    if (modelUser.getRole()!=null && !modelUser.getRole().equals("Admin")){
+                    if (modelUser.getRole() != null && !modelUser.getRole().equals("Admin") && !modelUser.getRole().equals("Superadmin")) {
                         userList.add(modelUser);
                     }
-                    adapterUsers = new AdapterUsers(context, userList,"UsersFragment");
+                    adapterUsers = new AdapterUsers(context, userList, "UsersFragment");
                     recyclerView.setAdapter(adapterUsers);
                 }
             }
@@ -112,22 +112,24 @@ public class UsersFragment extends Fragment {
         });
     }
 
-    private void searchUsers(String query){
+    private void searchUsers(String query) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 userList.clear();
-                for (DataSnapshot ds: snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelUser modelUser = ds.getValue(ModelUser.class);
-                    if (!modelUser.getId().equals(userId)){
-                        if (modelUser.getNumroom().toLowerCase().contains(query.toLowerCase()) ||
-                                modelUser.getFirstname().toLowerCase().contains(query.toLowerCase()) ||
-                                modelUser.getLastname().toLowerCase().contains(query.toLowerCase())){
-                            userList.add(modelUser);
+                    if (modelUser.getId() != null && !modelUser.getId().equals(userId)) {
+                        if (modelUser.getNumroom() != null) {
+                            if (modelUser.getNumroom().toLowerCase().contains(query.toLowerCase()) ||
+                                    modelUser.getFirstname().toLowerCase().contains(query.toLowerCase()) ||
+                                    modelUser.getLastname().toLowerCase().contains(query.toLowerCase()) || modelUser.getRole().toLowerCase().contains(query.toLowerCase())) {
+                                userList.add(modelUser);
+                            }
                         }
                     }
-                    adapterUsers = new AdapterUsers(context, userList,"UsersFragment");
+                    adapterUsers = new AdapterUsers(context, userList, "UsersFragment");
                     adapterUsers.notifyDataSetChanged();
                     recyclerView.setAdapter(adapterUsers);
                 }
